@@ -1,0 +1,52 @@
+{
+  "name": "a2sv_backend",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "devStart": "nodemon index.js",
+    "lint": "eslint ./",
+    "test": "mocha --timeout 0 --exit"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "@socketlabs/email": "^1.1.0",
+    "accesscontrol": "^2.2.1",
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "csvjson": "^5.1.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-winston": "^4.0.3",
+    "geolib": "^3.2.1",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.7",
+    "morgan": "^1.10.0",
+    "node-schedule": "^1.3.2",
+    "nodemon": "^2.0.3",
+    "papaparse": "^5.2.0",
+    "rss-parser": "^3.7.6",
+    "winston": "^3.2.1",
+    "winston-mongodb": "^5.0.1",
+    "xlsx": "^0.15.6"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-node": "^11.1.0",
+    "mocha": "^7.1.1"
+  },
+  "type": "commonjs",
+  "engines": {
+    "node": ">=12.10.0"
+  },
+  "engineStrict": true
+}
