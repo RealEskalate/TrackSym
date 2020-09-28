@@ -99,10 +99,14 @@ export default {
 
   watch: {
     selectedCity(newValue) {
-      this.map.flyTo({
-        center: [newValue.longitude, newValue.latitude],
-        essential: true
-      });
+      if (newValue.boundaries) {
+        this.map.fitBounds(newValue.boundaries[0], { maxZoom: 12 });
+      } else {
+        this.map.flyTo({
+          center: [newValue.longitude, newValue.latitude],
+          essential: true
+        });
+      }
     },
     loadedData(newValue) {
       const small_cluster = new Supercluster({ radius: 40, maxZoom: 14 });
