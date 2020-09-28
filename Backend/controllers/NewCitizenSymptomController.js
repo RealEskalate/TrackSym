@@ -163,12 +163,14 @@ exports.ephi_test_stats = async (req, res) => {
 exports.symptoms_count_in_district = async (req, res) => {
     let SymptomLogModel = (req.query.demo) ? SymptomLogDemo : SymptomLog
 
-    let districts = await DistrictModel.find({}).select('name');
+    let districts = await DistrictModel.find({});
     let symptomLogs = await SymptomLogModel.find({}).select('current_symptoms.location.district');
 
     let districtDict = {}
+    let districtBounaries = {}
 
     districts.forEach(district => districtDict[district._id] = district.name)
+    districts.forEach(district => districtBounaries[district.name] = district.boundaries.coordinates)
 
     let symptomsCount = {}
 
@@ -188,15 +190,23 @@ exports.symptoms_count_in_district = async (req, res) => {
         if (name != "undefined") {
             districtCount.push({
                 region: name,
-                count: symptomsCount[name]
+                count: symptomsCount[name],
+                boundaries: districtBounaries[name]
             })
         }
 
     }
 
-    districtCount.sort((a, b) => a.count - b.count)
+    districtCount.sort((a, b) => b.count - a.count)
 
-    res.send(districtCount)
+
+    let amount = (req.query.amount)? req.query.amount : 5 ;
+    if (amount >= districtCount.length)
+        return res.send(districtCount)
+    
+    districtCount = districtCount.slice(0,amount)
+    return res.send(districtCount)
+    
 }
 
 
