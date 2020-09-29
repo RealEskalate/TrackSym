@@ -1,0 +1,21 @@
+steps:
+  - name: node
+    entrypoint: npm
+    args: ["install"]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/zeta-ascent-272907/tracksym:$SHORT_SHA", "."]
+    dir: "Backend"
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/zeta-ascent-272907/tracksym:$SHORT_SHA"]
+    dir: "Backend"
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "beta",
+        "run",
+        "deploy",
+        "tracksym-update",
+        "--region=us-central1",
+        "--platform=managed",
+        "--image=gcr.io/zeta-ascent-272907/tracksym:$SHORT_SHA",
+      ]
