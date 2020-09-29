@@ -14,13 +14,7 @@ steps:
           ]
       dir: "Backend"
     - name: "gcr.io/cloud-builders/docker"
-      args:
-          [
-              "push",
-              "-f",
-              "Dockerfile.cron",
-              "gcr.io/zeta-ascent-272907/a2sv:$SHORT_SHA",
-          ]
+      args: ["push", "gcr.io/zeta-ascent-272907/a2sv:$SHORT_SHA"]
       dir: "Backend"
     - name: "gcr.io/cloud-builders/gcloud"
       args:
