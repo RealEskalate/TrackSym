@@ -117,9 +117,6 @@ export const mixin = {
           });
         }
       );
-    },
-    updateMap() {
-      console.log(this.basicInfo.latest_location_user.location.coordinates);
     }
   }
 };
