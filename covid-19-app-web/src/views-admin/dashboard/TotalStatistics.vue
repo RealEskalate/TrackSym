@@ -2,7 +2,7 @@
   <v-container>
     <date-range-picker :date_range="date_range" @onDateChange="onDateChange" />
     <br />
-    <div class="random" v-if="!getDashboardLoaders.graphInput">
+    <div class="random" v-if="!getDashboardLoaders.graphInput && getXLables.length > 0">
       <trend-chart
         :datasets="[
           {
@@ -157,7 +157,15 @@ export default {
   },
   mounted() {
     this.fetch();
-    setTimeout(this.initPopper, 1000);
+  },
+  watch: {
+    getXLables: {
+      handler(val) {
+        if (val !== null) {
+          setTimeout(this.initPopper, 1000);
+        }
+      }
+    },
   }
 };
 </script>
