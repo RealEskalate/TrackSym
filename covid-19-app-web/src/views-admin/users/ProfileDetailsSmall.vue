@@ -34,12 +34,6 @@
             </v-chip>
           </v-list-item-action>
         </v-list-item>
-        <v-progress-linear
-          height="2px"
-          style="margin-top: -8px"
-          indeterminate
-          v-if="loading"
-        />
         <v-list>
           <v-subheader v-text="$t('map.details')" />
           <v-list-item
