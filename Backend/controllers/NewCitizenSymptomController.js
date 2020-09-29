@@ -191,7 +191,7 @@ exports.symptoms_count_in_district = async (req, res) => {
             districtCount.push({
                 region: name,
                 count: symptomsCount[name],
-                boundaries: districtBounaries[name]
+                boundaries: districtBounaries[name][0]
             })
         }
 
