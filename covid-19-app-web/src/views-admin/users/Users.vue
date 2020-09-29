@@ -19,20 +19,18 @@
         </v-col>
       </v-row>
     </v-card>
-    <delete-modal :open="deleteDialog" @onConfirmation="deleteUser" />
+    <delete-modal
+      :open="deleteDialog"
+      :item="person"
+      @onConfirmation="deleteUser"
+    />
     <v-card
       outlined
       shaped
-      class="mb-10 pa-4 overflow-hidden mt-8 shadow"
+      class="mb-10 pa-4 overflow-hidden mt-8"
       min-height="500px"
     >
-      <UsersFilter
-        :date_range="filters.date_range"
-        @date-change="onDateChange"
-        @set-search="searchPerson"
-        @set-region="onSearchRegion"
-        @role-change="onRoleChange"
-      />
+      <UsersFilter @filter="filterUsers" />
       <v-data-table
         :headers="headers"
         :options.sync="options"
@@ -53,7 +51,10 @@
               {{ mdiAccountDetails }}
             </v-icon>
           </v-btn>
-          <v-icon color="#ff6767" @click="deleteDialog = true">
+          <v-icon
+            color="#ff6767"
+            @click="(deleteDialog = true), (person = item.username)"
+          >
             {{ mdiDeleteForever }}
           </v-icon>
         </template>
@@ -63,7 +64,7 @@
         class="shadow-lg"
         :userId="userId"
         :sidebar="sidebar"
-        v-on:close-sidebar="sidebar = false"
+        v-on:close-sidebar="(sidebar = false), (bottomsheet = false)"
       />
       <DetailSidebarSmall
         class="shadow-lg"
@@ -84,7 +85,11 @@ import moment from "moment";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
-  name: "Symptoms",
+  name: "Users",
+  mounted() {
+    this.fetch();
+    this.fetchUserStats();
+  },
   components: {
     UsersFilter,
     DetailSidebar: () => import("./ProfileDetails"),
@@ -98,6 +103,7 @@ export default {
       mdiDeleteForever,
       sidebar: false,
       userId: null,
+      person: null,
       bottomsheet: false,
       deleteDialog: false,
       highLevelTitles: [
@@ -121,12 +127,6 @@ export default {
       ],
       options: { page: 1, itemsPerPage: 10 },
       defaultOptions: { page: 1, itemsPerPage: 10 },
-      filters: {
-        region: "",
-        username: "",
-        role_type: "",
-        date_range: [this.defaultDate(), this.defaultDate("end")]
-      },
       awaitingSearch: false
     };
   },
@@ -136,61 +136,25 @@ export default {
         this.fetch();
       },
       deep: true
-    },
-    "filters.username": {
-      handler() {
-        if (!this.awaitingSearch) {
-          setTimeout(() => {
-            this.fetch(true);
-            this.awaitingSearch = false;
-          }, 1000);
-        }
-        this.awaitingSearch = true;
-      }
     }
   },
   methods: {
-    ...mapActions(["fetchAllUsers", "fetchUserStats"]),
+    ...mapActions(["fetchUsers", "fetchUserStats"]),
     deleteUser() {
       this.deleteDialog = false;
     },
-    fetch(pageReset = false) {
+    fetch(filter = {}, pageReset = false) {
       if (pageReset) {
         this.options = this.defaultOptions;
       }
-      this.fetchAllUsers({
+      this.fetchUsers({
         page: this.options.page,
         size: this.options.itemsPerPage,
-        role_type: this.filters.role_type,
-        username: this.filters.username,
-        region: this.filters.region,
-        start_date: this.filters.date_range[0],
-        end_date: this.filters.date_range[1]
+        ...filter
       });
-      this.fetchUserStats();
     },
-    searchPerson(name) {
-      this.filters.username = name;
-    },
-    onRoleChange(role) {
-      console.log(role);
-      this.filters.role_type = role;
-      this.fetch(true);
-    },
-    onDateChange(dateRange) {
-      this.filters.date_range = dateRange;
-      this.fetch(true);
-    },
-    onSearchRegion(region) {
-      this.filters.region = region;
-      this.fetch(true);
-    },
-    defaultDate(mode = "start") {
-      if (mode === "start")
-        return moment(new Date())
-          .subtract(2, "week")
-          .format("YYYY-MM-DD");
-      else return moment(new Date()).format("YYYY-MM-DD");
+    filterUsers(filter) {
+      this.fetch(filter, true);
     },
     showDetail(id) {
       this.userId = id;
@@ -211,9 +175,6 @@ export default {
       "getSymptomStatLoaders",
       "getHighLevelStats"
     ])
-  },
-  mounted() {
-    this.fetch();
   }
 };
 </script>
@@ -222,12 +183,6 @@ export default {
 .display-1 {
   font-size: 2em !important;
   color: #303030 !important;
-}
-.shadow {
-  background: transparent !important;
-  box-shadow: 0 5px 10px rgba(154, 160, 185, 0.05),
-    0 15px 40px rgba(166, 173, 201, 0.2) !important;
-  border-radius: 15px !important;
 }
 .shadow-lg {
   box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),

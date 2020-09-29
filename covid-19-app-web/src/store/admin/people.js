@@ -24,7 +24,7 @@ const mutations = {
 };
 
 const actions = {
-  fetchAllUsers: (
+  fetchUsers: (
     { commit },
     { page, size, role_type, username, region, start_date, end_date }
   ) => {
@@ -43,6 +43,7 @@ const actions = {
       .then(
         response => {
           commit("setUsers", response.data.data);
+          console.log(response);
           commit("setUsersCount", response.data.data_count);
         },
         error => {
