@@ -7,7 +7,8 @@
     "start": "node index.js",
     "devStart": "nodemon index.js",
     "lint": "eslint ./",
-    "test": "mocha --timeout 0 --exit"
+    "test": "nyc mocha --timeout 0 --exit",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "author": "",
   "license": "ISC",
@@ -40,9 +41,11 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "coveralls": "^3.1.0",
     "eslint": "^6.8.0",
     "eslint-plugin-node": "^11.1.0",
-    "mocha": "^7.1.1"
+    "mocha": "^7.1.1",
+    "nyc": "^15.1.0"
   },
   "type": "commonjs",
   "engines": {
