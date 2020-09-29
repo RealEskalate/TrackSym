@@ -6,32 +6,35 @@
 
         <v-list dense>
           <v-list-item-group color="primary" v-model="selected_city" mandatory>
-            <template v-for="(city, index) in cities">
+            <template v-for="(city, index) in getMostAffected">
               <v-list-item :key="city + index" class="py-3 px-5">
                 <template>
                   <v-list-item-content>
-                    <v-list-item-title v-text="city.name" class="text-wrap" />
-                    <v-list-item-subtitle
-                      class="text-wrap"
-                      v-text="`${city.latitude}, ${city.longitude}`"
-                    />
+                    <v-list-item-title v-text="city.region" class="text-wrap" />
+                    <!--                    <v-list-item-subtitle-->
+                    <!--                      class="text-wrap"-->
+                    <!--                      v-text="`${city.latitude}, ${city.longitude}`"-->
+                    <!--                    />-->
                   </v-list-item-content>
                   <v-list-item-action>
                     <v-list-item-title
                       class="text-wrap"
-                      v-text="numberWithCommas(city.cases)"
+                      v-text="numberWithCommas(city.count)"
                     />
                   </v-list-item-action>
                 </template>
               </v-list-item>
 
-              <v-divider v-if="index + 1 < cities.length" :key="index" />
+              <v-divider
+                v-if="index + 1 < getMostAffected.length"
+                :key="index"
+              />
             </template>
           </v-list-item-group>
         </v-list>
       </v-col>
       <v-col md="8" cols="12" class="py-0 pl-md-0" style="height: 50vh">
-        <sym-track :selected-city="cities[selected_city]" />
+        <sym-track :selected-city="getMostAffected[selected_city]" />
       </v-col>
     </v-row>
   </v-card>
@@ -39,6 +42,7 @@
 
 <script>
 import SymTrack from "../../views/HeatMap/Maps/SymTrack";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "GreatestHitCity",
@@ -76,6 +80,15 @@ export default {
         }
       ]
     };
+  },
+  created() {
+    this.fetchMostAffected();
+  },
+  methods: {
+    ...mapActions(["fetchMostAffected"])
+  },
+  computed: {
+    ...mapGetters(["getMostAffected"])
   }
 };
 </script>

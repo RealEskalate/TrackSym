@@ -4,19 +4,22 @@ import moment from "moment";
 const state = {
   dailyData: [],
   graphData: [[], [], [], []],
-  xLables: []
+  xLables: [],
+  mostAffected: []
 };
 
 const getters = {
   getGraphData: state => state.graphData,
   getDailyData: state => state.dailyData,
-  getXLables: state => state.xLables
+  getXLables: state => state.xLables,
+  getMostAffected: state => state.mostAffected
 };
 
 const mutations = {
   setGraphData: (state, payload) => (state.graphData = payload),
   setDailyData: (state, payload) => (state.dailyData = payload),
-  setXLables: (state, payload) => (state.xLables = payload)
+  setXLables: (state, payload) => (state.xLables = payload),
+  setMostAffected: (state, payload) => (state.mostAffected = payload)
 };
 
 const actions = {
@@ -99,7 +102,7 @@ const actions = {
         commit("setDashboardLoaders", { key: "daily", value: false });
       });
   },
-  queryCitizenSymptoms: ({ commit }, { start_date, end_date }) => {
+  fetchCitizenSymptoms: ({ commit }, { start_date, end_date }) => {
     ajax
       .get(`new_citizen_symptoms`, {
         params: { start_date, end_date }
@@ -119,6 +122,17 @@ const actions = {
           console.log(error);
         }
       );
+  },
+  fetchMostAffected: ({ commit }) => {
+    ajax.get(`symptoms-count`).then(
+      response => {
+        console.log(response.data);
+        commit("setMostAffected", response.data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 };
 
