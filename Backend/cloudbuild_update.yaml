@@ -9,12 +9,12 @@ steps:
               "-f",
               "Dockerfile.cron",
               "-t",
-              "gcr.io/zeta-ascent-272907/a2sv:$SHORT_SHA",
+              "gcr.io/zeta-ascent-272907/tracksym:$SHORT_SHA",
               ".",
           ]
       dir: "Backend"
     - name: "gcr.io/cloud-builders/docker"
-      args: ["push", "gcr.io/zeta-ascent-272907/a2sv:$SHORT_SHA"]
+      args: ["push", "gcr.io/zeta-ascent-272907/tracksym:$SHORT_SHA"]
       dir: "Backend"
     - name: "gcr.io/cloud-builders/gcloud"
       args:
@@ -25,5 +25,5 @@ steps:
               "a2sv-api",
               "--region=us-central1",
               "--platform=managed",
-              "--image=gcr.io/zeta-ascent-272907/a2sv:$SHORT_SHA",
+              "--image=gcr.io/zeta-ascent-272907/tracksym:$SHORT_SHA",
           ]
