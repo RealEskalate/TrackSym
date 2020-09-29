@@ -1,9 +1,9 @@
 <template>
-  <v-dialog v-model="open" max-width="290">
+  <v-dialog v-model="open" max-width="290" persistent>
     <v-card>
       <v-card-title class="headline">Delete confirmation</v-card-title>
       <v-card-text>
-        Are you sure you want to permanently delete this movie?
+        Are you sure you want to permanently delete {{ item }}
       </v-card-text>
 
       <v-card-actions>
@@ -24,7 +24,7 @@
 <script>
 export default {
   name: "DeleteModal",
-  props: ["open"],
+  props: ["open", "item"],
   methods: {
     result(delItem) {
       this.$emit("onConfirmation", delItem);
