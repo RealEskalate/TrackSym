@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/RealEskalate/TrackSym.svg?branch=master)](https://travis-ci.org/RealEskalate/TrackSym) [![Coverage Status](https://coveralls.io/repos/github/RealEskalate/TrackSym/badge.svg?branch=master)](https://coveralls.io/github/RealEskalate/TrackSym?branch=master)
 ![eskalate](https://user-images.githubusercontent.com/36234545/91556848-14882e00-e93c-11ea-8ebb-a490362c924d.png)
 
 
