@@ -181,7 +181,7 @@ exports.symptoms_count_in_district = async (req, res) => {
             symptomsCount[districtDict[log.current_symptoms.location.district]] = 1
         }
 
-    })
+    }) 
 
 
     let districtCount = []
