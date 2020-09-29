@@ -1,0 +1,9 @@
+From node:13-slim
+
+WORKDIR /api_cron
+
+
+ADD . /api_cron
+
+RUN npm install
+CMD node index.js
