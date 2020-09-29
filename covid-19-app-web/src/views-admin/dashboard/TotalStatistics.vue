@@ -120,7 +120,7 @@ export default {
         { title: "Test Administered", color: "#00bfff" },
         { title: "Confirmed Cases", color: "#FFD54F" },
         { title: "Deaths", color: "#F06292" },
-        { title: "Recovered", color: "#DCE775" }
+        { title: "Recovered", color: "#9126ff" }
       ]
     };
   },
@@ -137,6 +137,7 @@ export default {
       this.fetch();
     },
     initPopper() {
+      console.log(this.getXLables);
       const chart = document.querySelector(".random-chart");
       const ref = chart.querySelector(".active-line");
       const tooltip = this.$refs.tooltip;
@@ -156,7 +157,7 @@ export default {
   },
   mounted() {
     this.fetch();
-    this.initPopper();
+    setTimeout(this.initPopper, 1000);
   }
 };
 </script>
@@ -223,15 +224,15 @@ export default {
   opacity: 0.09;
 }
 .random .curve4 .stroke {
-  stroke: #dce775;
+  stroke: #9126ff;
   stroke-width: 2;
 }
 .random .curve4 .point {
-  fill: #dce775;
-  stroke: #dce775;
+  fill: #9126ff;
+  stroke: #9126ff;
 }
 .random .curve4 .fill {
-  fill: #dce775;
+  fill: #9126ff;
   opacity: 0.09;
 }
 .random .tooltip {
@@ -270,6 +271,6 @@ export default {
   background: #f06292;
 }
 .random .tooltip-data-item--4:before {
-  background: #dce775;
+  background: #9126ff;
 }
 </style>
