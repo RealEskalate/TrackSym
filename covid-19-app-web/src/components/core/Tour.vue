@@ -156,20 +156,38 @@ export default {
             content: `Take a quick tour to understand how to use the website`,
             params: {
               placement: "bottom"
-            }
+            },
+            before: () =>
+              new Promise((resolve, reject) => {
+                store.dispatch("openNavigationDrawer", true);
+                setTimeout(() => {
+                  if (store.getters.getNavigationDrawer)
+                    resolve("Navigation is set");
+                  else reject("Error: couldn't set navigation");
+                }, 1000);
+              })
           },
           {
             target: '[data-v-step="1"]',
-            header: "Graphs",
-            content: `Go through the tabs to visit different graphs. Click on the question mark to learn more about the graph.`,
+            header: "Symptom Map",
+            content: `Check map to visualize submitted symptoms around you.`,
             params: {
               placement: "right"
-            }
+            },
+            before: () =>
+              new Promise((resolve, reject) => {
+                store.dispatch("openNavigationDrawer", false);
+                setTimeout(() => {
+                  if (!store.getters.getNavigationDrawer)
+                    resolve("Navigation is set");
+                  else reject("Error: couldn't set navigation");
+                }, 300);
+              })
           },
           {
             target: '[data-v-step="2"]',
-            header: "Filters",
-            content: `Select the required parameters to filter data by and observe the the dynamic data`,
+            header: "Graphs",
+            content: `Go through the tabs to visit different graphs. Click on the question mark to learn more about the graph.`,
             params: {
               placement: "right"
             }
@@ -185,7 +203,19 @@ export default {
           {
             target: '[data-v-step="4"]',
             header: `Language`,
-            content: `Switch between different languages`
+            content: `Switch between different languages`,
+            params: {
+              placement: "bottom"
+            },
+            before: () =>
+              new Promise((resolve, reject) => {
+                store.dispatch("openNavigationDrawer", true);
+                setTimeout(() => {
+                  if (store.getters.getNavigationDrawer)
+                    resolve("Navigation is set");
+                  else reject("Error: couldn't set navigation");
+                }, 300);
+              })
           }
         ],
         am: [

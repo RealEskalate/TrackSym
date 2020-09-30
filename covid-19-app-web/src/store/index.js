@@ -40,11 +40,12 @@ export default new Vuex.Store({
     })
   ],
   state: {
+    tour: [],
     allCountries: [],
     navigationType: "1",
     languagePreference: null,
     firstVisit: true,
-    tour: []
+    openNavigationDrawer: false
   },
   getters: {
     getAllCountries(state) {
@@ -61,6 +62,9 @@ export default new Vuex.Store({
     },
     getTour(state) {
       return state.tour;
+    },
+    getNavigationDrawer(state) {
+      return state.openNavigationDrawer;
     }
   },
   mutations: {
@@ -78,6 +82,9 @@ export default new Vuex.Store({
     },
     setTour(state, payload) {
       state.tour = payload;
+    },
+    setNavigationDrawer(state, payload) {
+      state.openNavigationDrawer = payload;
     }
   },
   actions: {
@@ -122,6 +129,9 @@ export default new Vuex.Store({
     },
     setFirstVisit({ commit }, { value }) {
       commit("setFirstVisit", value);
+    },
+    openNavigationDrawer({ commit }, value) {
+      commit("setNavigationDrawer", value);
     }
   },
   modules: {

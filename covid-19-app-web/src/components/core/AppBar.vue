@@ -110,7 +110,11 @@
       v-if="$vuetify.breakpoint.mdAndUp"
       v-model="drawer"
       fixed
-      temporary
+      width="290"
+      :temporary="!isFirstVisit"
+      overlay-color="primary"
+      overlay-opacity="0.1"
+      class="shadow-lg"
     >
       <v-img
         alt="TrackSym"
@@ -118,6 +122,7 @@
         contain
         :width="160"
         src="/img/brand/blue.png"
+        data-v-step="0"
       />
 
       <v-list shaped>
@@ -210,6 +215,8 @@
 <script>
 import store from "@/store/";
 import router from "@/router/";
+import { throttle } from "throttle-debounce";
+
 import {
   mdiAccountCog,
   mdiAccountEdit,
@@ -304,7 +311,6 @@ export default {
           to: "Users",
           roles: ["ephi_user"]
         }
-        // { text: "navbar.map", icon: mdiMap, to: "Map" }
       ],
       more_links: [
         { text: "navbar.profile", icon: mdiAccountEdit, to: "Profile" }
@@ -312,7 +318,13 @@ export default {
     };
   },
   created() {
-    window.addEventListener("scroll", this.handleScroll);
+    const throttleFunc = throttle(1000, false, () => {
+      this.handleScroll();
+    });
+    window.addEventListener("scroll", throttleFunc);
+    setTimeout(() => {
+      this.drawer = store.getters.getNavigationDrawer;
+    }, 1000);
   },
   destroyed() {
     window.removeEventListener("scroll", this.handleScroll);
@@ -338,8 +350,18 @@ export default {
     brandWidth() {
       return this.locationY > 50 ? 150 : 160;
     },
-    navOption() {
-      return this.navType;
+    openNavigation() {
+      return store.getters.getNavigationDrawer;
+    },
+    isFirstVisit() {
+      return store.getters.getFirstVisit;
+    }
+  },
+  watch: {
+    openNavigation: {
+      handler(val) {
+        this.drawer = val;
+      }
     }
   }
 };
@@ -370,5 +392,12 @@ export default {
 .v-select-list {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+}
+.shadow-lg {
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+    0 100px 80px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 5px !important;
 }
 </style>

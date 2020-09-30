@@ -34,7 +34,13 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-card style="height: 65vh" outlined shaped class="overflow-hidden">
+          <v-card
+            style="height: 65vh"
+            outlined
+            shaped
+            class="overflow-hidden"
+            data-v-step="1"
+          >
             <v-btn
               fab
               color="white"
