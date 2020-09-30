@@ -6,7 +6,7 @@ const CreateAccount = () => import("../views-admin/auth/CreateAccount.vue");
 const ForgotPassword = () => import("../views-admin/auth/ForgotPassword");
 const ChangePassword = () => import("../views-admin/auth/ChangePassword.vue");
 const InviteAdmin = () => import("../views-admin/auth/InviteAdmin.vue");
-const Login = () => import("../views-admin/auth/Login.vue");
+const Login = () => import("../views/Auth/Login.vue");
 
 const Symptoms = () => import("../views-admin/symptoms/Symptoms.vue");
 const Cases = () => import("../views-admin/cases/Cases.vue");
@@ -42,8 +42,7 @@ export const admin = [
     path: "reset-password",
     component: ForgotPassword,
     meta: {
-      requiresAuth: true,
-      roles: ["ephi_user"]
+      guest: true
     }
   },
   {

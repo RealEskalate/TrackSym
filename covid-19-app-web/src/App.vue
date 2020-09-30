@@ -41,7 +41,7 @@ export default {
 
     if (this.firstVisit) {
       store.dispatch("setTour", { lang: this.$i18n.locale });
-      this.$tours["appTour"].start();
+      setTimeout(this.$tours["appTour"].start, 1000);
     }
 
     this.interval = setInterval(() => {
