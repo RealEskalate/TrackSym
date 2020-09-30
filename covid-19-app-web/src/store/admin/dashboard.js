@@ -37,15 +37,23 @@ const actions = {
         response => {
           console.log(response);
           const data = response.data;
+          const dataLength = moment(end_date).diff(moment(start_date), "days");
+          const maxXLable = 15;
+          const jump = Math.ceil(dataLength / maxXLable);
           let graphData = [[], [], [], []];
           let xLables = [];
+          let count = jump;
           for (let key in data) {
-            xLables.push(moment(key).format("MM/DD"));
-            graphData[0].push(data[key].administered);
-            graphData[1].push(data[key].positive);
-            graphData[2].push(data[key].death);
-            graphData[3].push(data[key].recovered);
+            if (count % jump === 0) {
+              xLables.push(moment(key).format("MM/DD"));
+              graphData[0].push(data[key].administered);
+              graphData[1].push(data[key].positive);
+              graphData[2].push(data[key].death);
+              graphData[3].push(data[key].recovered);
+            }
+            count++;
           }
+          console.log(graphData);
           commit("setGraphData", graphData);
           commit("setXLables", xLables);
         },
