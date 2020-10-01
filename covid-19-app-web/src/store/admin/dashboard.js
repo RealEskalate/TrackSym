@@ -52,7 +52,6 @@ const actions = {
             }
             count++;
           }
-          console.log(graphData);
           commit("setGraphData", graphData);
           commit("setXLables", xLables);
         },
