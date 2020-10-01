@@ -35,7 +35,6 @@ const actions = {
       })
       .then(
         response => {
-          console.log(response);
           const data = response.data;
           const dataLength = moment(end_date).diff(moment(start_date), "days");
           const maxXLable = 15;
@@ -134,7 +133,6 @@ const actions = {
   fetchMostAffected: ({ commit }) => {
     ajax.get(`symptoms-count`).then(
       response => {
-        console.log(response.data);
         commit("setMostAffected", response.data);
       },
       error => {

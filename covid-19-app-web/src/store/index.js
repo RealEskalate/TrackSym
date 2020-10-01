@@ -104,22 +104,10 @@ export default new Vuex.Store({
           }
         );
     },
+    // eslint-disable-next-line no-unused-vars
     setTour({ commit }, { lang }) {
-      ajax
-        .get(`resources/information`, {
-          params: {
-            title: "welcome",
-            language: langConverter[lang]
-          }
-        })
-        .then(
-          response => {
-            commit("setTour", response.data[0].description);
-          },
-          error => {
-            console.log(error);
-          }
-        );
+      const tour = require("./tour-locale")[lang]; // this should be blocking statement
+      commit("setTour", tour);
     },
     setNavState({ commit }, { type }) {
       commit("setNavigationType", type);

@@ -140,7 +140,6 @@ export default {
       this.fetch();
     },
     initPopper() {
-      console.log(this.getXLables);
       const chart = document.querySelector(".random-chart");
       const ref = chart.querySelector(".active-line");
       const tooltip = this.$refs.tooltip;
