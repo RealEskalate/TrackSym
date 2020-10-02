@@ -7,6 +7,7 @@ class RoundedInputField extends StatelessWidget {
   final String hintText;
   final IconData icon;
   final ValueChanged<String> onChanged;
+
   const RoundedInputField({
     Key key,
     this.hintText,
@@ -15,6 +16,7 @@ class RoundedInputField extends StatelessWidget {
     this.color,
     this.signIn = true,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(

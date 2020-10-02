@@ -9,13 +9,7 @@ class ConfirmationPage extends StatelessWidget {
     // Provides us total height and width of our screen
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-//      backgroundColor: Colors.amber[50],
       backgroundColor: Colors.white,
-//      appBar: AppBar(
-//        title: Text('Gazetem Mobil Uygulaması'),
-//        centerTitle: true,
-//        backgroundColor: Colors.redAccent,
-//      ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(30.0),

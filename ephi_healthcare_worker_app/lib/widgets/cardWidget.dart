@@ -26,20 +26,21 @@ class CardWidget extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Container(
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
         color: Colors.transparent,
         boxShadow: <BoxShadow>[
           BoxShadow(
-              offset: Offset(0.0, 4.0),
-              blurRadius: 10.0,
-              color: color.withOpacity(0.2)),
+              offset: Offset(0.0, 3.0),
+              blurRadius: 5.0,
+              color: color.withOpacity(0.25)),
         ],
       ),
       child: Center(
         child: Card(
-          elevation: 2.0,
+          // elevation: 1.0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
-              side: new BorderSide(color: color, width: 0.2)),
+              side: new BorderSide(color: color, width: 0.35)),
           child: Container(
             height: size.height * sizeHeight,
             width: size.width * sizeWidth,

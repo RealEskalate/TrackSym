@@ -36,18 +36,25 @@ class _HomeState extends State<Home> {
       // drawerScrimColor: Colors.transparent,
       drawer: BlurredDrawer(),
       appBar: AppBar(
-        elevation: 1,
-        backgroundColor: Colors.white,
-        iconTheme: new IconThemeData(color: Colors.black),
-        title: Center(
-          child: Text(
+          centerTitle: true,
+          elevation: 1,
+          backgroundColor: Colors.white,
+          iconTheme: new IconThemeData(color: Colors.lightBlue[900],),
+          title: Text(
             _titles[_currentIndex],
             style: TextStyle(
-              color: Colors.grey,
+              color: Colors.lightBlue[900],
             ),
           ),
-        ),
-      ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.lightBlue[900],
+              ),
+              onPressed: () {},
+            )
+          ]),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
@@ -68,7 +75,7 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: new Icon(
-              Icons.library_books,
+              Icons.visibility,
             ),
             title: new Text(
               'Cases',
@@ -76,7 +83,7 @@ class _HomeState extends State<Home> {
             ),
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_alert),
+              icon: Icon(Icons.record_voice_over),
               title: Text(
                 'Symptoms',
                 style: TextStyle(),

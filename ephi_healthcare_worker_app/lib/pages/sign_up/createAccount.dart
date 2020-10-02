@@ -1,4 +1,5 @@
 import '../../widgets/alreadyHaveAnAccountCheck.dart';
+
 // import '../../widgets/roundedButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,6 @@ class CreateAccountPage extends StatelessWidget {
                 // with Material
                 child: Image.asset('assets/images/ephi.png',
                     width: 330, height: 80),
-
                 clipBehavior: Clip.antiAlias,
               )),
               SizedBox(height: size.height * 0.1),

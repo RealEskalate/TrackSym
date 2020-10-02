@@ -13,7 +13,6 @@ class BlurredDrawer extends StatelessWidget {
         ),
         child: Container(
           color: Colors.white54,
-
           child: Opacity(
             opacity: 0.5,
             child: AppDrawer(),

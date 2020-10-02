@@ -16,8 +16,8 @@ class _HomePageState extends State<HomePage> {
       decoration:
           BoxDecoration(color: HexColor("#F5F9FF")), // 0xff ... color hex code
       child: Container(
-        padding: EdgeInsets.fromLTRB(0.0, size.height * 0.035, 0.0, 0.0),
         child: ListView(
+          padding: EdgeInsets.fromLTRB(0.0, size.height * 0.02, 0.0, 0.0),
           children: <Widget>[
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20),
@@ -34,8 +34,8 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 CardWidget(
                     sizeHeight: 0.15,
-                    sizeWidth: 0.2,
-                    color: Colors.lightBlue,
+                    sizeWidth: 0.25,
+                    color: Colors.lightBlue[700],
                     iconPath: "assets/images/covid.png",
                     value: "1453",
                     change: "+25",
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 CardWidget(
-                    sizeHeight: 0.2,
+                    sizeHeight: 0.15,
                     sizeWidth: 0.35,
                     color: Colors.orange[800],
                     iconPath: "assets/images/cases.png",
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                     title: "this.title",
                     press: null),
                 CardWidget(
-                    sizeHeight: 0.2,
+                    sizeHeight: 0.15,
                     sizeWidth: 0.35,
                     color: Colors.purple,
                     iconPath: "assets/images/symptoms.png",

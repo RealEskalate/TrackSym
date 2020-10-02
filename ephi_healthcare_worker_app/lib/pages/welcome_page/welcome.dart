@@ -20,7 +20,7 @@ class WelcomePage extends StatelessWidget {
 //      ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(30.0),
+          padding: EdgeInsets.all(5.0),
           child: Column(
             children: <Widget>[
               SizedBox(height: size.height * 0.1),
@@ -29,7 +29,6 @@ class WelcomePage extends StatelessWidget {
                   // with Material
                   child: Image.asset('assets/images/ephi.png',
                       width: 330, height: 80),
-
                   clipBehavior: Clip.antiAlias,
                 ),
               ),
