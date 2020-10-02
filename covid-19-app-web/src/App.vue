@@ -8,20 +8,23 @@
       <vue-progress-bar />
     </v-main>
     <app-footer />
-    <tour />
+    <tour v-if="firstVisit" @onTourCreated="onTourCreated" />
   </v-app>
 </template>
 
 <script>
 import AppFooter from "./components/core/AppFooter.vue";
 import AppBar from "./components/core/AppBar.vue";
-import Tour from "./components/core/Tour.vue";
 import store from "@/store/";
 import ajax from "./auth/ajax";
 
 export default {
   name: "App",
-  components: { AppBar, AppFooter, Tour },
+  components: {
+    AppBar,
+    AppFooter,
+    Tour: () => import("./components/core/Tour.vue") // just to dynamically load Tour since it is not always required
+  },
   data() {
     return {
       interval: 0
@@ -38,11 +41,6 @@ export default {
       store.getters.getLanguagePreference === null
         ? "en"
         : store.getters.getLanguagePreference;
-
-    if (this.firstVisit) {
-      store.dispatch("setTour", { lang: this.$i18n.locale });
-      setTimeout(this.$tours["appTour"].start, 1000);
-    }
 
     this.interval = setInterval(() => {
       if (this.loggedInUser && navigator.geolocation) {
@@ -70,7 +68,6 @@ export default {
         this.$Progress.parseMeta(meta);
       }
       this.$Progress.start();
-
       next();
     });
     this.$router.afterEach(() => {
@@ -106,6 +103,12 @@ export default {
         userId: this.loggedInUser._id,
         lang: this.$i18n.locale
       });
+    }
+  },
+  methods: {
+    onTourCreated() {
+      store.dispatch("setTour", { lang: this.$i18n.locale });
+      setTimeout(this.$tours["appTour"].start, 1000);
     }
   }
 };

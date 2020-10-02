@@ -2,7 +2,7 @@
   <div>
     <v-tour
       name="appTour"
-      :steps="tour_steps[$i18n.locale]"
+      :steps="tour_steps()"
       :options="tour_options"
       :callbacks="tour_callbacks"
     >
@@ -112,6 +112,9 @@ import store from "@/store";
 import { mdiCloseCircleOutline } from "@mdi/js";
 
 export default {
+  mounted() {
+    this.$emit("onTourCreated", "Tour Created");
+  },
   methods: {
     onNewSelect() {
       setTimeout(function() {
@@ -122,10 +125,77 @@ export default {
       store.dispatch("setFirstVisit", { value: false });
       window.scrollTo(0, 0);
       this.snackbar = true;
+    },
+
+    tour_steps() {
+      return [
+        {
+          ...this.tour[0],
+          target: '[data-v-step="0"]',
+          params: {
+            placement: "bottom"
+          },
+          before: () =>
+            new Promise((resolve, reject) => {
+              store.dispatch("openNavigationDrawer", true);
+              setTimeout(() => {
+                if (store.getters.getNavigationDrawer)
+                  resolve("Navigation is set");
+                else reject("Error: couldn't set navigation");
+              }, 1000);
+            })
+        },
+        {
+          ...this.tour[1],
+          target: '[data-v-step="1"]',
+          params: {
+            placement: "right"
+          },
+          before: () =>
+            new Promise((resolve, reject) => {
+              store.dispatch("openNavigationDrawer", false);
+              setTimeout(() => {
+                if (!store.getters.getNavigationDrawer)
+                  resolve("Navigation is set");
+                else reject("Error: couldn't set navigation");
+              }, 300);
+            })
+        },
+        {
+          ...this.tour[2],
+          target: '[data-v-step="2"]',
+          params: {
+            placement: "right"
+          }
+        },
+        {
+          ...this.tour[3],
+          target: '[data-v-step="3"]',
+          params: {
+            placement: "top"
+          }
+        },
+        {
+          ...this.tour[4],
+          target: '[data-v-step="4"]',
+          params: {
+            placement: "bottom"
+          },
+          before: () =>
+            new Promise((resolve, reject) => {
+              store.dispatch("openNavigationDrawer", true);
+              setTimeout(() => {
+                if (store.getters.getNavigationDrawer)
+                  resolve("Navigation is set");
+                else reject("Error: couldn't set navigation");
+              }, 300);
+            })
+        }
+      ];
     }
   },
   computed: {
-    tour_steps_2: () => store.getters.getTour
+    tour: () => store.getters.getTour
   },
   data() {
     return {
@@ -147,116 +217,6 @@ export default {
           buttonNext: "next",
           buttonStop: "finish"
         }
-      },
-      tour_steps: {
-        en: [
-          {
-            target: '[data-v-step="0"]',
-            header: "TrackSym",
-            content: `Take a quick tour to understand how to use the website`,
-            params: {
-              placement: "bottom"
-            },
-            before: () =>
-              new Promise((resolve, reject) => {
-                store.dispatch("openNavigationDrawer", true);
-                setTimeout(() => {
-                  if (store.getters.getNavigationDrawer)
-                    resolve("Navigation is set");
-                  else reject("Error: couldn't set navigation");
-                }, 1000);
-              })
-          },
-          {
-            target: '[data-v-step="1"]',
-            header: "Symptom Map",
-            content: `Check map to visualize submitted symptoms around you.`,
-            params: {
-              placement: "right"
-            },
-            before: () =>
-              new Promise((resolve, reject) => {
-                store.dispatch("openNavigationDrawer", false);
-                setTimeout(() => {
-                  if (!store.getters.getNavigationDrawer)
-                    resolve("Navigation is set");
-                  else reject("Error: couldn't set navigation");
-                }, 300);
-              })
-          },
-          {
-            target: '[data-v-step="2"]',
-            header: "Graphs",
-            content: `Go through the tabs to visit different graphs. Click on the question mark to learn more about the graph.`,
-            params: {
-              placement: "right"
-            }
-          },
-          {
-            target: '[data-v-step="3"]',
-            header: "Ethiopia",
-            content: `Visit the Ethiopia section for local statistics and more.`,
-            params: {
-              placement: "top"
-            }
-          },
-          {
-            target: '[data-v-step="4"]',
-            header: `Language`,
-            content: `Switch between different languages`,
-            params: {
-              placement: "bottom"
-            },
-            before: () =>
-              new Promise((resolve, reject) => {
-                store.dispatch("openNavigationDrawer", true);
-                setTimeout(() => {
-                  if (store.getters.getNavigationDrawer)
-                    resolve("Navigation is set");
-                  else reject("Error: couldn't set navigation");
-                }, 300);
-              })
-          }
-        ],
-        am: [
-          {
-            target: '[data-v-step="0"]',
-            header: "TrackSym",
-            content: `ድህረ ገጹን እንዴት እንደሚጠቀሙ ለመረዳት ፈጣን ጉብኝት ያድርጉ`,
-            params: {
-              placement: "bottom"
-            }
-          },
-          {
-            target: '[data-v-step="1"]',
-            header: "ግራፍ",
-            content: `የተለያዩ ግራፎችን ለመጎብኘት በትሮች ይሂዱ። ስለ ግራፉ የበለጠ ለመረዳት በጥያቄ ምልክት ላይ ጠቅ ያድርጉ።`,
-            params: {
-              placement: "right"
-            }
-          },
-          {
-            target: '[data-v-step="2"]',
-            header: "ማጣሪያ",
-            content: `ውሂብ ለማጣራት እና ተለዋዋጭ ውሂቡን ለመመልከት የሚያስፈልጉትን መለኪያዎች ይምረጡ`,
-            params: {
-              placement: "right"
-            }
-          },
-          {
-            target: '[data-v-step="3"]',
-            header: "ኢትዮጵያ",
-            content: `ለአካባቢያዊ ስታቲስቲክስ እና ሌሎችንም የኢትዮጵያን ክፍል ይጎብኙ ፡፡`,
-            params: {
-              placement: "top"
-            }
-          },
-          {
-            target: '[data-v-step="4"]',
-            header: `ቋንቋ`,
-            content: `በተለያዩ ቋንቋዎች መካከል ይቀያይሩ`
-          }
-        ]
       }
     };
   }
