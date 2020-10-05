@@ -3,28 +3,27 @@
     <v-app-bar
       app
       flat
-      outlined
-      class="white"
-      style="border-radius: 0 0 25px 0; height: auto; background: #fafafa!important"
+      class="white py-1"
+      style="border-radius: 0 0 25px 0; height: auto; background: #fafafa!important "
       :class="{ shadow: raise }"
     >
       <v-btn fab text @click.stop="drawer = !drawer">
-        <v-icon
-          large
-          v-text="mdiMenu"
-          style="max-width: 32px"
-          color="#616161"
-        />
+        <v-icon large v-text="mdiForwardburger" />
       </v-btn>
+      <!--      <v-app-bar-nav-icon-->
+      <!--        v-if="$vuetify.breakpoint.mdAndUp"-->
+      <!--        @click.stop="drawer = !drawer"-->
+      <!--      />-->
       <v-img
         alt="TrackSym"
-        class="shrink mx-auto"
+        class="shrink mx-1"
         contain
         src="/img/brand/blue.png"
         style="transition: width 0.2s ease"
         :width="brandWidth"
       />
 
+      <v-spacer />
       <!--      <v-btn-->
       <!--        :key="link.to"-->
       <!--        :to="{ name: link.to }"-->
@@ -60,12 +59,12 @@
       <!--          </template>-->
       <!--        </v-select>-->
       <!--      </div>-->
+      <v-divider class="mr-2" vertical light />
       <v-btn
-        small
         dark
         color="primary"
         v-if="!loggedInUser"
-        class="v-card--shaped mx-1 text-capitalize"
+        class="v-card--shaped mx-1"
         depressed
         :to="{ name: 'Login' }"
         v-text="$t('auth.login')"
@@ -115,7 +114,7 @@
         alt="TrackSym"
         class="shrink my-5 mx-auto"
         contain
-        :width="150"
+        :width="160"
         src="/img/brand/blue.png"
         data-v-step="0"
       />
@@ -198,7 +197,7 @@ import {
   mdiAccountCog,
   mdiAccountEdit,
   mdiBookOpenVariant,
-  mdiMenu,
+  mdiForwardburger,
   mdiHome,
   mdiInformation,
   mdiLogoutVariant,
@@ -219,7 +218,7 @@ export default {
     return {
       mdiTranslate,
       mdiAccountCog,
-      mdiMenu,
+      mdiForwardburger,
       mdiLogoutVariant,
       mdiAccountMultiplePlus,
       drawer: false,
@@ -291,15 +290,15 @@ export default {
           roles: ["ephi_user"]
         },
         {
-          text: "navbar.users",
-          icon: mdiAccountMultiplePlus,
-          to: "Users",
-          roles: ["ephi_user"]
-        },
-        {
           text: "navbar.inviteAdmins",
           icon: mdiEmailSend,
           to: "InviteAdmin",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "navbar.users",
+          icon: mdiAccountMultiplePlus,
+          to: "Users",
           roles: ["ephi_user"]
         }
       ],
@@ -352,7 +351,7 @@ export default {
       return this.locationY > 50;
     },
     brandWidth() {
-      return this.locationY > 50 ? 110 : 120;
+      return this.locationY > 50 ? 150 : 160;
     },
     openNavigation() {
       return store.getters.getNavigationDrawer;
