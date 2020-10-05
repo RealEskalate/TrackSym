@@ -40,6 +40,8 @@
 
   "navbar": {
     "home": "Home",
+    "ethiopia": "Ethiopia",
+    "statistics": "Statistics",
     "learn": "Learn",
     "about": "About",
     "news": "News",
@@ -48,7 +50,8 @@
     "symptom": "Symptoms",
     "inviteAdmins": "Invite Admins",
     "dashboard": "Dashboard",
-    "users": "Users"
+    "users": "Users",
+    "cases": "Cases"
   },
 
   "titles": {
