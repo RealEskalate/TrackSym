@@ -24,7 +24,7 @@
                 <!--              <v-img :src="item.icon" class="small-icon mx-auto my-3" />-->
                 <p class="text-center" v-text="item.key" />
                 <h1
-                  class="display-1 text-center mb-2 primary--text"
+                  class="font-weight-thin text-center mb-2 primary--text"
                   v-text="numberWithCommas(item.value)"
                 />
               </v-col>
@@ -332,5 +332,8 @@ export default {
 <style scoped>
 .border-right {
   border-right: solid rgba(0, 0, 0, 0.1) 1px;
+}
+.display-1 {
+  font-size: 1.8rem !important;
 }
 </style>

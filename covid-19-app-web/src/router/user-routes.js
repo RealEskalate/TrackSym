@@ -10,7 +10,26 @@ const PrivacyPolicy = () => import("@/views/PrivacyPolicy/PrivacyPolicy.vue");
 const Login = () => import("@/views/Auth/Login.vue");
 const Register = () => import("@/views/Auth/Register.vue");
 
+const Ethiopia = () => import("../views/Home/Ethiopia/Ethiopia");
+const Statistics = () => import("../views/Home/Statistics");
+
 export const userRoutes = [
+  {
+    path: "statistics",
+    name: "Statistics",
+    component: Statistics,
+    meta: {
+      guest: true
+    }
+  },
+  {
+    path: "ethiopia",
+    name: "Ethiopia",
+    component: Ethiopia,
+    meta: {
+      guest: true
+    }
+  },
   {
     path: "information",
     name: "Learn",
