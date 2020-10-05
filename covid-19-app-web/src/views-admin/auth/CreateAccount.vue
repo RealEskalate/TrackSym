@@ -101,7 +101,7 @@
               <v-btn
                 :disabled="!valid"
                 color="primary"
-                class="d-block mx-auto v-card--shaped"
+                class="d-block mx-auto v-card--shaped text-capitalize"
                 @click="submit"
                 :loading="loading"
               >
@@ -110,7 +110,7 @@
               <v-btn
                 text
                 small
-                class="d-block mx-auto my-2"
+                class="d-block mx-auto my-2 text-capitalize"
                 @click="$router.push('login')"
               >
                 {{ $t("auth.goToLogin") }}

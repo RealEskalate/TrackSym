@@ -41,17 +41,17 @@
             <div class="my-2 mx-auto align-center align-content-center">
               <v-btn
                 v-if="wrongInput"
-                :to="{ name: 'ResetPassword' }"
-                class="d-block mx-auto"
-                small
-                color="blue"
                 text
+                small
+                color="primary"
+                class="d-block mx-auto my-2 text-capitalize"
+                @click="$router.push({ name: 'ResetPassword' })"
                 >{{ $t("auth.forgotPassword") }}</v-btn
               >
               <v-btn
                 :disabled="!valid"
                 color="primary"
-                class="d-block mx-auto v-card--shaped"
+                class="d-block mx-auto v-card--shaped text-capitalize"
                 @click="submit"
                 :loading="loading"
               >
@@ -60,7 +60,7 @@
               <v-btn
                 text
                 small
-                class="d-block mx-auto my-2"
+                class="d-block mx-auto my-2 text-capitalize"
                 @click="$router.push('register')"
               >
                 {{ $t("auth.goToSignUp") }}
