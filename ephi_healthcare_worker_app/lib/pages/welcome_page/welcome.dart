@@ -28,7 +28,7 @@ class WelcomePage extends StatelessWidget {
                 child: Material(
                   // with Material
                   child: Image.asset('assets/images/ephi.png',
-                      width: 330, height: 80),
+                      width: size.height * 0.5, height: 80),
                   clipBehavior: Clip.antiAlias,
                 ),
               ),
@@ -36,7 +36,8 @@ class WelcomePage extends StatelessWidget {
 //              Image.asset('assets/images/eskalate.png', width: 230, height: 230),
               Text(
 //                  'Ethiopian Public Health Institute COVID-19 Application',
-                  'Ethiopian Public Health Institute',
+//                   'Ethiopian Public Health Institute',
+                  'Healthcare Worker App',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     shadows: <Shadow>[
@@ -47,9 +48,8 @@ class WelcomePage extends StatelessWidget {
                       ),
                     ],
                     color: Colors.lightBlue,
-                    fontSize: 25.0,
+                    fontSize: 24.0,
                   )),
-
               SizedBox(height: size.height * 0.18),
               ButtonTheme(
                 minWidth: size.width * 0.8,
@@ -102,11 +102,11 @@ class WelcomePage extends StatelessWidget {
                       )),
                 ),
               ),
-              SizedBox(height: size.height * 0.02),
+              SizedBox(height: size.height * 0.1),
               Image.asset(
-                'assets/images/eskalate.png',
-                width: size.width * 0.8,
-                height: size.height * 0.15,
+                'assets/images/eskalate_lowQuality.png',
+                width: size.width * 0.25,
+                height: size.height * 0.1,
                 fit: BoxFit.contain,
               ),
               Text('Eskalate LLC™. 2020 All Rights Reserved.',

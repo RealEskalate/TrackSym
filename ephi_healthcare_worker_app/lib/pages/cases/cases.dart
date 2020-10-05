@@ -1,4 +1,5 @@
 //cases list page
+import 'package:ephi_healthcare_worker_app/widgets/cardWidget.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/caseWidget.dart';
 import '../../models/case.dart';
@@ -6,13 +7,16 @@ import '../../widgets/hexColorGenerator.dart';
 
 class CasesList extends StatefulWidget {
   CasesList({this.scrollController});
+
   final ScrollController scrollController;
+
   @override
   CasesListState createState() => CasesListState(this.scrollController);
 }
 
 class CasesListState extends State<CasesList> {
   CasesListState(this.scrollController);
+
   //User user;
   final ScrollController scrollController;
 
@@ -67,32 +71,11 @@ class CasesListState extends State<CasesList> {
         },
         child: SafeArea(
             child: Scaffold(
-                // appBar: AppBar(
-                //   elevation: 1,
-                //   backgroundColor: Colors.white,
-                //   title: Center(
-                //     child: Text(
-                //       "Cases",
-                //       style: TextStyle(
-                //         color: Colors.grey,
-                //       ),
-                //     ),
-                //   ),
-                //   leading: IconButton(
-                //     icon: Icon(Icons.arrow_back),
-                //     iconSize: 30.0,
-                //     color: Colors.grey,
-                //     onPressed: () {
-                //       Navigator.pop(context);
-                //     },
-                //   ),
-                // ),
                 body: Container(
                     decoration: BoxDecoration(color: HexColor("#F5F9FF")),
                     margin: EdgeInsets.symmetric(horizontal: 5),
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: 10),
                         mainList(context),
                       ],
                     )))));
@@ -101,91 +84,37 @@ class CasesListState extends State<CasesList> {
   Future<void> refresh() async {}
 
   mainList(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Expanded(
         child: RefreshIndicator(
             onRefresh: refresh,
             child: ListView(
+              padding: EdgeInsets.fromLTRB(0.0, size.height * 0.02, 0.0, 0.0),
               children: <Widget>[
                 Container(
-                  height: 120,
-                  child: Row(children: <Widget>[
-                    Expanded(
-                        child: Container(
-                            margin: EdgeInsets.only(left: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                    offset: Offset(0.0, 4.0),
-                                    blurRadius: 10.0,
-                                    color:
-                                        HexColor("#0a6dc9").withOpacity(0.2)),
-                              ],
-                            ),
-                            child: Card(
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(height: 10),
-                                  Text("Total Cases",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: HexColor("#0a6dc9"),
-                                      )),
-                                  SizedBox(height: 13),
-                                  Text("[+25]",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: HexColor("#0a6dc9"),
-                                      )),
-                                  SizedBox(height: 13),
-                                  Text("7,987",
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        color: HexColor("#0a6dc9"),
-                                      )),
-                                  SizedBox(height: 10),
-                                ],
-                              ),
-                            ))),
-                    SizedBox(width: 10),
-                    Expanded(
-                        child: Container(
-                            margin: EdgeInsets.only(right: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                    offset: Offset(0.0, 4.0),
-                                    blurRadius: 10.0,
-                                    color:
-                                        HexColor("#06c219").withOpacity(0.2)),
-                              ],
-                            ),
-                            child: Card(
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(height: 10),
-                                  Text("Active Cases",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: HexColor("#06c219"),
-                                      )),
-                                  SizedBox(height: 13),
-                                  Text("[+5]",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: HexColor("#06c219"),
-                                      )),
-                                  SizedBox(height: 13),
-                                  Text("1,109",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: HexColor("#06c219"),
-                                      ))
-                                ],
-                              ),
-                            )))
-                  ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      CardWidget(
+                          sizeHeight: 0.10,
+                          sizeWidth: 0.35,
+                          color: Colors.lightBlue[700],
+                          value: "1,453",
+                          change: "+25",
+                          text: "Total Cases",
+                          title: "this.title",
+                          press: null),
+                      CardWidget(
+                          sizeHeight: 0.10,
+                          sizeWidth: 0.35,
+                          color: Colors.greenAccent[700],
+                          value: "1,071",
+                          change: "+12",
+                          text: "Active Cases",
+                          title: "this.title",
+                          press: null),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 15),
                 Container(
@@ -226,7 +155,6 @@ class CasesListState extends State<CasesList> {
                           );
                         },
                       ),
-                SizedBox(height: 20.2),
               ],
             )));
   }

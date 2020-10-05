@@ -1,6 +1,8 @@
+import 'package:ephi_healthcare_worker_app/widgets/ChartWidget.dart';
+
 import '../../widgets/cardWidget.dart';
 import '../../widgets/hexColorGenerator.dart';
-import '../../widgets/graph.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -99,11 +101,11 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 18.0,
                   )),
             ),
-            Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                height: 250,
-                child: TimeSeriesBar.withRandomData()),
-            SizedBox(height: 20)
+            LineChartSample2(),
+            // Container(
+            //     margin: EdgeInsets.symmetric(horizontal: 20),
+            //     height: 250,
+            //     child: TimeSeriesBar.withRandomData()),
           ],
         ),
       ),

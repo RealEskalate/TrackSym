@@ -12,11 +12,9 @@ class AppDrawer extends StatelessWidget {
     return Drawer(
       elevation: 90.0,
       child: Column(
-        // padding: EdgeInsets.zero,
         children: <Widget>[
           Container(color: HexColor("#0a6dc9"), child: _createHeader()),
           Container(
-            // color: Colors.amber[50],
             child: Column(
               children: <Widget>[
                 _createDrawerItem(
@@ -24,31 +22,33 @@ class AppDrawer extends StatelessWidget {
                 _createDrawerItem(
                     icon: Icons.settings, text: 'Settings', context: context),
                 // _createDrawerItem(icon: Icons.bug_report, text: 'Bug Report'),
-                Divider(),
                 _createDrawerItem(
                     icon: Icons.info, text: 'About', context: context),
                 _createDrawerItem(
                     icon: Icons.exit_to_app, text: 'Logout', context: context),
                 SizedBox(height: size.height * 0.3),
                 Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text('Beta version 0.1',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 12.0,
                         )),
+                    SizedBox(height: size.height * 0.01),
                     Text('Eskalate™. 2020 All Rights Reserved.',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 12.0,
                         )),
+                    SizedBox(height: size.height * 0.01),
                     Container(
-                      height: 55,
+                      height: 24,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.contain,
                               image: AssetImage('assets/images/eskalate.png'))),
-                    )
+                    ),
                   ],
                 ),
               ],
@@ -63,11 +63,6 @@ class AppDrawer extends StatelessWidget {
     return DrawerHeader(
       margin: EdgeInsets.zero,
       padding: EdgeInsets.all(10),
-      // decoration: BoxDecoration(
-      //     image: DecorationImage(
-      //         fit: BoxFit.contain,
-      //         image: AssetImage('assets/images/ephi.png'))
-      // ),
       child: Stack(
         children: <Widget>[
           Positioned(
@@ -90,15 +85,15 @@ class AppDrawer extends StatelessWidget {
                 SizedBox(width: 10),
                 CircleAvatar(
                   backgroundImage: AssetImage('assets/images/user1.jpg'),
-                  maxRadius: 25,
+                  maxRadius: 30,
                 ),
                 SizedBox(width: 10),
-                Text("Dr. Mike",
+                Text("Dr. Feysel Mubarek",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 25.0))
+                        fontSize: 18.0))
               ])),
         ],
       ),
@@ -121,7 +116,6 @@ Widget _createDrawerItem(
         )
       ],
     ),
-//    onTap: onTap,
     onTap: () {
       switch (text) {
         case "Settings":

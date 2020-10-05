@@ -1,4 +1,6 @@
 // symptoms view page
+import 'package:ephi_healthcare_worker_app/widgets/cardWidget.dart';
+
 import '../../models/Symptom.dart';
 import '../../models/symptom_activity.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,8 @@ class SymptomView extends StatelessWidget {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15.0))),
           title: Text(
               activity == "Recovered"
                   ? 'Patient Recovered'
@@ -75,79 +79,101 @@ class SymptomView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(color: HexColor("#F5F9FF")),
       child: ListView(
+        padding: EdgeInsets.fromLTRB(0.0, size.height * 0.02, 0.0, 0.0),
         children: <Widget>[
-          SizedBox(height: 10),
-          Container(
-            height: 120,
-            child: Row(children: <Widget>[
-              Expanded(
-                  child: Container(
-                      margin: EdgeInsets.only(left: 5),
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              offset: Offset(0.0, 4.0),
-                              blurRadius: 10.0,
-                              color: HexColor("#0a6dc9").withOpacity(0.1)),
-                        ],
-                      ),
-                      child: Card(
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(height: 10),
-                            Text("Active Symptoms",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: HexColor("#0a6dc9"),
-                                )),
-                            SizedBox(height: 13),
-                            Text("2,987",
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  color: HexColor("#0a6dc9"),
-                                )),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                      ))),
-              SizedBox(width: 10),
-              Expanded(
-                  child: Container(
-                      margin: EdgeInsets.only(right: 5),
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              offset: Offset(0.0, 4.0),
-                              blurRadius: 10.0,
-                              color: HexColor("#06c219").withOpacity(0.1)),
-                        ],
-                      ),
-                      child: Card(
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(height: 10),
-                            Text("Recovered Symptoms",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: HexColor("#06c219"),
-                                )),
-                            SizedBox(height: 13),
-                            Text("1,109",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: HexColor("#06c219"),
-                                ))
-                          ],
-                        ),
-                      )))
-            ]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              CardWidget(
+                  sizeHeight: 0.10,
+                  sizeWidth: 0.41,
+                  color: Colors.lightBlue[700],
+                  value: "1,453",
+                  change: "+25",
+                  text: "Active Symptoms",
+                  title: "this.title",
+                  press: null),
+              CardWidget(
+                  sizeHeight: 0.10,
+                  sizeWidth: 0.41,
+                  color: Colors.greenAccent[700],
+                  value: "1,071",
+                  change: "+12",
+                  text: "Recovered Symptoms",
+                  title: "this.title",
+                  press: null),
+            ],
           ),
+          // Container(
+          //   // child: Row(children: <Widget>[
+          //   //   // Expanded(
+          //   //   //     child: Container(
+          //   //   //         margin: EdgeInsets.only(left: 5),
+          //   //   //         padding: EdgeInsets.all(5),
+          //   //   //         decoration: BoxDecoration(
+          //   //   //           color: Colors.transparent,
+          //   //   //           boxShadow: <BoxShadow>[
+          //   //   //             BoxShadow(
+          //   //   //                 offset: Offset(0.0, 4.0),
+          //   //   //                 blurRadius: 10.0,
+          //   //   //                 color: HexColor("#0a6dc9").withOpacity(0.1)),
+          //   //   //           ],
+          //   //   //         ),
+          //   //   //         child: Card(
+          //   //   //           child: Column(
+          //   //   //             children: <Widget>[
+          //   //   //               SizedBox(height: 10),
+          //   //   //               Text("Active Symptoms",
+          //   //   //                   textAlign: TextAlign.center,
+          //   //   //                   style: TextStyle(
+          //   //   //                     fontSize: 20,
+          //   //   //                     color: HexColor("#0a6dc9"),
+          //   //   //                   )),
+          //   //   //               SizedBox(height: 13),
+          //   //   //               Text("2,987",
+          //   //   //                   style: TextStyle(
+          //   //   //                     fontSize: 22,
+          //   //   //                     color: HexColor("#0a6dc9"),
+          //   //   //                   )),
+          //   //   //               SizedBox(height: 10),
+          //   //   //             ],
+          //   //   //           ),
+          //   //   //         ))),
+          //   //   // SizedBox(width: 10),
+          //   //   // Expanded(
+          //   //   //     child: Container(
+          //   //   //         margin: EdgeInsets.only(right: 5),
+          //   //   //         padding: EdgeInsets.all(5),
+          //   //   //         decoration: BoxDecoration(
+          //   //   //           color: Colors.transparent,
+          //   //   //           boxShadow: <BoxShadow>[
+          //   //   //             BoxShadow(
+          //   //   //                 offset: Offset(0.0, 4.0),
+          //   //   //                 blurRadius: 10.0,
+          //   //   //                 color: HexColor("#06c219").withOpacity(0.1)),
+          //   //   //           ],
+          //   //   //         ),
+          //   //   //         child: Card(
+          //   //   //           child: Column(
+          //   //   //             children: <Widget>[
+          //   //   //               SizedBox(height: 10),
+          //   //   //               Text("Recovered Symptoms",
+          //   //   //                   textAlign: TextAlign.center,
+          //   //   //                   style: TextStyle(
+          //   //   //                     fontSize: 20,
+          //   //   //                     color: HexColor("#06c219"),
+          //   //   //                   )),
+          //   //   //               SizedBox(height: 13),
+          //   //   //               Text("1,109",
+          //   //   //                   style: TextStyle(
+          //   //   //                     fontSize: 20,
+          //   //   //                     color: HexColor("#06c219"),
+          //   //   //                   ))
+          //   //   //             ],
+          //   //   //           ),
+          //   //   //         )))
+          //   // ]),
+          // ),
           Container(
             margin: EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
             padding: EdgeInsets.symmetric(horizontal: 20.0),
