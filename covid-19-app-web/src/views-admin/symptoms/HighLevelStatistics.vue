@@ -8,7 +8,7 @@
         />
         <v-subheader
           class="text-center p-0 justify-center"
-          v-text="item.title.toUpperCase()"
+          v-text="$t(`symptomStats.${item.title}`)"
         />
       </v-col>
     </v-row>
@@ -34,11 +34,11 @@ export default {
     items() {
       return [
         {
-          title: "Total Symptoms Registered",
+          title: "totalSymptoms",
           value: this.getTotalSymptoms || 0
         },
         {
-          title: "Most Common Symptom",
+          title: "mostCommon",
           value:
             `${this.getMostCommonSymptom} | ${Math.round(
               ((this.getMostCommonSymptomCount * 100) / this.getTotalSymptoms) *
@@ -46,7 +46,7 @@ export default {
             ) / 100}%` || "None"
         },
         {
-          title: "People With Symptoms",
+          title: "peopleWithSymptoms",
           value: this.getTotalPeoplesWithSymptoms || 0
         }
       ];
