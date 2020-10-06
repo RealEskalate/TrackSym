@@ -27,73 +27,80 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    // Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       drawerScrimColor: Colors.black.withOpacity(0.2),
       // drawerScrimColor: Colors.transparent,
       drawer: BlurredDrawer(),
-      appBar: AppBar(
-          centerTitle: true,
-          elevation: 1,
-          backgroundColor: Colors.white,
-          iconTheme: new IconThemeData(
-            color: Colors.lightBlue[900],
-          ),
-          title: Text(
-            _titles[_currentIndex],
-            style: TextStyle(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(size.height * 0.068),
+        child: AppBar(
+            centerTitle: true,
+            elevation: 1,
+            backgroundColor: Colors.white,
+            iconTheme: new IconThemeData(
               color: Colors.lightBlue[900],
             ),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.refresh,
+            title: Text(
+              _titles[_currentIndex],
+              style: TextStyle(
                 color: Colors.lightBlue[900],
               ),
-              onPressed: () {},
-            )
-          ]),
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.refresh,
+                  color: Colors.lightBlue[900],
+                ),
+                onPressed: () {},
+              )
+            ]),
+      ),
       body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped,
-        type: BottomNavigationBarType.shifting,
-        // this will be set when a new tab is tapped
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: HexColor("#0a6dc9"),
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.home,
+      bottomNavigationBar: SizedBox(
+        height: size.height * 0.068,
+        child: BottomNavigationBar(
+          iconSize: size.height * 0.024,
+          onTap: onTabTapped,
+          type: BottomNavigationBarType.shifting,
+          // this will be set when a new tab is tapped
+          unselectedItemColor: Colors.grey,
+          selectedItemColor: HexColor("#0a6dc9"),
+          currentIndex: _currentIndex,
+          items: [
+            BottomNavigationBarItem(
+              icon: new Icon(
+                Icons.home,
+              ),
+              title: new Text(
+                'Home',
+                style: TextStyle(fontSize: 14),
+              ),
             ),
-            title: new Text(
-              'Home',
-              style: TextStyle(),
+            BottomNavigationBarItem(
+              icon: new Icon(
+                Icons.visibility,
+              ),
+              title: new Text(
+                'Cases',
+                style: TextStyle(fontSize: 14),
+              ),
             ),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.visibility,
-            ),
-            title: new Text(
-              'Cases',
-              style: TextStyle(),
-            ),
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.record_voice_over),
-              title: Text(
-                'Symptoms',
-                style: TextStyle(),
-              )),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.people),
-              title: Text(
-                'Patients',
-                style: TextStyle(),
-              ))
-        ],
+            BottomNavigationBarItem(
+                icon: Icon(Icons.record_voice_over),
+                title: Text(
+                  'Symptoms',
+                  style: TextStyle(fontSize: 14),
+                )),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.people),
+                title: Text(
+                  'Patients',
+                  style: TextStyle(fontSize: 14),
+                ))
+          ],
+        ),
       ),
     );
   }

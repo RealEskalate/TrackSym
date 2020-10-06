@@ -26,11 +26,11 @@ class AppDrawer extends StatelessWidget {
                     icon: Icons.info, text: 'About', context: context),
                 _createDrawerItem(
                     icon: Icons.exit_to_app, text: 'Logout', context: context),
-                SizedBox(height: size.height * 0.3),
+                SizedBox(height: size.height * 0.2),
                 Column(
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('Beta version 0.1',
+                    Text('Beta version 0.2',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 12.0,
@@ -43,7 +43,7 @@ class AppDrawer extends StatelessWidget {
                         )),
                     SizedBox(height: size.height * 0.01),
                     Container(
-                      height: 24,
+                      height: 44,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.contain,

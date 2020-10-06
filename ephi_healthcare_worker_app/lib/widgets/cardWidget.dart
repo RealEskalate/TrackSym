@@ -30,9 +30,9 @@ class CardWidget extends StatelessWidget {
         color: Colors.transparent,
         boxShadow: <BoxShadow>[
           BoxShadow(
-              offset: Offset(0.0, 3.0),
+              offset: Offset(0.0, 2.0),
               blurRadius: 5.0,
-              color: color.withOpacity(0.25)),
+              color: color.withOpacity(0.1)),
         ],
       ),
       child: Center(

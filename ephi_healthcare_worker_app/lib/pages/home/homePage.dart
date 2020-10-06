@@ -19,6 +19,7 @@ class _HomePageState extends State<HomePage> {
           BoxDecoration(color: HexColor("#F5F9FF")), // 0xff ... color hex code
       child: Container(
         child: ListView(
+          physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.fromLTRB(0.0, size.height * 0.02, 0.0, 0.0),
           children: <Widget>[
             Container(
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 18.0,
                   )),
             ),
-            SizedBox(height: size.height * 0.02),
+            SizedBox(height: size.height * 0.01),
             Row(
               // mainAxisAlignment: MainAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -66,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                     press: null),
               ],
             ),
-            SizedBox(height: size.height * 0.03),
+            SizedBox(height: size.height * 0.01),
             Row(
               // mainAxisAlignment: MainAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -93,8 +94,9 @@ class _HomePageState extends State<HomePage> {
                     press: null),
               ],
             ),
+            SizedBox(height: size.height * 0.02),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              margin: EdgeInsets.symmetric(horizontal: 20),
               child: Text("Your patients' recovery so far",
                   style: TextStyle(
                     color: HexColor("#0a6dc9"),

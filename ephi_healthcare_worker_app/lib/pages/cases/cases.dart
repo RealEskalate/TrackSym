@@ -118,9 +118,10 @@ class CasesListState extends State<CasesList> {
                 ),
                 SizedBox(height: 15),
                 Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
                     child: Text("Your cases",
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 18,
                           color: HexColor("#0a6dc9"),
                         ))),
                 SizedBox(height: 10),
