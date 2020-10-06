@@ -148,8 +148,6 @@ const HomeTabsNavigator = ({ navigation }) => {
         accessoryRight={() =>
           i == 3 ? (
             <EditSymptomAction />
-          ) : i == 0 ? (
-            <GoToDataAnalyticsMap />
           ) : (
             <></>
           )

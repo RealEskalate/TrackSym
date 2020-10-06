@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 const slides = [
   {
     key: 1,
-    title: "WELCOME TO TRACK SYM",
+    title: "Welcome To TrackSym",
     text:
       "See how many symptomatic individuals are in your area, and make informed decisions",
     image: require("../../../assets/images/slide4.png"),
@@ -19,7 +19,7 @@ const slides = [
   },
   {
     key: 2,
-    title: "SYMPTOM TRACKING",
+    title: "Symptom Tracking",
     text: "Track your symptoms by registering it",
     subText: "Monitor your symptoms",
     image: require("../../../assets/images/slide3.png"),
@@ -27,16 +27,16 @@ const slides = [
   },
   {
     key: 3,
-    title: "POWERFUL DATA",
-    text: "Graphical representation of Covid-19 data",
-    subText: "Active, Recovered, Dealth Stats",
+    title: "Powerful Data",
+    text: "Graphical representation of COVID-19 data",
+    subText: "Active, Recovered, Death Stats",
     image: require("../../../assets/images/slide2.png"),
     backgroundColor: "#B72125",
   },
   {
     key: 4,
-    title: "VIEW THE HOTTEST NEWS",
-    text: "Search any news about Covid-19",
+    title: "View The Hottest News",
+    text: "Search any news about COVID-19",
     subText: "",
     image: require("../../../assets/images/slide5.png"),
     backgroundColor: "#43a047",
@@ -170,7 +170,7 @@ export default class Introduction extends React.Component {
   _renderSkipButton = () => {
     return (
       <View style={styles.buttonCircle}>
-        <Text style={{ fontSize: 15, color: "white" }}>SKIP</Text>
+        <Text style={{ fontSize: 15, color: "white" }}>Skip</Text>
       </View>
     );
   };
