@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h3 class="display-1 font-weight-thin mb-10" v-text="$t('auth.symptoms')" />
+    <h3 class="display-1 font-weight-thin mb-10" v-if="loggedInUser" v-text="$t('auth.symptoms')" />
     <v-fade-transition hide-on-leave>
       <div class="text-center py-12" v-if="!loggedInUser">
         <v-btn

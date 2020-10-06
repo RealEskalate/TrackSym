@@ -1,11 +1,12 @@
 <template>
   <section class="map pb-5">
     <v-container>
+      <HighLevelStatistics class="my-5"/>
       <!--      <h3 class="display-1 font-weight-thin mb-5">-->
       <!--        &lt;!&ndash;            {{ $t("navbar.map") }}&ndash;&gt;-->
       <!--        Reported Symptom Tracking-->
       <!--      </h3>-->
-      <v-row class="my-5">
+      <!-- <v-row class="my-5">
         <v-col cols="12">
           <h3
             class="display-1 font-weight-thin mb-5"
@@ -21,7 +22,7 @@
                 :key="item.key"
                 v-for="item in aggregates"
               >
-                <!--              <v-img :src="item.icon" class="small-icon mx-auto my-3" />-->
+                             <v-img :src="item.icon" class="small-icon mx-auto my-3" />
                 <p class="text-center" v-text="item.key" />
                 <h1
                   class="font-weight-thin text-center mb-2 primary--text"
@@ -31,7 +32,7 @@
             </v-row>
           </v-card>
         </v-col>
-      </v-row>
+      </v-row> -->
       <v-row>
         <v-col>
           <v-card
@@ -233,6 +234,7 @@
 <script>
 import store from "@/store";
 import SymTrack from "./Maps/SymTrack";
+import HighLevelStatistics from "../../views-admin/symptoms/HighLevelStatistics";
 import {
   mdiBabyCarriage,
   mdiBackburger,
@@ -246,7 +248,8 @@ import {
 
 export default {
   components: {
-    SymTrack
+    SymTrack,
+    HighLevelStatistics
   },
   data() {
     return {
