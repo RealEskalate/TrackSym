@@ -1,10 +1,11 @@
 <template>
   <section class="map pb-5">
     <v-container>
-      <h1 class=" font-weight-thin mb-5">
-        {{ $t("titles.reportedSymptoms") }}
-      </h1>
-      <HighLevelStatistics class="my-5" />
+      <HighLevelStatistics class="my-5"/>
+      <!--      <h3 class="display-1 font-weight-thin mb-5">-->
+      <!--        &lt;!&ndash;            {{ $t("navbar.map") }}&ndash;&gt;-->
+      <!--        Reported Symptom Tracking-->
+      <!--      </h3>-->
       <!-- <v-row class="my-5">
         <v-col cols="12">
           <h3
@@ -127,9 +128,10 @@
                       <span
                         v-else-if="feature.key === 'probability'"
                         class="grey--text"
-                      >
-                        {{ (selectedInfo.probability * 100).toFixed(2) + " %" }}
-                      </span>
+                        v-text="
+                          (selectedInfo.probability * 100).toFixed(2) + ' %'
+                        "
+                      />
                       <span
                         v-else
                         class="grey--text"
