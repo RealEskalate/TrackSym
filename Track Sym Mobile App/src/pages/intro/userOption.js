@@ -38,7 +38,7 @@ export default class UserOption extends React.Component {
           status="primary"
           style={{ fontWeight: "bold", marginBottom: 20 }}
         >
-          Track Sym
+          TrackSym
         </Text>
         <Button
           size="large"
@@ -50,7 +50,7 @@ export default class UserOption extends React.Component {
           onPress={() => this._changeScreen("Sign up")}
         >
           <Text style={{ fontWeight: "bold", color: "white" }}>
-            CREATE ACCOUNT
+            Create Account
           </Text>
         </Button>
 
@@ -59,7 +59,7 @@ export default class UserOption extends React.Component {
           style={{ width: Dimensions.get("window").width - 30 }}
           onPress={() => this._changeScreen("Sign in")}
         >
-          <Text style={{ color: "#4da6ff", fontWeight: "bold" }}>SIGN IN</Text>
+          <Text style={{ color: "#4da6ff", fontWeight: "bold" }}>Sign In</Text>
         </Button>
       </Layout>
     );
