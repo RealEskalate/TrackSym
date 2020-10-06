@@ -1,4 +1,4 @@
-import ajax from "../auth/ajax";
+import ajax from "../../auth/ajax";
 
 const state = {
   totalCases: 0,
@@ -50,7 +50,6 @@ const actions = {
             tableData.push(row);
           });
           commit("setCases", tableData);
-          console.log(tableData);
         },
         error => {
           console.log(error);

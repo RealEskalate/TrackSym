@@ -291,15 +291,15 @@ export default {
           roles: ["ephi_user"]
         },
         {
-          text: "navbar.inviteAdmins",
-          icon: mdiEmailSend,
-          to: "InviteAdmin",
-          roles: ["ephi_user"]
-        },
-        {
           text: "navbar.users",
           icon: mdiAccountMultiplePlus,
           to: "Users",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "navbar.inviteAdmins",
+          icon: mdiEmailSend,
+          to: "InviteAdmin",
           roles: ["ephi_user"]
         }
       ],
