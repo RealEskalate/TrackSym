@@ -19,29 +19,27 @@ import languageStore from '../../data-management/language_data/languageStore';
 
 const ArrowIosBackIcon = (style) => <Icon {...style} name='arrow-ios-back' />;
 
-const data = [
-  {
-    data: [
-      { count: 42, symptom: [Object] },
-      { count: 26, symptom: [Object] },
-      { count: 26, symptom: [Object] },
-      { count: 25, symptom: [Object] },
-      { count: 19, symptom: [Object] },
-      { count: 19, symptom: [Object] },
-      { count: 18, symptom: [Object] },
-      { count: 16, symptom: [Object] },
-      { count: 13, symptom: [Object] },
-      { count: 12, symptom: [Object] },
-      { count: 11, symptom: [Object] },
-      { count: 11, symptom: [Object] },
-      { count: 11, symptom: [Object] },
-      { count: 10, symptom: [Object] },
-      { count: 7, symptom: [Object] },
-      { count: 6, symptom: [Object] },
-    ],
-    total: 272,
-  },
-];
+const data = {
+  data: [
+    { count: 43, symptom: [Object] },
+    { count: 27, symptom: [Object] },
+    { count: 27, symptom: [Object] },
+    { count: 26, symptom: [Object] },
+    { count: 20, symptom: [Object] },
+    { count: 20, symptom: [Object] },
+    { count: 19, symptom: [Object] },
+    { count: 17, symptom: [Object] },
+    { count: 14, symptom: [Object] },
+    { count: 13, symptom: [Object] },
+    { count: 12, symptom: [Object] },
+    { count: 12, symptom: [Object] },
+    { count: 11, symptom: [Object] },
+    { count: 11, symptom: [Object] },
+    { count: 8, symptom: [Object] },
+    { count: 7, symptom: [Object] },
+  ],
+  total: 287,
+};
 
 const SymptomAnaliticsPage = (props) => {
   languageStore.subscribe(() => {
@@ -50,12 +48,12 @@ const SymptomAnaliticsPage = (props) => {
   });
 
   const [data, setData] = useState([
-    { index: 0, val: strings.Loading, label: strings.TotalSymptomReports },
-    { index: 1, val: strings.Loading, label: strings.SymptomReportsYesterday },
-    { index: 3, val: '56', label: strings.MostReportedSymptom },
+    { index: 0, val: strings.Loading, label: strings.SymptomReportsYesterday },
+    { index: 1, val: strings.Loading, label: strings.TotalSymptomReports },
+    { index: 2, val: strings.Loading, label: strings.MostReportedSymptom },
   ]);
+
   const [mostCommonFetched, setMostCommonFetched] = useState(false);
-  const [last24HourFetched, setLast24HourFetched] = useState(false);
   const [pepoleFetched, setPepoleFetched] = useState(false);
   const [search, setSearch] = useState('World');
   const [countryFilter, setCountryFilter] = useState('');
@@ -101,7 +99,7 @@ const SymptomAnaliticsPage = (props) => {
   const fetchMostCommon = async (filter) => {
     setMostCommonFetched(false);
     let url =
-      'https://a2sv-api-wtupbmwpnq-uc.a.run.app/api/symptom_statistics/most_common';
+      'https://a2sv-api-wtupbmwpnq-uc.a.run.app/api/symptom_statistics/';
     if (filter && filter !== 'World') {
       url += `?country=${filter}`;
     }
@@ -124,7 +122,17 @@ const SymptomAnaliticsPage = (props) => {
             if (d.index === 2) {
               return {
                 ...d,
-                val: json[0] ? json[0].name : strings.NoSymptomYet,
+                val: json.data[0]
+                  ? json.data[0].symptom.name
+                  : strings.NoSymptomYet,
+                percent: json.data[0]
+                  ? ((json.data[0].count / json.total) * 100).toFixed(2)
+                  : '',
+              };
+            } else if (d.index === 0) {
+              return {
+                ...d,
+                val: json.total,
               };
             }
             return d;
@@ -133,42 +141,6 @@ const SymptomAnaliticsPage = (props) => {
         setMostCommonFetched(true);
       }
     } catch (error) {}
-  };
-
-  const fetchStat = async (filter) => {
-    let url =
-      'https://a2sv-api-wtupbmwpnq-uc.a.run.app/api/symptom_statistics/';
-    if (filter && filter !== 'World') {
-      url += `?country=${filter}`;
-    }
-
-    setLast24HourFetched(false);
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + userIDStore.getState().userToken,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.status === 200) {
-        const json = await response.json();
-
-        setData((data) =>
-          data.map((d) => {
-            if (d.index === 1) {
-              return { ...d, val: 48 };
-            }
-            return d;
-          })
-        );
-        setLast24HourFetched(true);
-      }
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const fetchPeopleStat = async (filter) => {
@@ -193,7 +165,7 @@ const SymptomAnaliticsPage = (props) => {
         const json = await response.json();
         setData((data) =>
           data.map((d) => {
-            if (d.index === 0) {
+            if (d.index === 1) {
               return { ...d, val: json.result };
             }
             return d;
@@ -234,7 +206,6 @@ const SymptomAnaliticsPage = (props) => {
 
   useEffect(() => {
     getCountryList();
-    fetchStat(countryFilter);
     fetchMostCommon(countryFilter);
     fetchPeopleStat(countryFilter);
   }, [countryFilter]);
@@ -274,11 +245,8 @@ const SymptomAnaliticsPage = (props) => {
         <List
           style={{ flex: 1, paddingTop: 5 }}
           data={data}
-          refreshing={
-            !mostCommonFetched && !last24HourFetched && !pepoleFetched
-          }
+          refreshing={!mostCommonFetched && !pepoleFetched}
           onRefresh={() => {
-            fetchStat(countryFilter);
             fetchMostCommon(countryFilter);
             fetchPeopleStat(countryFilter);
           }}
@@ -286,9 +254,12 @@ const SymptomAnaliticsPage = (props) => {
           renderItem={({ item, _ }) => (
             <Card level='1' style={styles.card} disabled>
               <Layout style={styles.layout}>
-                <Text status='primary' style={styles.number}>
-                  {item.val}
-                </Text>
+                <Text style={styles.number}>{item.val}</Text>
+                {item.percent && (
+                  <Text
+                    category='h5'
+                    appearance='hint'>{`${item.percent}%`}</Text>
+                )}
                 <Text appearance='hint'>{item.label}</Text>
               </Layout>
             </Card>
@@ -317,8 +288,8 @@ const styles = StyleSheet.create({
   },
   number: {
     fontSize: 45,
-    marginBottom: 10,
-    fontWeight: 'bold',
+    // marginBottom: 10,
+    // fontWeight: 'bold',
   },
   screen: { flex: 1 },
 });

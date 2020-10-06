@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, SafeAreaView } from "react-native";
+import React from 'react';
+import { StyleSheet, SafeAreaView } from 'react-native';
 import {
   Layout,
   Spinner,
@@ -10,27 +10,28 @@ import {
   Button,
   TopNavigation,
   TopNavigationAction,
-} from "@ui-kitten/components";
-import userIDStore from "../../data-management/user-id-data/userIDStore";
-import { strings } from "../../localization/localization";
-import { LangContext } from "../../../assets/lang/language-context";
+  Text,
+} from '@ui-kitten/components';
+import userIDStore from '../../data-management/user-id-data/userIDStore';
+import { strings } from '../../localization/localization';
+import { LangContext } from '../../../assets/lang/language-context';
 
-const SearchIcon = (props) => <Icon {...props} name="search-outline" />;
+const SearchIcon = (props) => <Icon {...props} name='search-outline' />;
 
 const NotificationScreen = (props) => {
   const [state, setState] = React.useState({
     data: [
       {
         _id: 1,
-        name: "Covid test result",
-        description: "View your test result",
+        name: 'Covid test result',
+        description: 'View your test result',
         reference_link: {
           result: {
-            _id: "34567887654",
-            title: "Test Result",
-            name: "Emily Clark",
-            test_date: "10/10/2020",
-            test_result: "Positive",
+            _id: '34567887654',
+            title: 'Test Result',
+            name: 'Emily Clark',
+            test_date: '10/10/2020',
+            test_result: 'Positive',
             message: strings.PreventionsShortDescription,
           },
           methods: [
@@ -70,10 +71,10 @@ const NotificationScreen = (props) => {
   strings.setLanguage(lang);
 
   const getDetailInfo = (reference_link) => {
-    props.navigation.navigate("NotificationView", { data: reference_link });
+    props.navigation.navigate('NotificationView', { data: reference_link });
   };
 
-  const ArrowIosBackIcon = (style) => <Icon {...style} name="arrow-ios-back" />;
+  const ArrowIosBackIcon = (style) => <Icon {...style} name='arrow-ios-back' />;
 
   const renderBackAction = () => (
     <TopNavigationAction
@@ -82,27 +83,32 @@ const NotificationScreen = (props) => {
     />
   );
   const renderItemAccessory = (link) => (
-    <Button size="tiny" onPress={() => getDetailInfo(link)}>
+    <Button size='tiny' onPress={() => getDetailInfo(link)}>
       {strings.VIEW}
     </Button>
   );
   return (
     <SafeAreaView style={styles.container}>
       <TopNavigation
-        alignment="center"
+        alignment='center'
         title={strings.Notification}
         accessoryLeft={renderBackAction}
       />
       <Divider />
       {state.isLoading ? (
         <Layout
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-          <Spinner {...props} size="large" />
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Spinner {...props} size='large' />
         </Layout>
       ) : (
-        <Layout style={{ flex: 1, flexDirection: "column" }}>
-          <List
+        <Layout
+          style={{
+            flex: 1,
+            // flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          {/* <List
             data={state.data}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
@@ -115,7 +121,11 @@ const NotificationScreen = (props) => {
                 />
               </>
             )}
-          />
+          /> */}
+          <Icon style={styles.icon} fill='#8F9BB3' name='bell-outline' />
+          <Text appearance='hint' category='h4'>
+            Coming soon!
+          </Text>
         </Layout>
       )}
     </SafeAreaView>
@@ -127,14 +137,15 @@ export default NotificationScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
-    alignItems: "stretch",
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
     // marginBottom: 10,
   },
+  icon: { width: 100, height: 100 },
   newsRow: {
     flex: 1,
     padding: 5,
     marginHorizontal: 5,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
 });
