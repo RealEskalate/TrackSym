@@ -1,4 +1,4 @@
-import ajax from "../auth/ajax";
+import ajax from "../../auth/ajax";
 
 const state = {
   totalSymptoms: 0,
@@ -102,7 +102,6 @@ const actions = {
             tableData.push(row);
           });
           commit("setPeoplesWithSymptoms", tableData);
-          console.log(tableData);
         },
         error => {
           console.log(error);

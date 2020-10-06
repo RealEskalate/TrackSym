@@ -1,7 +1,7 @@
 <template>
   <section class="map pb-5">
     <v-container>
-      <HighLevelStatistics class="my-5"/>
+      <HighLevelStatistics class="my-5" />
       <!--      <h3 class="display-1 font-weight-thin mb-5">-->
       <!--        &lt;!&ndash;            {{ $t("navbar.map") }}&ndash;&gt;-->
       <!--        Reported Symptom Tracking-->
