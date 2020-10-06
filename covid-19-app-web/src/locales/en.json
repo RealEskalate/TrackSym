@@ -1,4 +1,9 @@
 {
+  "symptomStats": {
+    "totalSymptoms": "TOTAL SYMPTOMS REGISTERED",
+    "mostCommon": "MOST COMMON SYMPTOM",
+    "peopleWithSymptoms": "PEOPLE WITH SYMPTOMS"
+  },
   "sources": "Sources",
   "country": "Country",
   "world": "World",

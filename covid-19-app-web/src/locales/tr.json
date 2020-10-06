@@ -1,4 +1,9 @@
 {
+  "symptomStats": {
+    "totalSymptoms": "KAYDEDİLEN TOPLAM SEMPTOMLAR",
+    "mostCommon": "EN YAYGIN SEMPTOMLAR",
+    "peopleWithSymptoms": "SEMPTOMLARI OLAN KİŞİLER"
+  },
   "sources": "Kaynaklar",
   "country": "Ülke",
   "world": "Dünya",

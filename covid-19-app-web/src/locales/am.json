@@ -1,4 +1,9 @@
 {
+  "symptomStats": {
+    "totalSymptoms": "አጠቃላይ የተመዘገቡ ምልክቶች",
+    "mostCommon": "በጣም የተለመደ ምልክት",
+    "peopleWithSymptoms": "ምልክቶች የሚታዩባቸው ሰዎች"
+  },
   "sources": "ምንጮች",
   "country": "ሀገር",
   "world": "አለም",
