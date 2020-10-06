@@ -1,4 +1,4 @@
-import ajax from "../auth/ajax";
+import ajax from "../../auth/ajax";
 
 const state = {
   totalSymptoms: 0,
