@@ -163,4 +163,7 @@ html {
 .v-skeleton-loader__bone {
   border-radius: 10px 3px 10px 3px !important;
 }
+.display-1 {
+  font-size: 1.8rem !important;
+}
 </style>

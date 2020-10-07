@@ -86,7 +86,7 @@ export default {
     changeLang() {
       store.dispatch("setLanguagePreference", { lang: this.$i18n.locale });
       router.replace({ params: { lang: this.$i18n.locale } }).catch(() => {});
-    },
+    }
   }
 };
 </script>

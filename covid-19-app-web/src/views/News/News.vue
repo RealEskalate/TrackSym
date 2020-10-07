@@ -4,10 +4,7 @@
       <v-col class="pr-md-12" md="8" cols="12">
         <v-row>
           <v-col cols="12" md="8">
-            <h3
-              class="display-1 font-weight-thin mb-10"
-              v-text="$t('titles.news')"
-            />
+            <h2 class="font-weight-thin mb-10">{{ $t("titles.news") }}</h2>
           </v-col>
           <v-col cols="12" md="4">
             <v-autocomplete

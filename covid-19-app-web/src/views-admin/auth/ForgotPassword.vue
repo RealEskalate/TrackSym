@@ -3,7 +3,7 @@
     <v-col cols="12" sm="8" md="4">
       <v-card shaped outlined class="overflow-hidden">
         <v-snackbar top color="primary" v-model="snackbar" :timeout="5000">
-          <h4 class="ma-2" v-text="getMessage" />
+          <h4 class="ma-2">{{ getMessage }}</h4>
           <v-btn text icon x-small color="white" @click="snackbar = false">
             <v-icon v-text="mdiCloseCircleOutline" />
           </v-btn>
@@ -46,13 +46,11 @@ import { mdiCloseCircleOutline } from "@mdi/js";
 
 export default {
   name: "ChangePassword",
-  mounted() {
-    this.user.signature = this.$route.query.signature;
-  },
   data() {
     return {
       mdiCloseCircleOutline,
       valid: false,
+      snackbar: false,
       user: {
         email: null
       },
@@ -77,11 +75,11 @@ export default {
           this.snackbar = true;
           this.loading = false;
         });
-    },
-    computed: {
-      getMessage() {
-        return store.getters.getMessage;
-      }
+    }
+  },
+  computed: {
+    getMessage() {
+      return store.getters.getMessage;
     }
   }
 };

@@ -10,6 +10,9 @@ const PrivacyPolicy = () => import("@/views/PrivacyPolicy/PrivacyPolicy.vue");
 const Login = () => import("@/views/Auth/Login.vue");
 const Register = () => import("@/views/Auth/Register.vue");
 
+const ForgotPassword = () => import("../views-admin/auth/ForgotPassword");
+const ChangePassword = () => import("../views-admin/auth/ChangePassword.vue");
+
 const Ethiopia = () => import("../views/Home/Ethiopia/Ethiopia");
 const Statistics = () => import("../views/Home/Statistics");
 
@@ -54,6 +57,22 @@ export const userRoutes = [
     meta: {
       requiresAuth: true,
       roles: ["ephi_user", "basic"]
+    }
+  },
+  {
+    name: "ResetPassword",
+    path: "reset-password",
+    component: ForgotPassword,
+    meta: {
+      guest: true
+    }
+  },
+  {
+    name: "ChangePassword",
+    path: "change-password",
+    component: ChangePassword,
+    meta: {
+      guest: true
     }
   },
   {

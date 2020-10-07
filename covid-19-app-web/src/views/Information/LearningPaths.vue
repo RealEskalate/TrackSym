@@ -1,11 +1,7 @@
-<!--suppress ALL -->
 <template>
   <v-container>
     <v-row>
-      <h3
-        class="display-1 font-weight-thin mb-10"
-        v-text="$t('titles.learningPath')"
-      />
+      <h1 class="font-weight-thin mb-10">{{ $t("titles.learningPath") }}</h1>
     </v-row>
     <v-row>
       <v-col cols="12" md="9" class="pr-md-12">
