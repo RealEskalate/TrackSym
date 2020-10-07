@@ -67,7 +67,8 @@
     "actions": "What to do?",
     "states": "Disease States",
     "learningPath": "Learn even more",
-    "news": "News"
+    "news": "News",
+    "reportedSymptoms": "Reported Symptoms"
   },
 
   "graphNames": {

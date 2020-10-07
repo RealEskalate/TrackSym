@@ -4,27 +4,27 @@
       app
       flat
       outlined
-      class="white py-1"
-      style="border-radius: 0 0 25px 0; height: auto; background: #fafafa!important "
+      class="white"
+      style="border-radius: 0 0 25px 0; height: auto; background: #fafafa!important"
       :class="{ shadow: raise }"
     >
       <v-btn fab text @click.stop="drawer = !drawer">
-        <v-icon large v-text="mdiForwardburger" />
+        <v-icon
+          large
+          v-text="mdiMenu"
+          style="max-width: 32px"
+          color="#616161"
+        />
       </v-btn>
-      <!--      <v-app-bar-nav-icon-->
-      <!--        v-if="$vuetify.breakpoint.mdAndUp"-->
-      <!--        @click.stop="drawer = !drawer"-->
-      <!--      />-->
       <v-img
         alt="TrackSym"
-        class="shrink mx-1"
+        class="shrink mx-auto"
         contain
         src="/img/brand/blue.png"
         style="transition: width 0.2s ease"
         :width="brandWidth"
       />
 
-      <v-spacer />
       <!--      <v-btn-->
       <!--        :key="link.to"-->
       <!--        :to="{ name: link.to }"-->
@@ -60,8 +60,8 @@
       <!--          </template>-->
       <!--        </v-select>-->
       <!--      </div>-->
-      <v-divider class="mr-2" vertical light />
       <v-btn
+        small
         dark
         color="primary"
         v-if="!loggedInUser"
@@ -115,7 +115,7 @@
         alt="TrackSym"
         class="shrink my-5 mx-auto"
         contain
-        :width="160"
+        :width="150"
         src="/img/brand/blue.png"
         data-v-step="0"
       />
@@ -198,7 +198,7 @@ import {
   mdiAccountCog,
   mdiAccountEdit,
   mdiBookOpenVariant,
-  mdiForwardburger,
+  mdiMenu,
   mdiHome,
   mdiInformation,
   mdiLogoutVariant,
@@ -219,7 +219,7 @@ export default {
     return {
       mdiTranslate,
       mdiAccountCog,
-      mdiForwardburger,
+      mdiMenu,
       mdiLogoutVariant,
       mdiAccountMultiplePlus,
       drawer: false,
@@ -352,7 +352,7 @@ export default {
       return this.locationY > 50;
     },
     brandWidth() {
-      return this.locationY > 50 ? 150 : 160;
+      return this.locationY > 50 ? 110 : 120;
     },
     openNavigation() {
       return store.getters.getNavigationDrawer;

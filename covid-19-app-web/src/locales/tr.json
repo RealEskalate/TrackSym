@@ -64,7 +64,8 @@
     "actions": "Ne yapmalı?",
     "states": "Hastalığın aşamaları",
     "learningPath": "Daha da fazla bilgi",
-    "news": "Haberler"
+    "news": "Haberler",
+    "reportedSymptoms": "Reported symptoms"
   },
 
   "graphNames": {

@@ -4,10 +4,7 @@
     <section class="mb-12 text-justify">
       <v-container>
         <v-row>
-          <h3
-            class="display-1 font-weight-thin mb-10"
-            v-text="$t('titles.aboutCovid')"
-          />
+          <h1 class="font-weight-thin mb-10">{{ $t("titles.aboutCovid") }}</h1>
           <v-fade-transition hide-on-leave>
             <carousel-3d
               v-if="loaders.information"

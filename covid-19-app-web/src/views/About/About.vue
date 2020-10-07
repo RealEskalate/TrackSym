@@ -20,10 +20,7 @@
             </v-col>
             <v-col v-else class="px-md-10" cols="12" md="7">
               <div :key="i" v-for="(description, i) in descriptions">
-                <h3
-                  class="display-1 font-weight-thin"
-                  v-text="description.title"
-                />
+                <h1 class="font-weight-thin">{{ description.title }}</h1>
                 <div
                   class="my-5 grey--text text--darken-2"
                   v-html="description.description"
@@ -42,20 +39,16 @@
                 />
               </div>
               <div v-else>
-                <h3
-                  class="display-1 font-weight-thin"
-                  v-text="whoWeAre.title"
-                />
+                <h1 class="font-weight-thin">{{ whoWeAre.title }}</h1>
                 <div class="my-5 grey--text text--darken-2">
                   <p v-html="whoWeAre.description" />
                 </div>
               </div>
             </v-fade-transition>
             <div class="mx-auto mt-10 py-5">
-              <h3
-                class="display-1 font-weight-thin mb-5"
-                v-text="$t('aboutTitles.contact')"
-              />
+              <h1 class="font-weight-thin mb-5">
+                {{ $t("aboutTitles.contact") }}
+              </h1>
               <v-snackbar top :color="type" v-model="showAlert" :timeout="5000">
                 <span class="ma-2" v-text="message" />
                 <v-btn
