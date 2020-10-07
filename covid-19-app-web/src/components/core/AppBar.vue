@@ -3,6 +3,7 @@
     <v-app-bar
       app
       flat
+      outlined
       class="white py-1"
       style="border-radius: 0 0 25px 0; height: auto; background: #fafafa!important "
       :class="{ shadow: raise }"
@@ -69,7 +70,7 @@
         dark
         color="primary"
         v-if="!loggedInUser"
-        class="v-card--shaped mx-1"
+        class="v-card--shaped mx-1 text-capitalize"
         depressed
         :to="{ name: 'Login' }"
         v-text="$t('auth.login')"

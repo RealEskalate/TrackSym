@@ -240,7 +240,9 @@ export default {
               "#448aff",
               "#ff4081",
               "#8e24aa",
-              "#dd2c00"
+              "#dca126",
+              "#ff34ad",
+              "#391bec"
             ],
             data: this.regionalStats[this.regional_criteria]
           }

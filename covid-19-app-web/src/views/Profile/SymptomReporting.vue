@@ -11,7 +11,7 @@
           :to="{ name: 'Login' }"
         >
           <v-icon small class="mr-2" color="primary" v-text="mdiInformation" />
-          Sign in to submit symptoms
+          Sign In to submit symptoms
         </v-btn>
       </div>
       <div class="text-center" v-else-if="!editing">
