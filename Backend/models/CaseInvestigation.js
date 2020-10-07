@@ -13,8 +13,19 @@ const caseInvestigationSchema = new mongoose.Schema({
         ref: 'User'
     },
     notes: {
-        type: String,
-        required: true
+        health_worker_id: {
+            required: true,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        date: {
+            type: Date,
+            required: true,
+        },
+        note:{
+            type: String,
+            required: true,
+        }
     },
 
 },
