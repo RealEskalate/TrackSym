@@ -69,7 +69,8 @@
     "actions": "መደረግ ያለበት",
     "states": "የበሽታው የሽግግር ሂደት",
     "learningPath": "የበለጠ ለመረዳት",
-    "news": "ዜና"
+    "news": "ዜና",
+    "reportedSymptoms": "የተመዘገበው ምልክቶች"
   },
 
   "graphNames": {
