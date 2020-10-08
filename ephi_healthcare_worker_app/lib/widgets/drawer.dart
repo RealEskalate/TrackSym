@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import '../pages/cases/cases.dart';
 import '../pages/sign_in/login.dart';
-import '../pages/people/people_home.dart';
+import 'hexColorGenerator.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -42,12 +41,11 @@ class AppDrawer extends StatelessWidget {
                           fontSize: 12.0,
                         )),
                     SizedBox(height: size.height * 0.01),
-                    Container(
-                      height: 44,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.contain,
-                              image: AssetImage('assets/images/eskalate.png'))),
+                    Image.asset(
+                      'assets/images/a2sv.png',
+                      width: size.width * 0.35,
+                      height: size.height * 0.1,
+                      fit: BoxFit.contain,
                     ),
                   ],
                 ),

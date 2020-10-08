@@ -32,7 +32,6 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: size.height * 0.01),
             Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 CardWidget(
@@ -69,7 +68,6 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: size.height * 0.01),
             Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 CardWidget(
@@ -104,10 +102,6 @@ class _HomePageState extends State<HomePage> {
                   )),
             ),
             LineChartSample2(),
-            // Container(
-            //     margin: EdgeInsets.symmetric(horizontal: 20),
-            //     height: 250,
-            //     child: TimeSeriesBar.withRandomData()),
           ],
         ),
       ),

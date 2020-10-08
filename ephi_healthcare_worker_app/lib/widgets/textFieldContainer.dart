@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class TextFieldContainer extends StatelessWidget {
   final bool signIn;
   final Widget child;
+
   const TextFieldContainer({Key key, this.child, this.signIn = true})
       : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(

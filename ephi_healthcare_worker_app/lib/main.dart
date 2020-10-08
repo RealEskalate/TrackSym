@@ -24,10 +24,6 @@ class Main extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.amber[50],
       body: WelcomePage(),
-//        appBar: AppBar(
-//          title: Text("EPHI Healthcare Workers App"),
-//          centerTitle: true,
-//          backgroundColor: Colors.blue,)
     );
   }
 }

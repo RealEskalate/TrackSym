@@ -1,3 +1,5 @@
+import 'package:ephi_healthcare_worker_app/widgets/hexColorGenerator.dart';
+
 import '../symptoms/symptom_home.dart';
 import '../../widgets/blurredDrawer.dart';
 import '../cases/cases.dart';
@@ -17,7 +19,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    // CurrentWidgets(Colors.blueGrey[100]),
     HomePage(),
     CasesList(),
     SymptomView(),

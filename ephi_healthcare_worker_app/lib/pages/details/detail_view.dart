@@ -1,19 +1,23 @@
 // detail view page for cases and symptoms from symptom view page
 //cases list page
 import 'package:ephi_healthcare_worker_app/pages/symptoms/symptom_history.dart';
+import 'package:ephi_healthcare_worker_app/widgets/hexColorGenerator.dart';
 import 'package:flutter/material.dart';
 import '../symptoms/symptom_history.dart';
 import '../symptoms/current_symptoms.dart';
 
 class DetailView extends StatefulWidget {
   DetailView({this.scrollController});
+
   final ScrollController scrollController;
+
   @override
   DetailViewState createState() => DetailViewState(this.scrollController);
 }
 
 class DetailViewState extends State<DetailView> {
   DetailViewState(this.scrollController);
+
   //User user;
   final ScrollController scrollController;
 
@@ -195,16 +199,4 @@ class DetailViewState extends State<DetailView> {
                   trailing: InkWell(child: Icon(Icons.arrow_forward_ios)),
                 ))));
   }
-}
-
-class HexColor extends Color {
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
-  }
-
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
