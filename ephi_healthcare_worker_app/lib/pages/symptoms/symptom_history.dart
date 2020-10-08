@@ -30,7 +30,6 @@ class _SymptomHistoryState extends State<SymptomHistory> {
           child: Icon(Icons.replay),
           onPressed: () {
             // _controller.animateToSelection();
-
             _controller
                 .animateToDate(DateTime.now().subtract(Duration(days: 14)));
           },
@@ -61,33 +60,17 @@ class _SymptomHistoryState extends State<SymptomHistory> {
             decoration: BoxDecoration(
               color: HexColor("#F5F9FF"),
             ),
-            // padding: EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                // Container(
-                //   padding: EdgeInsets.all(10),
-                //   child: Text(
-                //     _selectedValue.toString().substring(0, 10),
-                //     style: TextStyle(
-                //       color: Colors.black,
-                //       fontSize: 15,
-                //     ),
-                //   ),
-                //   decoration: BoxDecoration(
-                //     color: Colors.white,
-                //     borderRadius: BorderRadius.circular(10),
-                //   ),
-                // ),
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     color: Colors.white,
                   ),
                   child: DatePicker(
-                    DateTime.now().subtract(Duration(
-                        days:
-                            14)), // here we changed the start date of the date picker
+                    DateTime.now().subtract(Duration(days: 14)),
+                    // here we changed the start date of the date picker
                     width: 60,
                     height: 80,
                     controller: _controller,
@@ -95,7 +78,6 @@ class _SymptomHistoryState extends State<SymptomHistory> {
                         DateTime.now().subtract(Duration(days: 14)),
                     selectionColor: Colors.black,
                     selectedTextColor: Colors.white,
-
                     activeDates: [
                       DateTime.now().subtract(Duration(days: 14)),
                       DateTime.now().subtract(Duration(days: 13)),
@@ -186,7 +168,6 @@ class _SymptomHistoryState extends State<SymptomHistory> {
             borderRadius: BorderRadius.circular(25),
             color: Colors.white,
           ),
-
           //alignment: Alignment.topLeft,
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           child: Column(

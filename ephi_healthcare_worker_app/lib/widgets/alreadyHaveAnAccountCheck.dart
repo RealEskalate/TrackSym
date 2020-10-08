@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 //import 'package:flutter_auth/constants.dart';
 //import 'package:flutter_auth/flutter_auth.dart';
 
@@ -6,6 +7,7 @@ class AlreadyHaveAnAccountCheck extends StatelessWidget {
   final Color color;
   final bool login;
   final Function press;
+
   const AlreadyHaveAnAccountCheck({
     Key key,
     this.login = true,

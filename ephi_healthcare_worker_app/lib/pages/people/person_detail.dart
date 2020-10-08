@@ -7,7 +7,9 @@ import '../../widgets/hexColorGenerator.dart';
 
 class PatientDetailView extends StatefulWidget {
   PatientDetailView({this.scrollController});
+
   final ScrollController scrollController;
+
   @override
   PatientDetailViewState createState() =>
       PatientDetailViewState(this.scrollController);
@@ -15,6 +17,7 @@ class PatientDetailView extends StatefulWidget {
 
 class PatientDetailViewState extends State<PatientDetailView> {
   PatientDetailViewState(this.scrollController);
+
   //User user;
   final ScrollController scrollController;
 

@@ -21,7 +21,6 @@ class ConfirmationPage extends StatelessWidget {
                 // with Material
                 child: Image.asset('assets/images/ephi.png',
                     width: 330, height: 80),
-
                 clipBehavior: Clip.antiAlias,
               )),
               SizedBox(height: size.height * 0.1),
@@ -71,7 +70,13 @@ class ConfirmationPage extends StatelessWidget {
                       )),
                 ),
               ),
-              SizedBox(height: size.height * 0.025),
+              SizedBox(height: size.height * 0.21),
+              Image.asset(
+                'assets/images/a2sv.png',
+                width: size.width * 0.3,
+                height: size.height * 0.1,
+                fit: BoxFit.contain,
+              ),
             ],
           ),
         ),

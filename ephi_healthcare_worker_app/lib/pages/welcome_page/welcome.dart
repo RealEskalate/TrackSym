@@ -11,112 +11,95 @@ class WelcomePage extends StatelessWidget {
     // Provides us total height and width of our screen
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-//      backgroundColor: Colors.amber[50],
       backgroundColor: Colors.white,
-//      appBar: AppBar(
-//        title: Text('Gazetem Mobil Uygulaması'),
-//        centerTitle: true,
-//        backgroundColor: Colors.redAccent,
-//      ),
       body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(5.0),
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: size.height * 0.1),
-              Center(
-                child: Material(
-                  // with Material
-                  child: Image.asset('assets/images/ephi.png',
-                      width: size.height * 0.5, height: 80),
-                  clipBehavior: Clip.antiAlias,
-                ),
-              ),
-              SizedBox(height: size.height * 0.1),
-//              Image.asset('assets/images/eskalate.png', width: 230, height: 230),
-              Text(
-//                  'Ethiopian Public Health Institute COVID-19 Application',
-//                   'Ethiopian Public Health Institute',
-                  'Healthcare Worker App',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    shadows: <Shadow>[
-                      Shadow(
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 7.0,
-                        color: Color.fromARGB(45, 0, 0, 0),
-                      ),
-                    ],
-                    color: Colors.lightBlue,
-                    fontSize: 24.0,
-                  )),
-              SizedBox(height: size.height * 0.18),
-              ButtonTheme(
-                minWidth: size.width * 0.8,
-                height: size.width * 0.13,
-                child: RaisedButton(
-                  color: Colors.lightGreenAccent[700],
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return CreateAccountPage();
-                        },
-                      ),
-                    );
-                  },
-                  child: Text('CREATE ACCOUNT',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                      )),
-                ),
-              ),
-              SizedBox(height: size.height * 0.02),
-              ButtonTheme(
-                minWidth: size.width * 0.8,
-                height: size.width * 0.13,
-                child: RaisedButton(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: size.height * 0.07),
+            Center(
+              child: Image.asset('assets/images/ephi.png',
+                  width: size.height * 0.5, height: 80),
+            ),
+            SizedBox(height: size.height * 0.1),
+            Text('Healthcare Worker App',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  shadows: <Shadow>[
+                    Shadow(
+                      offset: Offset(2.0, 2.0),
+                      blurRadius: 7.0,
+                      color: Color.fromARGB(45, 0, 0, 0),
+                    ),
+                  ],
                   color: Colors.lightBlue,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return LoginPage();
-                        },
-                      ),
-                    );
-                  },
-                  child: Text('SIGN IN',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                      )),
-                ),
+                  fontSize: 24.0,
+                )),
+            SizedBox(height: size.height * 0.18),
+            ButtonTheme(
+              minWidth: size.width * 0.8,
+              height: size.width * 0.13,
+              child: RaisedButton(
+                color: Colors.lightGreenAccent[700],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40)),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return CreateAccountPage();
+                      },
+                    ),
+                  );
+                },
+                child: Text('CREATE ACCOUNT',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    )),
               ),
-              SizedBox(height: size.height * 0.1),
-              Image.asset(
-                'assets/images/eskalate_lowQuality.png',
-                width: size.width * 0.25,
-                height: size.height * 0.1,
-                fit: BoxFit.contain,
+            ),
+            SizedBox(height: size.height * 0.02),
+            ButtonTheme(
+              minWidth: size.width * 0.8,
+              height: size.width * 0.13,
+              child: RaisedButton(
+                color: Colors.lightBlue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40)),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return LoginPage();
+                      },
+                    ),
+                  );
+                },
+                child: Text('SIGN IN',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    )),
               ),
-              Text('Eskalate LLC™. 2020 All Rights Reserved.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12.0,
-                  )),
-            ],
-          ),
+            ),
+            SizedBox(height: size.height * 0.1),
+            Image.asset(
+              'assets/images/a2sv.png',
+              width: size.width * 0.3,
+              height: size.height * 0.1,
+              fit: BoxFit.contain,
+            ),
+            // Text('Eskalate LLC™. 2020 All Rights Reserved.',
+            //     textAlign: TextAlign.center,
+            //     style: TextStyle(
+            //       color: Colors.black,
+            //       fontSize: 12.0,
+            //     )),
+          ],
         ),
       ),
     );
