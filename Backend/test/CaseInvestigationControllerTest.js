@@ -21,7 +21,7 @@ describe("Case Investigation API", () => {
   let case_investigation;
   let tokens;
 
-  
+
   beforeEach(async () => {
     healthcare_worker = new User({
       _id: mongoose.Types.ObjectId(),
@@ -35,61 +35,61 @@ describe("Case Investigation API", () => {
     await healthcare_worker.save();
 
     try {
-        jwt.sign({ user:healthcare_worker }, process.env.APP_SECRET_KEY, (err, token) => {
-          tokens = token;
-        });
+      jwt.sign({ user: healthcare_worker }, process.env.APP_SECRET_KEY, (err, token) => {
+        tokens = token;
+      });
     } catch (err) {
-        console.log("ERROR " + err.toString());
+      console.log("ERROR " + err.toString());
     }
 
     patient = new Patient({
-        _id: mongoose.Types.ObjectId(),
-        first_name: "Darth",
-        last_name: "Vader",
-        dob: new Date('May 25, 1977'),
-        phone_number: "+25189028392",
-        language: "English",
-        gender: "MALE",
-        woreda: "Nefas Silk",
-        street_address: "Jemo 2",
-        city: "Addis Ababa",
-        status: "Death",
-        sms_status: true,
+      _id: mongoose.Types.ObjectId(),
+      first_name: "Darth",
+      last_name: "Vader",
+      dob: new Date('May 25, 1977'),
+      phone_number: "+25189028392",
+      language: "English",
+      gender: "MALE",
+      woreda: "Nefas Silk",
+      street_address: "Jemo 2",
+      city: "Addis Ababa",
+      status: "Death",
+      sms_status: true,
     })
 
     await patient.save();
 
 
     case_investigation = new CaseInvestigation({
-        _id: mongoose.Types.ObjectId(),
-        patient_id: patient._id,
-        assigned_to: healthcare_worker._id,
-        notes:{
-          note: "This is a test note...",
-          date: new Date(),
-          health_worker_id: healthcare_worker._id
-        }
+      _id: mongoose.Types.ObjectId(),
+      patient_id: patient._id,
+      assigned_to: healthcare_worker._id,
+      notes: {
+        note: "This is a test note...",
+        date: new Date(),
+        health_worker_id: healthcare_worker._id
+      }
     })
 
     await case_investigation.save();
 
   });
 
-  
+
   afterEach(async () => {
     await Patient.findByIdAndDelete(patient._id);
     await User.findByIdAndDelete(healthcare_worker._id);
     await CaseInvestigation.findByIdAndDelete(case_investigation._id);
   });
 
-  
+
   it("It should add a new Case Investigation", async () => {
     let response = await chai
       .request(server)
       .patch("/api/case_investigations/")
       .set("Authorization", "Bearer " + tokens)
       .send({
-        patient_id:  mongoose.Types.ObjectId(),
+        patient_id: mongoose.Types.ObjectId(),
         assigned_to: healthcare_worker._id,
         notes: "This is a test note...",
       });
@@ -139,16 +139,25 @@ describe("Case Investigation API", () => {
     expect(response.body).to.be.a("object");
   });
 
-  
+
   it("It should get a Case Investigation", async () => {
     let response = await chai
       .request(server)
-      .get("/api/case_investigations/"+case_investigation._id)
+      .get("/api/case_investigations/" + case_investigation._id)
       .set("Authorization", "Bearer " + tokens);
     expect(response).to.have.status(200);
   });
 
-  
+
+  it("It should get case Investigations", async () => {
+    let response = await chai
+      .request(server)
+      .get("/api/case_investigations/")
+      .set("Authorization", "Bearer " + tokens);
+    expect(response).to.have.status(200);
+  });
+
+
   it("It should update a case investigation", async () => {
     let response = await chai
       .request(server)
@@ -169,7 +178,7 @@ describe("Case Investigation API", () => {
   it("It should delete case investigation", async () => {
     let response = await chai
       .request(server)
-      .delete("/api/case_investigations/"+case_investigation._id)
+      .delete("/api/case_investigations/" + case_investigation._id)
       .set("Authorization", "Bearer " + tokens);
     expect(response).to.have.status(200);
   });

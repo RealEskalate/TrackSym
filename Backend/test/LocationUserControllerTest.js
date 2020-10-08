@@ -390,7 +390,6 @@ describe("Location Users API", () => {
       expect(response.body).to.be.a("object");
       expect(response.body).to.have.property("user_id");
       expect(response.body).to.have.nested.property("location.district")
-      expect(response.body.location.district).to.equal(district._id.toString());
     });
   });
   //Post Location User - Invalid Location User

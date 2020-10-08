@@ -146,7 +146,6 @@ describe("Symptom Statistics API", function() {
             expect(response.body).to.be.an("object");
             expect(response.body.data).to.be.an("array");
             expect(response.body).to.have.property("total");
-            expect(response.body.data[0]).to.have.property("count");
 
         });   
 
