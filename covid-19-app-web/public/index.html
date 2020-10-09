@@ -1,13 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<body>
-<noscript>
-  <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
-    Please enable it to continue.</strong>
-</noscript>
-<div id="app"></div>
-<!-- built files will be auto injected -->
-</body>
 <head>
   <meta charset="utf-8" />
   <meta content="IE=edge" http-equiv="X-UA-Compatible" />
@@ -26,6 +18,7 @@
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script>
     window.__VARIABLE_TYPE = 1;
+    console.log(window.__VARIABLE_TYPE);
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-151775482-2"></script>
   <script>
@@ -47,4 +40,12 @@
     }
   </script>
 </head>
+<body>
+<noscript>
+  <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+    Please enable it to continue.</strong>
+</noscript>
+<div id="app"></div>
+<!-- built files will be auto injected -->
+</body>
 </html>
