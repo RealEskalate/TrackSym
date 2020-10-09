@@ -214,8 +214,26 @@ import {
 } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
 
+console.log(window.__VARIABLE_TYPE);
 export default {
   data: () => {
+    let customFilter = (function() {
+      if (window.__VARIABLE_TYPE === 1)
+        return {
+          text: "navbar.statistics",
+          icon: mdiTrendingUp,
+          to: "Statistics",
+          roles: ["basic", "none"]
+        };
+      else {
+        return {
+          text: "map.symptoms",
+          icon: mdiThermometerHigh,
+          to: "DisplaySymptoms",
+          roles: ["basic", "none"]
+        };
+      }
+    })();
     return {
       mdiTranslate,
       mdiAccountCog,
@@ -241,21 +259,7 @@ export default {
           to: "Home",
           roles: ["basic", "none"]
         },
-        (function() {
-          return window.__VARIABLE_TYPE === 1
-            ? {
-                text: "navbar.statistics",
-                icon: mdiTrendingUp,
-                to: "Statistics",
-                roles: ["basic", "none"]
-              }
-            : {
-                text: "map.symptoms",
-                icon: mdiThermometerHigh,
-                to: "DisplaySymptoms",
-                roles: ["basic", "none"]
-              };
-        })(),
+        customFilter,
         {
           text: "navbar.ethiopia",
           icon: mdiHomeSearch,
