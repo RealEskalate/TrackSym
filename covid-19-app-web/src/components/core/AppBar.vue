@@ -215,21 +215,6 @@ import {
 } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
 
-function getVariablePage() {
-  return window.__VARIABLE_TYPE === 1
-    ? {
-        text: "navbar.statistics",
-        icon: mdiTrendingUp,
-        to: "Statistics",
-        roles: ["basic", "none"]
-      }
-    : {
-        text: "map.symptoms",
-        icon: mdiThermometerHigh,
-        to: "DisplaySymptoms",
-        roles: ["basic", "none"]
-      };
-}
 export default {
   data: () => {
     return {
@@ -257,7 +242,21 @@ export default {
           to: "Home",
           roles: ["basic", "none"]
         },
-        getVariablePage(),
+        (function() {
+          return window.__VARIABLE_TYPE === 1
+            ? {
+                text: "navbar.statistics",
+                icon: mdiTrendingUp,
+                to: "Statistics",
+                roles: ["basic", "none"]
+              }
+            : {
+                text: "map.symptoms",
+                icon: mdiThermometerHigh,
+                to: "DisplaySymptoms",
+                roles: ["basic", "none"]
+              };
+        })(),
         {
           text: "navbar.ethiopia",
           icon: mdiHomeSearch,
