@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<body>
+<noscript>
+  <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+    Please enable it to continue.</strong>
+</noscript>
+<div id="app"></div>
+<!-- built files will be auto injected -->
+</body>
 <head>
   <meta charset="utf-8" />
   <meta content="IE=edge" http-equiv="X-UA-Compatible" />
@@ -17,9 +25,7 @@
   <title>TrackSym - Covid-19 Symptom Tracker</title>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script>
-    window.onload = function() {
-      window.__VARIABLE_TYPE = 1;
-    };
+    window.__VARIABLE_TYPE = 1;
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-151775482-2"></script>
   <script>
@@ -41,12 +47,4 @@
     }
   </script>
 </head>
-<body>
-<noscript>
-  <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
-    Please enable it to continue.</strong>
-</noscript>
-<div id="app"></div>
-<!-- built files will be auto injected -->
-</body>
 </html>
