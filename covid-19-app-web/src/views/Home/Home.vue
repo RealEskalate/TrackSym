@@ -1,20 +1,23 @@
 <template>
   <v-container class="home">
-    <heat-map />
-    <symptom-reporting />
+    <symptoms v-if="variableType" />
+    <statistics v-else />
   </v-container>
 </template>
 
 <script>
 // @ is an alias to /src
-import HeatMap from "../HeatMap/HeatMap";
-import SymptomReporting from "../Profile/SymptomReporting";
 
 export default {
   name: "Home",
   components: {
-    HeatMap,
-    SymptomReporting
+    Symptoms: () => import("../HeatMap/Symptoms"),
+    Statistics: () => import("./Statistics")
+  },
+  computed: {
+    variableType() {
+      return window.__VARIABLE_TYPE === 1;
+    }
   }
 };
 </script>

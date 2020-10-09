@@ -210,10 +210,26 @@ import {
   mdiAccountMultiplePlus,
   mdiAmbulance,
   mdiTrendingUp,
-  mdiHomeSearch
+  mdiHomeSearch,
+  mdiThermometerHigh
 } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
 
+function getVariablePage() {
+  return window.__VARIABLE_TYPE === 1
+    ? {
+        text: "navbar.statistics",
+        icon: mdiTrendingUp,
+        to: "Statistics",
+        roles: ["basic", "none"]
+      }
+    : {
+        text: "map.symptoms",
+        icon: mdiThermometerHigh,
+        to: "DisplaySymptoms",
+        roles: ["basic", "none"]
+      };
+}
 export default {
   data: () => {
     return {
@@ -241,12 +257,7 @@ export default {
           to: "Home",
           roles: ["basic", "none"]
         },
-        {
-          text: "navbar.statistics",
-          icon: mdiTrendingUp,
-          to: "Statistics",
-          roles: ["basic", "none"]
-        },
+        getVariablePage(),
         {
           text: "navbar.ethiopia",
           icon: mdiHomeSearch,
@@ -309,7 +320,7 @@ export default {
     };
   },
   created() {
-    const throttleFunc = throttle(1000, false, () => {
+    const throttleFunc = throttle(500, false, () => {
       this.handleScroll();
     });
     window.addEventListener("scroll", throttleFunc);
