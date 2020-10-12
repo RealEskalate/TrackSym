@@ -1,4 +1,7 @@
 {
+  "profile": {
+    "symptomHistory": "Semptom Geçmişi"
+  },
   "symptomStats": {
     "totalSymptoms": "KAYDEDİLEN TOPLAM SEMPTOMLAR",
     "mostCommon": "EN YAYGIN SEMPTOMLAR",
@@ -45,6 +48,8 @@
 
   "navbar": {
     "home": "Ana Sayfa",
+    "ethiopia": "Etiyopya",
+    "statistics": "Istatistikler",
     "learn": "Bilgi",
     "about": "Hakkında",
     "news": "Haberler",

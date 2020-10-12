@@ -1,4 +1,7 @@
 {
+  "profile": {
+    "symptomHistory": "Symptom History"
+  },
   "symptomStats": {
     "totalSymptoms": "TOTAL SYMPTOMS REGISTERED",
     "mostCommon": "MOST COMMON SYMPTOM",
