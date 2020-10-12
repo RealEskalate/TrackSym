@@ -214,27 +214,11 @@ import {
   mdiThermometerHigh
 } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
+import { abTest } from "../../tests/a-b.test.mixin";
 
-console.log(window.__VARIABLE_TYPE);
 export default {
+  mixins: [abTest],
   data: () => {
-    let customFilter = (function() {
-      if (window.__VARIABLE_TYPE === 1)
-        return {
-          text: "navbar.statistics",
-          icon: mdiTrendingUp,
-          to: "Statistics",
-          roles: ["basic", "none"]
-        };
-      else {
-        return {
-          text: "map.symptoms",
-          icon: mdiThermometerHigh,
-          to: "DisplaySymptoms",
-          roles: ["basic", "none"]
-        };
-      }
-    })();
     return {
       mdiTranslate,
       mdiAccountCog,
@@ -253,70 +237,6 @@ export default {
         ao: "AO",
         tr: "TR"
       },
-      links: [
-        {
-          text: "navbar.home",
-          icon: mdiHome,
-          to: "Home",
-          roles: ["basic", "none"]
-        },
-        customFilter,
-        {
-          text: "navbar.ethiopia",
-          icon: mdiHomeSearch,
-          to: "Ethiopia",
-          roles: ["basic", "none"]
-        },
-        {
-          text: "navbar.learn",
-          icon: mdiBookOpenVariant,
-          to: "Learn",
-          roles: ["basic", "none"]
-        },
-        {
-          text: "navbar.news",
-          icon: mdiNewspaper,
-          to: "News",
-          roles: ["basic", "none"]
-        },
-        {
-          text: "navbar.about",
-          icon: mdiInformation,
-          to: "About",
-          roles: ["basic", "none"]
-        },
-        // admins
-        {
-          text: "navbar.dashboard",
-          icon: mdiViewDashboard,
-          to: "Dashboard",
-          roles: ["ephi_user"]
-        },
-        {
-          text: "map.symptoms",
-          icon: mdiVirus,
-          to: "Symptoms",
-          roles: ["ephi_user"]
-        },
-        {
-          text: "navbar.cases",
-          icon: mdiAmbulance,
-          to: "Cases",
-          roles: ["ephi_user"]
-        },
-        {
-          text: "navbar.users",
-          icon: mdiAccountMultiplePlus,
-          to: "Users",
-          roles: ["ephi_user"]
-        },
-        {
-          text: "navbar.inviteAdmins",
-          icon: mdiEmailSend,
-          to: "InviteAdmin",
-          roles: ["ephi_user"]
-        }
-      ],
       more_links: [
         { text: "navbar.profile", icon: mdiAccountEdit, to: "Profile" }
       ]
@@ -373,6 +293,88 @@ export default {
     },
     isFirstVisit() {
       return store.getters.getFirstVisit;
+    },
+    links() {
+      let variantNavigation;
+      if (this.variant === 1)
+        variantNavigation = {
+          text: "navbar.statistics",
+          icon: mdiTrendingUp,
+          to: "Statistics",
+          roles: ["basic", "none"]
+        };
+      else {
+        variantNavigation = {
+          text: "map.symptoms",
+          icon: mdiThermometerHigh,
+          to: "DisplaySymptoms",
+          roles: ["basic", "none"]
+        };
+      }
+      return [
+        {
+          text: "navbar.home",
+          icon: mdiHome,
+          to: "Home",
+          roles: ["basic", "none"]
+        },
+        variantNavigation,
+        {
+          text: "navbar.ethiopia",
+          icon: mdiHomeSearch,
+          to: "Ethiopia",
+          roles: ["basic", "none"]
+        },
+        {
+          text: "navbar.learn",
+          icon: mdiBookOpenVariant,
+          to: "Learn",
+          roles: ["basic", "none"]
+        },
+        {
+          text: "navbar.news",
+          icon: mdiNewspaper,
+          to: "News",
+          roles: ["basic", "none"]
+        },
+        {
+          text: "navbar.about",
+          icon: mdiInformation,
+          to: "About",
+          roles: ["basic", "none"]
+        },
+        // admins
+        {
+          text: "navbar.dashboard",
+          icon: mdiViewDashboard,
+          to: "Dashboard",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "map.symptoms",
+          icon: mdiVirus,
+          to: "Symptoms",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "navbar.cases",
+          icon: mdiAmbulance,
+          to: "Cases",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "navbar.users",
+          icon: mdiAccountMultiplePlus,
+          to: "Users",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "navbar.inviteAdmins",
+          icon: mdiEmailSend,
+          to: "InviteAdmin",
+          roles: ["ephi_user"]
+        }
+      ];
     }
   },
   watch: {
