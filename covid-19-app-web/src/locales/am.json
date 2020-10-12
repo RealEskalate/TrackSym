@@ -1,4 +1,7 @@
 {
+  "profile": {
+    "symptomHistory": "የምልክት ታሪክ"
+  },
   "symptomStats": {
     "totalSymptoms": "አጠቃላይ የተመዘገቡ ምልክቶች",
     "mostCommon": "በጣም የተለመደ ምልክት",
@@ -45,6 +48,8 @@
 
   "navbar": {
     "home": "መግቢያ",
+    "ethiopia": "ኢትዮጵያ",
+    "statistics": "ስታትስቲክስ",
     "learn": "ይማሩ",
     "about": "ስለኛ",
     "news": "ዜና",
