@@ -1,6 +1,6 @@
 <template>
   <v-container class="home">
-    <symptoms v-if="variableType" />
+    <symptoms v-if="isVariantOne" />
     <statistics v-else />
   </v-container>
 </template>
