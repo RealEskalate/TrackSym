@@ -4,6 +4,6 @@ var informationController = require("../controllers/InformationController");
 
 router.get("/api/resources/information", informationController.getAllInformations);
 router.post("/api/resources/information", informationController.postInformations);
-router.patch("/api/resources/information", informationController.updateInformation);
+router.patch("/api/resources/information/:id", informationController.updateInformation);
 router.delete("/api/resources/information", informationController.deleteInformation);
 module.exports = router;

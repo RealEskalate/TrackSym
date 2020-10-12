@@ -3,27 +3,28 @@
     <v-app-bar
       app
       flat
-      class="white py-1"
-      style="border-radius: 0 0 25px 0; height: auto; background: #fafafa!important "
+      outlined
+      class="white"
+      style="border-radius: 0 0 25px 0; height: auto; background: #fafafa!important"
       :class="{ shadow: raise }"
     >
       <v-btn fab text @click.stop="drawer = !drawer">
-        <v-icon large v-text="mdiForwardburger" />
+        <v-icon
+          large
+          v-text="mdiMenu"
+          style="max-width: 32px"
+          color="#616161"
+        />
       </v-btn>
-      <!--      <v-app-bar-nav-icon-->
-      <!--        v-if="$vuetify.breakpoint.mdAndUp"-->
-      <!--        @click.stop="drawer = !drawer"-->
-      <!--      />-->
       <v-img
         alt="TrackSym"
-        class="shrink mx-1"
+        class="shrink mx-auto"
         contain
         src="/img/brand/blue.png"
         style="transition: width 0.2s ease"
         :width="brandWidth"
       />
 
-      <v-spacer />
       <!--      <v-btn-->
       <!--        :key="link.to"-->
       <!--        :to="{ name: link.to }"-->
@@ -59,12 +60,12 @@
       <!--          </template>-->
       <!--        </v-select>-->
       <!--      </div>-->
-      <v-divider class="mr-2" vertical light />
       <v-btn
+        small
         dark
         color="primary"
         v-if="!loggedInUser"
-        class="v-card--shaped mx-1"
+        class="v-card--shaped mx-1 text-capitalize"
         depressed
         :to="{ name: 'Login' }"
         v-text="$t('auth.login')"
@@ -114,7 +115,7 @@
         alt="TrackSym"
         class="shrink my-5 mx-auto"
         contain
-        :width="160"
+        :width="150"
         src="/img/brand/blue.png"
         data-v-step="0"
       />
@@ -197,7 +198,7 @@ import {
   mdiAccountCog,
   mdiAccountEdit,
   mdiBookOpenVariant,
-  mdiForwardburger,
+  mdiMenu,
   mdiHome,
   mdiInformation,
   mdiLogoutVariant,
@@ -209,16 +210,19 @@ import {
   mdiAccountMultiplePlus,
   mdiAmbulance,
   mdiTrendingUp,
-  mdiHomeSearch
+  mdiHomeSearch,
+  mdiThermometerHigh
 } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
+import { abTest } from "../../tests/a-b.test.mixin";
 
 export default {
+  mixins: [abTest],
   data: () => {
     return {
       mdiTranslate,
       mdiAccountCog,
-      mdiForwardburger,
+      mdiMenu,
       mdiLogoutVariant,
       mdiAccountMultiplePlus,
       drawer: false,
@@ -233,19 +237,88 @@ export default {
         ao: "AO",
         tr: "TR"
       },
-      links: [
+      more_links: [
+        { text: "navbar.profile", icon: mdiAccountEdit, to: "Profile" }
+      ]
+    };
+  },
+  created() {
+    const throttleFunc = throttle(500, false, () => {
+      this.handleScroll();
+    });
+    window.addEventListener("scroll", throttleFunc);
+    setTimeout(() => {
+      this.drawer = store.getters.getNavigationDrawer;
+    }, 1000);
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
+  },
+  methods: {
+    handleScroll() {
+      this.locationY = window.scrollY;
+    },
+    changeLang() {
+      store.dispatch("setLanguagePreference", { lang: this.$i18n.locale });
+      router.replace({ params: { lang: this.$i18n.locale } }).catch(() => {});
+    },
+    logout() {
+      store.dispatch("setToken", { token: null });
+      store.dispatch("setUser", { user: null });
+      router.push({ name: "Home" });
+    },
+    filterMenu(navType) {
+      let count = 0;
+      return this.links.filter(link => {
+        return (
+          ((!this.loggedInUser && link.roles.includes("none")) ||
+            (this.loggedInUser &&
+              link.roles.includes(this.loggedInUser.role.toLowerCase()))) &&
+          (this.$vuetify.breakpoint.mdAndUp ||
+            (navType === "bottom" && count++ < 4) ||
+            (navType === "side" && count++ >= 4))
+        );
+      });
+    }
+  },
+  computed: {
+    raise() {
+      return this.locationY > 50;
+    },
+    brandWidth() {
+      return this.locationY > 50 ? 110 : 120;
+    },
+    openNavigation() {
+      return store.getters.getNavigationDrawer;
+    },
+    isFirstVisit() {
+      return store.getters.getFirstVisit;
+    },
+    links() {
+      let variantNavigation;
+      if (this.variant === 1)
+        variantNavigation = {
+          text: "navbar.statistics",
+          icon: mdiTrendingUp,
+          to: "Statistics",
+          roles: ["basic", "none"]
+        };
+      else {
+        variantNavigation = {
+          text: "map.symptoms",
+          icon: mdiThermometerHigh,
+          to: "DisplaySymptoms",
+          roles: ["basic", "none"]
+        };
+      }
+      return [
         {
           text: "navbar.home",
           icon: mdiHome,
           to: "Home",
           roles: ["basic", "none"]
         },
-        {
-          text: "navbar.statistics",
-          icon: mdiTrendingUp,
-          to: "Statistics",
-          roles: ["basic", "none"]
-        },
+        variantNavigation,
         {
           text: "navbar.ethiopia",
           icon: mdiHomeSearch,
@@ -301,63 +374,7 @@ export default {
           to: "InviteAdmin",
           roles: ["ephi_user"]
         }
-      ],
-      more_links: [
-        { text: "navbar.profile", icon: mdiAccountEdit, to: "Profile" }
-      ]
-    };
-  },
-  created() {
-    const throttleFunc = throttle(1000, false, () => {
-      this.handleScroll();
-    });
-    window.addEventListener("scroll", throttleFunc);
-    setTimeout(() => {
-      this.drawer = store.getters.getNavigationDrawer;
-    }, 1000);
-  },
-  destroyed() {
-    window.removeEventListener("scroll", this.handleScroll);
-  },
-  methods: {
-    handleScroll() {
-      this.locationY = window.scrollY;
-    },
-    changeLang() {
-      store.dispatch("setLanguagePreference", { lang: this.$i18n.locale });
-      router.replace({ params: { lang: this.$i18n.locale } }).catch(() => {});
-    },
-    logout() {
-      store.dispatch("setToken", { token: null });
-      store.dispatch("setUser", { user: null });
-      router.push({ name: "Home" });
-    },
-    filterMenu(navType) {
-      let count = 0;
-      return this.links.filter(link => {
-        return (
-          ((!this.loggedInUser && link.roles.includes("none")) ||
-            (this.loggedInUser &&
-              link.roles.includes(this.loggedInUser.role.toLowerCase()))) &&
-          (this.$vuetify.breakpoint.mdAndUp ||
-            (navType === "bottom" && count++ < 4) ||
-            (navType === "side" && count++ >= 4))
-        );
-      });
-    }
-  },
-  computed: {
-    raise() {
-      return this.locationY > 50;
-    },
-    brandWidth() {
-      return this.locationY > 50 ? 150 : 160;
-    },
-    openNavigation() {
-      return store.getters.getNavigationDrawer;
-    },
-    isFirstVisit() {
-      return store.getters.getFirstVisit;
+      ];
     }
   },
   watch: {

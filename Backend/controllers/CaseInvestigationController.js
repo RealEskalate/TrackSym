@@ -22,7 +22,8 @@ exports.getCaseInvestigations = async (req, res) => {
         const investigations = await CaseInvestigation.find(filter, {}, { skip: page - 1, limit: size * 1 });
         const populated = await CaseInvestigation.populate(investigations, [
             { model: 'Patient', path: 'patient_id', select: '_id first_name last_name' },
-            { model: 'User', path: 'assigned_to', select: '_id username' }
+            { model: 'User', path: 'assigned_to', select: '_id username' },
+            { model: 'User', path: 'notes.health_worker_id', select: '_id username' },
         ]);
         const result = {
             data_count: await CaseInvestigation.countDocuments(filter),
@@ -57,8 +58,15 @@ exports.addOrUpdateCaseInvestigation = async (req, res) => {
     try {
         const investigation = await CaseInvestigation.findById(id);
         if (!investigation) {
-            const investigation = new CaseInvestigation(_.pick(req.body, ["patient_id", "assigned_to", "notes"]));
+            const investigation = new CaseInvestigation(_.pick(req.body, ["patient_id", "assigned_to"]));
             investigation._id = mongoose.Types.ObjectId();
+            // setting HCW id and date
+            investigation.notes ={
+                date : new Date(),
+                note : req.body.notes,
+                health_worker_id : req.body.loggedInUser
+            };
+            
             await investigation.save();
             return res.status(201).send(investigation);
         }
@@ -111,5 +119,31 @@ exports.get_patients_by_status = async (req, res) => {
         return res.status(200).send(result);
     } catch (error) {
         return res.status(500).send(error.toString());
+    }
+}
+
+
+exports.getAssigedHealthWorkersByPatientId = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const size = parseInt(req.query.size) || 15;
+
+    try {
+        const investigations = await CaseInvestigation
+            .find({ patient_id: req.params.id }, {}, { skip: page - 1, limit: size * 1 })
+            .select("notes assigned_to -_id")
+            .sort({ "updated_at": -1 });
+        const populated = await CaseInvestigation.populate(investigations, [
+            { model: 'User', path: 'assigned_to', select: '_id username' },
+            { model: 'User', path: 'notes.health_worker_id', select: '_id username' },
+        ]);
+        const result = {
+            data_count: await CaseInvestigation.countDocuments({ patient_id: req.params.id }),
+            page_size: size,
+            current_page: page,
+            data: populated
+        };
+        return res.send(result);
+    } catch (err) {
+        return res.status(500).send(err.toString());
     }
 }

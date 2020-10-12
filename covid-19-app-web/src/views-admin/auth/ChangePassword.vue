@@ -40,6 +40,7 @@ export default {
   data() {
     return {
       mdiCloseCircleOutline,
+      snackbar: false,
       valid: false,
       user: {
         signature: null,
@@ -70,11 +71,11 @@ export default {
           this.snackbar = true;
           this.loading = false;
         });
-    },
-    computed: {
-      getMessage() {
-        return store.getters.getMessage;
-      }
+    }
+  },
+  computed: {
+    getMessage() {
+      return store.getters.getMessage;
     }
   }
 };

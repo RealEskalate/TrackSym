@@ -3,10 +3,9 @@
     <v-container>
       <v-row>
         <v-col>
-          <h3
-            class="display-1 font-weight-thin mb-5"
-            v-text="$t('titles.globalStatisticsTitle')"
-          />
+          <h1 class="font-weight-thin mb-5">
+            {{ $t("titles.globalStatisticsTitle") }}
+          </h1>
         </v-col>
       </v-row>
       <v-row>

@@ -64,7 +64,11 @@ describe("Case Investigation API", () => {
         _id: mongoose.Types.ObjectId(),
         patient_id: patient._id,
         assigned_to: healthcare_worker._id,
-        notes: "This is a test note..."
+        notes:{
+          note: "This is a test note...",
+          date: new Date(),
+          health_worker_id: healthcare_worker._id
+        }
     })
 
     await case_investigation.save();

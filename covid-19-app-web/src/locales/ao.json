@@ -48,8 +48,8 @@
 
   "navbar": {
     "home": "Seensa",
-    "ethiopia": "Itoophiyaa",
-    "statistics": "Odeeffannoo",
+    "ethiopia": "Itiyoophiyaa",
+    "statistics": "Istaatistiksii",
     "learn": "Baradhaa",
     "about": "Waa'ee",
     "news": "Oduu",
@@ -69,7 +69,8 @@
     "actions": "Maal Haa Goonu?",
     "states": "Sadarkaa Jijjiirama Dhukkubichaa",
     "learningPath": "Dabalataan Barachuuf",
-    "news": "Oduu"
+    "news": "Oduu",
+    "reportedSymptoms": "Mallattoolee galmaa'an"
   },
 
   "graphNames": {

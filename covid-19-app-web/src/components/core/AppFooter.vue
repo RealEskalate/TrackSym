@@ -41,18 +41,22 @@
             solo
             flat
             dense
+            hide-details
             v-model="$i18n.locale"
             :items="languages"
-            label="Lang"
+            @change="changeLang"
           >
             <template v-slot:append>
               <small />
             </template>
+            <template v-slot:append>
+              <small />
+            </template>
             <template v-slot:selection="{ item }">
-              <small class="primary--text" v-text="langText[item]" />
+              <small class="primary--text"> {{ langText[item] }} </small>
             </template>
             <template v-slot:item="{ item }">
-              <small v-text="langText[item]" />
+              <small> {{ langText[item] }} </small>
             </template>
           </v-select>
         </div>
@@ -64,6 +68,8 @@
 <script>
 import { mdiWeb } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
+import router from "../../router";
+import store from "@/store/";
 
 export default {
   data: () => ({
@@ -74,8 +80,14 @@ export default {
       ao: "AO",
       tr: "TR"
     },
-    icons: [{ link: "http://a2sv.org/", icon: mdiWeb }]
-  })
+    icons: [{ link: "https://eskalate.io/", icon: mdiWeb }]
+  }),
+  methods: {
+    changeLang() {
+      store.dispatch("setLanguagePreference", { lang: this.$i18n.locale });
+      router.replace({ params: { lang: this.$i18n.locale } }).catch(() => {});
+    }
+  }
 };
 </script>
 

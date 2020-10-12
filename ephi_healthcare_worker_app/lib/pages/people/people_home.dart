@@ -1,17 +1,21 @@
 //cases list page
+import 'package:ephi_healthcare_worker_app/widgets/cardWidget.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/patientCardWidget.dart';
 import '../../models/case.dart';
 
 class PatientsHome extends StatefulWidget {
   PatientsHome({this.scrollController});
+
   final ScrollController scrollController;
+
   @override
   PatientsHomeState createState() => PatientsHomeState(this.scrollController);
 }
 
 class PatientsHomeState extends State<PatientsHome> {
   PatientsHomeState(this.scrollController);
+
   //User user;
   final ScrollController scrollController;
 
@@ -80,22 +84,11 @@ class PatientsHomeState extends State<PatientsHome> {
         },
         child: SafeArea(
             child: Scaffold(
-                // appBar: AppBar(
-                //   backgroundColor: new Color(0xfff8faf8),
-                //   elevation: 1,
-                //   title: Text(
-                //     'Patients',
-                //     style: TextStyle(color: Colors.black),
-                //   ),
-                //   iconTheme: IconThemeData(color: Colors.black),
-                //   centerTitle: false,
-                // ),
                 body: Container(
                     decoration: BoxDecoration(color: HexColor("#F5F9FF")),
                     margin: EdgeInsets.symmetric(horizontal: 5),
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: 10),
                         mainList(context),
                       ],
                     )))));
@@ -104,91 +97,35 @@ class PatientsHomeState extends State<PatientsHome> {
   Future<void> refresh() async {}
 
   mainList(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Expanded(
         child: RefreshIndicator(
             onRefresh: refresh,
             child: ListView(
+              padding: EdgeInsets.fromLTRB(0.0, size.height * 0.02, 0.0, 0.0),
               children: <Widget>[
-                Container(
-                  height: 120,
-                  child: Row(children: <Widget>[
-                    Expanded(
-                        child: Container(
-                            margin: EdgeInsets.only(left: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                    offset: Offset(0.0, 4.0),
-                                    blurRadius: 10.0,
-                                    color:
-                                        HexColor("#0a6dc9").withOpacity(0.2)),
-                              ],
-                            ),
-                            child: Card(
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(height: 10),
-                                  Text("Total Patients",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: HexColor("#0a6dc9"),
-                                      )),
-                                  SizedBox(height: 13),
-                                  Text("[+25]",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: HexColor("#0a6dc9"),
-                                      )),
-                                  SizedBox(height: 13),
-                                  Text("7,987",
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        color: HexColor("#0a6dc9"),
-                                      )),
-                                  SizedBox(height: 10),
-                                ],
-                              ),
-                            ))),
-                    SizedBox(width: 10),
-                    Expanded(
-                        child: Container(
-                            margin: EdgeInsets.only(right: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                    offset: Offset(0.0, 4.0),
-                                    blurRadius: 10.0,
-                                    color:
-                                        HexColor("#06c219").withOpacity(0.2)),
-                              ],
-                            ),
-                            child: Card(
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(height: 10),
-                                  Text("Active Patients",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: HexColor("#06c219"),
-                                      )),
-                                  SizedBox(height: 13),
-                                  Text("[+5]",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: HexColor("#06c219"),
-                                      )),
-                                  SizedBox(height: 13),
-                                  Text("1,109",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: HexColor("#06c219"),
-                                      ))
-                                ],
-                              ),
-                            )))
-                  ]),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    CardWidget(
+                        sizeHeight: 0.10,
+                        sizeWidth: 0.41,
+                        color: Colors.purple[700],
+                        value: "1,453",
+                        change: "+25",
+                        text: "Total Patients",
+                        title: "this.title",
+                        press: null),
+                    CardWidget(
+                        sizeHeight: 0.10,
+                        sizeWidth: 0.41,
+                        color: Colors.orange[700],
+                        value: "1,071",
+                        change: "+12",
+                        text: "Active Patients",
+                        title: "this.title",
+                        press: null),
+                  ],
                 ),
                 SizedBox(height: 15),
                 Container(

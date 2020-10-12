@@ -30,9 +30,9 @@ class CardWidget extends StatelessWidget {
         color: Colors.transparent,
         boxShadow: <BoxShadow>[
           BoxShadow(
-              offset: Offset(0.0, 3.0),
+              offset: Offset(0.0, 2.0),
               blurRadius: 5.0,
-              color: color.withOpacity(0.25)),
+              color: color.withOpacity(0.1)),
         ],
       ),
       child: Center(
@@ -56,8 +56,10 @@ class CardWidget extends StatelessWidget {
                       color: color,
                       fontSize: 15.0,
                     )),
-                Image.asset(iconPath,
-                    width: size.width * 0.1, height: size.height * 0.05),
+                iconPath != null
+                    ? Image.asset(iconPath,
+                        width: size.width * 0.1, height: size.height * 0.05)
+                    : SizedBox(height: size.height * 0.005),
                 SizedBox(height: size.height * 0.005),
                 Text(change,
                     textAlign: TextAlign.center,

@@ -11,7 +11,7 @@
   "country": "Country",
   "world": "World",
   "resourcesPer1K": "Resources per 1K people",
-  "totalCases": "Total cases",
+  "totalCases": "Total Cases",
   "recovered": "Recovered",
   "death": "Death",
   "deathRate": "Death Rate",
@@ -29,15 +29,15 @@
   "privacy": "Privacy",
   "references": "References",
   "NA": "N/A",
-  "readMore": "READ MORE",
+  "readMore": "Read More",
   "close": "Close",
   "dateRange": "Date Range",
   "metrics": "Metrics",
   "Available Resources": "Available Resources",
 
   "states": {
-    "statesTransitionTitle": "States of Transition",
-    "statesTransitionSubtitle": "What phases are there?",
+    "statesTransitionTitle": "States Of Transition",
+    "statesTransitionSubtitle": "What Phases Are There?",
     "incubation": "Incubation",
     "mildOrNoSymptom": "Mild or no symptoms",
     "heavySymptoms": "Heavy symptoms",
@@ -65,12 +65,13 @@
   "titles": {
     "globalStatisticsTitle": "COVID-19 Statistics",
     "symptomStatisticsTitle": "Symptom Statistics",
-    "ethiopiaStatisticsTitle": "COVID-19 in Ethiopia",
+    "ethiopiaStatisticsTitle": "COVID-19 In Ethiopia",
     "aboutCovid": "About COVID-19",
     "actions": "What to do?",
     "states": "Disease States",
     "learningPath": "Learn even more",
-    "news": "News"
+    "news": "News",
+    "reportedSymptoms": "Reported Symptoms"
   },
 
   "graphNames": {
@@ -190,16 +191,16 @@
     "username": "Username",
     "password": "Password",
     "signUp": "Sign Up",
-    "goToSignUp": "Sign up Instead",
-    "goToLogin": "Sign in Instead",
+    "goToSignUp": "Sign Up Instead",
+    "goToLogin": "Sign In Instead",
     "foundNothing": "Found Nothing",
-    "passwordInputMessage": "Old Password is required",
+    "passwordInputMessage": "Old Password Is Required",
     "passwordConfirmation": "Password (Confirmation)",
     "gender": "Gender",
     "undisclosed": "Undisclosed",
     "cancel": "Cancel",
     "saveChanges": "Save Changes",
-    "pleaseLoginToViewThisMap": "Please login to view this map"
+    "pleaseLoginToViewThisMap": "Please Login To View This Map"
   },
 
   "map": {

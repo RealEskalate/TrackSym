@@ -1,34 +1,41 @@
 <template>
-  <v-card
-    outlined
-    class="align-content-center align-center mx-auto container py-5"
-  >
-    <v-snackbar top color="primary" v-model="snackbar" :timeout="5000">
-      <h4 class="ma-2" v-text="getMessage" />
-      <v-btn text icon x-small color="white" @click="snackbar = false">
-        <v-icon v-text="mdiCloseCircleOutline" />
-      </v-btn>
-    </v-snackbar>
+  <v-row align="center" justify="center" style="height: 100%">
+    <v-col cols="12" sm="8" md="4">
+      <v-card shaped outlined class="overflow-hidden">
+        <v-snackbar top color="primary" v-model="snackbar" :timeout="5000">
+          <h4 class="ma-2">{{ getMessage }}</h4>
+          <v-btn text icon x-small color="white" @click="snackbar = false">
+            <v-icon v-text="mdiCloseCircleOutline" />
+          </v-btn>
+        </v-snackbar>
 
-    <v-form v-model="valid">
-      <h2 class="text-center font-weight-thin">
-        {{ $t("auth.forgotPassword") }}
-      </h2>
-      <v-text-field
-        :label="$t('contactUs.email')"
-        v-model="user.email"
-        class="col-md-8 mx-auto"
-        :rules="rules.email"
-      ></v-text-field>
-      <v-btn
-        class="primary col-md-4 mx-auto d-flex"
-        :disabled="!valid"
-        @click="submit"
-      >
-        {{ $t("contactUs.send") }}</v-btn
-      >
-    </v-form>
-  </v-card>
+        <v-toolbar class="shadow-sm mb-3" color="primary" dark flat>
+          <v-toolbar-title v-text="$t('auth.forgotPassword')" />
+        </v-toolbar>
+        <v-card-text>
+          <v-form class="mx-4 my-4" v-model="valid">
+            <v-text-field
+              dense
+              outlined
+              class="v-card--shaped"
+              :label="$t('contactUs.email')"
+              v-model="user.email"
+              :rules="rules.email"
+              required
+            />
+            <v-btn
+              :disabled="!valid"
+              color="primary"
+              class="d-block mx-auto v-card--shaped text-capitalize"
+              @click="submit"
+            >
+              {{ $t("contactUs.send") }}
+            </v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -39,13 +46,11 @@ import { mdiCloseCircleOutline } from "@mdi/js";
 
 export default {
   name: "ChangePassword",
-  mounted() {
-    this.user.signature = this.$route.query.signature;
-  },
   data() {
     return {
       mdiCloseCircleOutline,
       valid: false,
+      snackbar: false,
       user: {
         email: null
       },
@@ -70,11 +75,11 @@ export default {
           this.snackbar = true;
           this.loading = false;
         });
-    },
-    computed: {
-      getMessage() {
-        return store.getters.getMessage;
-      }
+    }
+  },
+  computed: {
+    getMessage() {
+      return store.getters.getMessage;
     }
   }
 };

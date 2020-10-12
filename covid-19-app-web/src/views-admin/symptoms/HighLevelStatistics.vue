@@ -2,10 +2,9 @@
   <v-card shaped outlined>
     <v-row>
       <v-col cols="12" sm="6" md="4" v-for="item in items" :key="item.title">
-        <div
-          class="display-1 font-weight-light text-center pt-3"
-          v-text="item.value"
-        />
+        <h3 class="font-weight-light text-center pt-3">
+          {{ item.value }}
+        </h3>
         <v-subheader
           class="text-center p-0 justify-center"
           v-text="$t(`symptomStats.${item.title}`)"
@@ -31,6 +30,14 @@ export default {
       "getTotalPeoplesWithSymptoms",
       "getSymptomStatLoaders"
     ]),
+    calculateSymptomToCovid() {
+      if (this.getTotalSymptoms === 0) {
+        return "None | 0";
+      }
+      return `${this.getMostCommonSymptom} | ${Math.round(
+        ((this.getMostCommonSymptomCount * 100) / this.getTotalSymptoms) * 100
+      ) / 100}%`;
+    },
     items() {
       return [
         {
@@ -39,11 +46,7 @@ export default {
         },
         {
           title: "mostCommon",
-          value:
-            `${this.getMostCommonSymptom} | ${Math.round(
-              ((this.getMostCommonSymptomCount * 100) / this.getTotalSymptoms) *
-                100
-            ) / 100}%` || "None"
+          value: this.calculateSymptomToCovid
         },
         {
           title: "peopleWithSymptoms",

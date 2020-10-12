@@ -1,20 +1,21 @@
 <template>
   <v-container class="home">
-    <heat-map />
-    <symptom-reporting />
+    <symptoms v-if="variableType" />
+    <statistics v-else />
   </v-container>
 </template>
 
 <script>
 // @ is an alias to /src
-import HeatMap from "../HeatMap/HeatMap";
-import SymptomReporting from "../Profile/SymptomReporting";
+
+import { abTest } from "../../tests/a-b.test.mixin";
 
 export default {
   name: "Home",
+  mixins: [abTest],
   components: {
-    HeatMap,
-    SymptomReporting
+    Symptoms: () => import("../HeatMap/Symptoms"),
+    Statistics: () => import("./Statistics")
   }
 };
 </script>

@@ -49,7 +49,7 @@
   "navbar": {
     "home": "መግቢያ",
     "ethiopia": "ኢትዮጵያ",
-    "statistics": "ስታትስቲክስ",
+    "statistics": "ስታቲስቲክስ",
     "learn": "ይማሩ",
     "about": "ስለኛ",
     "news": "ዜና",
@@ -69,7 +69,8 @@
     "actions": "መደረግ ያለበት",
     "states": "የበሽታው የሽግግር ሂደት",
     "learningPath": "የበለጠ ለመረዳት",
-    "news": "ዜና"
+    "news": "ዜና",
+    "reportedSymptoms": "የተመዘገበው ምልክቶች"
   },
 
   "graphNames": {
