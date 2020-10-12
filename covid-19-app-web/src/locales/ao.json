@@ -1,4 +1,7 @@
 {
+  "profile": {
+    "symptomHistory": "Symptom History"
+  },
   "symptomStats": {
     "totalSymptoms": "MALLATTOOWWAN WALUMAA GALATTI GALMEEFFAMAN",
     "mostCommon": "MALLATTOOWWAN BARAMAA TA'AN",
@@ -45,8 +48,8 @@
 
   "navbar": {
     "home": "Seensa",
-    "ethiopia": "Itiyoophiyaa",
-    "statistics": "Istaatistiksii",
+    "ethiopia": "Itoophiyaa",
+    "statistics": "Odeeffannoo",
     "learn": "Baradhaa",
     "about": "Waa'ee",
     "news": "Oduu",
@@ -66,8 +69,7 @@
     "actions": "Maal Haa Goonu?",
     "states": "Sadarkaa Jijjiirama Dhukkubichaa",
     "learningPath": "Dabalataan Barachuuf",
-    "news": "Oduu",
-    "reportedSymptoms": "Mallattoolee galmaa'an"
+    "news": "Oduu"
   },
 
   "graphNames": {
