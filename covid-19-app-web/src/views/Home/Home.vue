@@ -8,16 +8,14 @@
 <script>
 // @ is an alias to /src
 
+import { abTest } from "../../tests/a-b.test.mixin";
+
 export default {
   name: "Home",
+  mixins: [abTest],
   components: {
     Symptoms: () => import("../HeatMap/Symptoms"),
     Statistics: () => import("./Statistics")
-  },
-  computed: {
-    variableType() {
-      return window.__VARIABLE_TYPE === 1;
-    }
   }
 };
 </script>
