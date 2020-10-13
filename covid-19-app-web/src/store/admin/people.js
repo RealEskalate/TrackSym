@@ -43,7 +43,6 @@ const actions = {
       .then(
         response => {
           commit("setUsers", response.data.data);
-          console.log(response);
           commit("setUsersCount", response.data.data_count);
         },
         error => {

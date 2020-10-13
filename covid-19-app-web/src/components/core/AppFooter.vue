@@ -44,6 +44,7 @@
             v-model="$i18n.locale"
             :items="languages"
             label="Lang"
+            @change="changeLang"
           >
             <template v-slot:append>
               <small />
@@ -62,8 +63,10 @@
 </template>
 
 <script>
-import { mdiWeb } from "@mdi/js";
+import { mdiWeb, mdiLinkedin } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
+import router from "@/router/";
+import store from "./AppBar";
 
 export default {
   data: () => ({
@@ -74,8 +77,17 @@ export default {
       ao: "AO",
       tr: "TR"
     },
-    icons: [{ link: "http://a2sv.org/", icon: mdiWeb }]
-  })
+    icons: [
+      { icon: mdiWeb, link: "http://eskalate.io/" },
+      { icon: mdiLinkedin, link: "https://www.linkedin.com/company/a2sv/" }
+    ]
+  }),
+  methods: {
+    changeLang() {
+      store.dispatch("setLanguagePreference", { lang: this.$i18n.locale });
+      router.replace({ params: { lang: this.$i18n.locale } }).catch(() => {});
+    }
+  }
 };
 </script>
 

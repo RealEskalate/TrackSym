@@ -37,7 +37,7 @@
         </template>
         <template v-slot:[`item.riskScore`]="{ item }">
           <v-badge :color="relevanceColor(item.riskScore)" dot inline left>
-            <span v-text="$t(item.riskScore)"></span>
+            <span v-text="$t(item.riskScore)" />
           </v-badge>
         </template>
       </v-data-table>
@@ -82,7 +82,13 @@ export default {
       sidebar: false,
       bottomsheet: false,
       headers: [
-        { text: "Date", align: "start", value: "date", sortable: false },
+        {
+          text: "Date",
+          align: "start",
+          value: "date",
+          sortable: false,
+          width: "150px"
+        },
         { text: "Status", value: "status", sortable: false },
         { text: "Person", value: "person", sortable: false },
         { text: "Symptoms", value: "symptoms", sortable: false },
