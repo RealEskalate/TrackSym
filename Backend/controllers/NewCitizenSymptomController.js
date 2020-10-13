@@ -175,7 +175,9 @@ exports.symptoms_count_in_district = async (req, res) => {
     let symptomsCount = {}
 
     symptomLogs.forEach(log => {
-        if (log.current_symptoms != undefined && log.current_symptoms.district != undefined) {
+        if (log.current_symptoms != undefined && 
+            log.current_symptoms.location != undefined &&
+            log.current_symptoms.location.district != undefined) {
             if (districtDict[log.current_symptoms.location.district] in symptomsCount) {
                 symptomsCount[districtDict[log.current_symptoms.location.district]] += 1
             } else {
