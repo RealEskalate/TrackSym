@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" sm="6" md="4" v-for="item in items" :key="item.title">
         <h3 class="font-weight-light text-center pt-3">
-          {{ item.value }}
+          {{ numberWithCommas(item.value) }}
         </h3>
         <v-subheader
           class="text-center p-0 justify-center"
