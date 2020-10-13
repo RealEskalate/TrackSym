@@ -187,6 +187,100 @@ describe("Interview API", () => {
         expect(response.body).to.be.a("object");
     });
 
+
+    it("It should not save a new interview record", async () => {
+        let response = await chai
+            .request(server)
+            .post("/api/interviews")
+            .set("Authorization", "Bearer " + tokens_interviewer)
+            .send({
+                clinical_review: true,
+                completion_date: new Date(Date.now()),
+                test_report: test_report._id,
+                interview_report: {
+                    interviewer_id: user_interviewer._id,
+                    interview_date: new Date(Date.now()),
+                    investigation_disposition: "INCARCERATED",
+                    source: "CASE",
+                },
+                living_situation: {
+                    situation_type: "SINGLE_FAMILY_HOME",
+                    occupancy_count: 10,
+                },
+                status: {
+                    occupation: "STUDENT",
+                },
+                clinical: {
+                    recent_symptoms: [symptom_1._id, symptom_2._id],
+                },
+            });
+        expect(response).to.have.status(422);
+        expect(response.body).to.be.a("object");
+    });
+
+    it("It should not save a new interview record", async () => {
+        let response = await chai
+            .request(server)
+            .post("/api/interviews")
+            .set("Authorization", "Bearer " + tokens_interviewer)
+            .send({
+                clinical_review: true,
+                completion_date: new Date(Date.now()),
+                test_report: test_report._id,
+                interview_report: {
+                    interviewer_id: user_interviewer._id,
+                    interview_date: new Date(Date.now()),
+                    investigation_disposition: "INCARCERATED",
+                    source: "CASE",
+                },
+                status: {
+                    occupation: "STUDENT",
+                },
+                clinical: {
+                    recent_symptoms: [symptom_1._id, symptom_2._id],
+                },
+                work_informations: {
+                    names: "Addis Ababa University, Black Bird Cafe",
+                    addresses: "King Haileselassie Road, Mexico",
+                },
+                notes: "Slowly recovering patient",
+            });
+        expect(response).to.have.status(422);
+        expect(response.body).to.be.a("object");
+    });
+
+    it("It should not save a new interview record", async () => {
+        let response = await chai
+            .request(server)
+            .post("/api/interviews")
+            .set("Authorization", "Bearer " + tokens_interviewer)
+            .send({
+                interview_report: {
+                    interviewer_id: user_interviewer._id,
+                    interview_date: new Date(Date.now()),
+                    investigation_disposition: "INCARCERATED",
+                    source: "CASE",
+                },
+                living_situation: {
+                    situation_type: "SINGLE_FAMILY_HOME",
+                    occupancy_count: 10,
+                },
+                status: {
+                    occupation: "STUDENT",
+                },
+                clinical: {
+                    recent_symptoms: [symptom_1._id, symptom_2._id],
+                },
+                work_informations: {
+                    names: "Addis Ababa University, Black Bird Cafe",
+                    addresses: "King Haileselassie Road, Mexico",
+                },
+                notes: "Slowly recovering patient",
+            });
+        expect(response).to.have.status(422);
+        expect(response.body).to.be.a("object");
+    });
+
     it("It should fetch all interview records", async () => {
         let save_interview = await chai
             .request(server)
