@@ -4,7 +4,7 @@
       <v-col class="mx-auto">
         <div
           class="display-1 font-weight-light text-center pt-3"
-          v-text="getTotalCases"
+          v-text="numberWithCommas(getTotalCases)"
         />
         <v-subheader class="text-center p-0 justify-center" v-text="title" />
       </v-col>

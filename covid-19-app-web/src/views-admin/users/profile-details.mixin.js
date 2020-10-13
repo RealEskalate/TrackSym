@@ -17,7 +17,7 @@ export const mixin = {
       symptomHistory: null,
       mapAPI: process.env.VUE_APP_MAPBOX_API,
       attrs: {
-        boilerplate: true
+        boilerplate: false
       },
       detailListFeatures: [
         { name: "Symptoms", key: "symptoms", icon: mdiVirus }

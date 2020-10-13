@@ -4,7 +4,7 @@
       <v-col cols="12" sm="6" md="4" v-for="item in items" :key="item.title">
         <div
           class="display-1 font-weight-light text-center pt-3"
-          v-text="item.value"
+          v-text="numberWithCommas(item.value)"
         />
         <v-subheader
           class="text-center p-0 justify-center"

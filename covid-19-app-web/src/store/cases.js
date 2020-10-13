@@ -50,7 +50,6 @@ const actions = {
             tableData.push(row);
           });
           commit("setCases", tableData);
-          console.log(tableData);
         },
         error => {
           console.log(error);

@@ -130,14 +130,20 @@ const actions = {
       );
   },
   fetchMostAffected: ({ commit }) => {
-    ajax.get(`symptoms-count`).then(
-      response => {
-        commit("setMostAffected", response.data);
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    commit("setDashboardLoaders", { key: "mostAffected", value: true });
+    ajax
+      .get(`symptoms-count`)
+      .then(
+        response => {
+          commit("setMostAffected", response.data);
+        },
+        error => {
+          console.log(error);
+        }
+      )
+      .finally(function() {
+        commit("setDashboardLoaders", { key: "mostAffected", value: false });
+      });
   }
 };
 

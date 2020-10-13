@@ -102,7 +102,6 @@ const actions = {
             tableData.push(row);
           });
           commit("setPeoplesWithSymptoms", tableData);
-          console.log(tableData);
         },
         error => {
           console.log(error);
