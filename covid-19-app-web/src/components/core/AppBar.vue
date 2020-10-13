@@ -209,15 +209,12 @@ import {
   mdiVirus,
   mdiAccountMultiplePlus,
   mdiAmbulance,
-  mdiTrendingUp,
   mdiHomeSearch,
   mdiThermometerHigh
 } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
-import { abTest } from "../../tests/a-b.test.mixin";
 
 export default {
-  mixins: [abTest],
   data: () => {
     return {
       mdiTranslate,
@@ -295,22 +292,6 @@ export default {
       return store.getters.getFirstVisit;
     },
     links() {
-      let variantNavigation;
-      if (this.variant === 1)
-        variantNavigation = {
-          text: "navbar.statistics",
-          icon: mdiTrendingUp,
-          to: "Statistics",
-          roles: ["basic", "none"]
-        };
-      else {
-        variantNavigation = {
-          text: "map.symptoms",
-          icon: mdiThermometerHigh,
-          to: "DisplaySymptoms",
-          roles: ["basic", "none"]
-        };
-      }
       return [
         {
           text: "navbar.home",
@@ -318,7 +299,12 @@ export default {
           to: "Home",
           roles: ["basic", "none"]
         },
-        variantNavigation,
+        {
+          text: "map.symptoms",
+          icon: mdiThermometerHigh,
+          to: "DisplaySymptoms",
+          roles: ["basic", "none"]
+        },
         {
           text: "navbar.ethiopia",
           icon: mdiHomeSearch,

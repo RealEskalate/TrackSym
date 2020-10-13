@@ -1,21 +1,16 @@
 <template>
   <v-container class="home">
-    <symptoms v-if="isVariantOne" />
-    <statistics v-else />
+    <statistics />
   </v-container>
 </template>
 
 <script>
 // @ is an alias to /src
-
-import { abTest } from "../../tests/a-b.test.mixin";
-
+import Statistics from "./Statistics";
 export default {
   name: "Home",
-  mixins: [abTest],
   components: {
-    Symptoms: () => import("../HeatMap/Symptoms"),
-    Statistics: () => import("./Statistics")
+    Statistics
   }
 };
 </script>
