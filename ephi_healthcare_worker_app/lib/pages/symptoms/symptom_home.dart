@@ -82,7 +82,7 @@ class SymptomView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               CardWidget(
-                  sizeHeight: 0.10,
+                  sizeHeight: 0.12,
                   sizeWidth: 0.41,
                   color: Colors.lightBlue[700],
                   value: "1,453",
@@ -91,7 +91,7 @@ class SymptomView extends StatelessWidget {
                   title: "this.title",
                   press: null),
               CardWidget(
-                  sizeHeight: 0.10,
+                  sizeHeight: 0.12,
                   sizeWidth: 0.41,
                   color: Colors.greenAccent[700],
                   value: "1,071",

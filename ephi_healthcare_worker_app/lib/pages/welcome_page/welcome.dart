@@ -34,7 +34,7 @@ class WelcomePage extends StatelessWidget {
                   color: Colors.lightBlue,
                   fontSize: 24.0,
                 )),
-            SizedBox(height: size.height * 0.18),
+            SizedBox(height: size.height * 0.25),
             ButtonTheme(
               minWidth: size.width * 0.8,
               height: size.width * 0.13,
@@ -86,11 +86,11 @@ class WelcomePage extends StatelessWidget {
                     )),
               ),
             ),
-            SizedBox(height: size.height * 0.1),
+            SizedBox(height: size.height * 0.05),
             Image.asset(
               'assets/images/a2sv.png',
               width: size.width * 0.3,
-              height: size.height * 0.1,
+              height: size.height * 0.05,
               fit: BoxFit.contain,
             ),
             // Text('Eskalate LLC™. 2020 All Rights Reserved.',

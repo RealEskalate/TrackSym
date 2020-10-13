@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 18.0,
                   )),
             ),
-            SizedBox(height: size.height * 0.01),
+            SizedBox(height: size.height * 0.02),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                     press: null),
               ],
             ),
-            SizedBox(height: size.height * 0.02),
+            SizedBox(height: size.height * 0.03),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20),
               child: Text("Your patients' recovery so far",
