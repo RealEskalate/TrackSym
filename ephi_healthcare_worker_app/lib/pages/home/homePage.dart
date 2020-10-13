@@ -30,9 +30,8 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 18.0,
                   )),
             ),
-            SizedBox(height: size.height * 0.01),
+            SizedBox(height: size.height * 0.02),
             Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 CardWidget(
@@ -69,7 +68,6 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: size.height * 0.01),
             Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 CardWidget(
@@ -94,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                     press: null),
               ],
             ),
-            SizedBox(height: size.height * 0.02),
+            SizedBox(height: size.height * 0.03),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20),
               child: Text("Your patients' recovery so far",
@@ -104,10 +102,6 @@ class _HomePageState extends State<HomePage> {
                   )),
             ),
             LineChartSample2(),
-            // Container(
-            //     margin: EdgeInsets.symmetric(horizontal: 20),
-            //     height: 250,
-            //     child: TimeSeriesBar.withRandomData()),
           ],
         ),
       ),

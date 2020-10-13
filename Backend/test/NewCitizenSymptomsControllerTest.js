@@ -88,4 +88,24 @@ describe("New Citizen Symptom API", () => {
         expect(response).to.have.status(200);
         expect(response.body).to.be.a("array");
     });
+
+    it("It should return citizen symptom aggregation", async () => {
+
+        let response = await chai
+            .request(server)
+            .get("/api/test-stat");
+
+        expect(response).to.have.status(200);
+        expect(response.body).to.be.a("object");
+    });
+
+    it("It should return symptoms count in districts", async () => {
+
+        let response = await chai
+            .request(server)
+            .get("/api/symptoms-count");
+
+        expect(response).to.have.status(200);
+        expect(response.body).to.be.a("array");
+    });
 });

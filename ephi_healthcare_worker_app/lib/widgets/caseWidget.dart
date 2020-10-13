@@ -6,6 +6,7 @@ class CaseWidget extends StatefulWidget {
   Case patient_case;
 
   CaseWidget({@required this.patient_case});
+
   @override
   _CaseWidgetState createState() =>
       _CaseWidgetState(patient_case: this.patient_case);
@@ -13,6 +14,7 @@ class CaseWidget extends StatefulWidget {
 
 class _CaseWidgetState extends State<CaseWidget> {
   _CaseWidgetState({this.patient_case});
+
   //Reply sampleReply;
   Case patient_case;
 
@@ -43,10 +45,11 @@ class _CaseWidgetState extends State<CaseWidget> {
                       builder: (_) => DetailView(),
                     ),
                   ),
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/user1.jpg'),
-                    maxRadius: 25,
-                  ),
+                  // Mike's Address
+                  // leading: CircleAvatar(
+                  //   backgroundImage: AssetImage('assets/images/user1.jpg'),
+                  //   maxRadius: 25,
+                  // ),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

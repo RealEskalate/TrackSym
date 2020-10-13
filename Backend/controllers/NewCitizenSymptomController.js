@@ -175,10 +175,14 @@ exports.symptoms_count_in_district = async (req, res) => {
     let symptomsCount = {}
 
     symptomLogs.forEach(log => {
-        if (districtDict[log.current_symptoms.location.district] in symptomsCount) {
-            symptomsCount[districtDict[log.current_symptoms.location.district]] += 1
-        } else {
-            symptomsCount[districtDict[log.current_symptoms.location.district]] = 1
+        if (log.current_symptoms != undefined && 
+            log.current_symptoms.location != undefined &&
+            log.current_symptoms.location.district != undefined) {
+            if (districtDict[log.current_symptoms.location.district] in symptomsCount) {
+                symptomsCount[districtDict[log.current_symptoms.location.district]] += 1
+            } else {
+                symptomsCount[districtDict[log.current_symptoms.location.district]] = 1
+            }
         }
 
     })
@@ -200,13 +204,13 @@ exports.symptoms_count_in_district = async (req, res) => {
     districtCount.sort((a, b) => b.count - a.count)
 
 
-    let amount = (req.query.amount)? req.query.amount : 5 ;
+    let amount = (req.query.amount) ? req.query.amount : 5;
     if (amount >= districtCount.length)
         return res.send(districtCount)
-    
-    districtCount = districtCount.slice(0,amount)
+
+    districtCount = districtCount.slice(0, amount)
     return res.send(districtCount)
-    
+
 }
 
 

@@ -59,9 +59,6 @@ class SymptomView extends StatelessWidget {
             FlatButton(
               child: Text(
                 'Dismiss',
-                // style: TextStyle(
-                //   color: Colors.blue,
-                // ),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -85,7 +82,7 @@ class SymptomView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               CardWidget(
-                  sizeHeight: 0.10,
+                  sizeHeight: 0.12,
                   sizeWidth: 0.41,
                   color: Colors.lightBlue[700],
                   value: "1,453",
@@ -94,7 +91,7 @@ class SymptomView extends StatelessWidget {
                   title: "this.title",
                   press: null),
               CardWidget(
-                  sizeHeight: 0.10,
+                  sizeHeight: 0.12,
                   sizeWidth: 0.41,
                   color: Colors.greenAccent[700],
                   value: "1,071",
@@ -104,81 +101,10 @@ class SymptomView extends StatelessWidget {
                   press: null),
             ],
           ),
-          // Container(
-          //   // child: Row(children: <Widget>[
-          //   //   // Expanded(
-          //   //   //     child: Container(
-          //   //   //         margin: EdgeInsets.only(left: 5),
-          //   //   //         padding: EdgeInsets.all(5),
-          //   //   //         decoration: BoxDecoration(
-          //   //   //           color: Colors.transparent,
-          //   //   //           boxShadow: <BoxShadow>[
-          //   //   //             BoxShadow(
-          //   //   //                 offset: Offset(0.0, 4.0),
-          //   //   //                 blurRadius: 10.0,
-          //   //   //                 color: HexColor("#0a6dc9").withOpacity(0.1)),
-          //   //   //           ],
-          //   //   //         ),
-          //   //   //         child: Card(
-          //   //   //           child: Column(
-          //   //   //             children: <Widget>[
-          //   //   //               SizedBox(height: 10),
-          //   //   //               Text("Active Symptoms",
-          //   //   //                   textAlign: TextAlign.center,
-          //   //   //                   style: TextStyle(
-          //   //   //                     fontSize: 20,
-          //   //   //                     color: HexColor("#0a6dc9"),
-          //   //   //                   )),
-          //   //   //               SizedBox(height: 13),
-          //   //   //               Text("2,987",
-          //   //   //                   style: TextStyle(
-          //   //   //                     fontSize: 22,
-          //   //   //                     color: HexColor("#0a6dc9"),
-          //   //   //                   )),
-          //   //   //               SizedBox(height: 10),
-          //   //   //             ],
-          //   //   //           ),
-          //   //   //         ))),
-          //   //   // SizedBox(width: 10),
-          //   //   // Expanded(
-          //   //   //     child: Container(
-          //   //   //         margin: EdgeInsets.only(right: 5),
-          //   //   //         padding: EdgeInsets.all(5),
-          //   //   //         decoration: BoxDecoration(
-          //   //   //           color: Colors.transparent,
-          //   //   //           boxShadow: <BoxShadow>[
-          //   //   //             BoxShadow(
-          //   //   //                 offset: Offset(0.0, 4.0),
-          //   //   //                 blurRadius: 10.0,
-          //   //   //                 color: HexColor("#06c219").withOpacity(0.1)),
-          //   //   //           ],
-          //   //   //         ),
-          //   //   //         child: Card(
-          //   //   //           child: Column(
-          //   //   //             children: <Widget>[
-          //   //   //               SizedBox(height: 10),
-          //   //   //               Text("Recovered Symptoms",
-          //   //   //                   textAlign: TextAlign.center,
-          //   //   //                   style: TextStyle(
-          //   //   //                     fontSize: 20,
-          //   //   //                     color: HexColor("#06c219"),
-          //   //   //                   )),
-          //   //   //               SizedBox(height: 13),
-          //   //   //               Text("1,109",
-          //   //   //                   style: TextStyle(
-          //   //   //                     fontSize: 20,
-          //   //   //                     color: HexColor("#06c219"),
-          //   //   //                   ))
-          //   //   //             ],
-          //   //   //           ),
-          //   //   //         )))
-          //   // ]),
-          // ),
           Container(
             margin: EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
             padding: EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(
                   width: (size.width / 3),
@@ -237,7 +163,6 @@ class SymptomView extends StatelessWidget {
                       )
                     ]),
                 child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Container(
                       width: (size.width / 3),

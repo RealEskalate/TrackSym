@@ -21,8 +21,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         AspectRatio(
           aspectRatio: 1.70,
           child: Container(
-            decoration: const BoxDecoration(
-                color: Colors.transparent),
+            decoration: const BoxDecoration(color: Colors.transparent),
             child: Padding(
               padding: const EdgeInsets.only(
                   right: 18.0, left: 12.0, top: 24, bottom: 12),
@@ -45,8 +44,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
               'avg',
               style: TextStyle(
                   fontSize: 12,
-                  color:
-                      showAvg ? Colors.black.withOpacity(0.5) : Colors.blue),
+                  color: showAvg ? Colors.black.withOpacity(0.5) : Colors.blue),
             ),
           ),
         ),
