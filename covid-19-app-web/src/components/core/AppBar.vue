@@ -4,32 +4,27 @@
       app
       flat
       outlined
-      class="white py-1"
-      style="border-radius: 0 0 25px 0; height: auto; background: #fafafa!important "
+      class="white"
+      style="border-radius: 0 0 25px 0; height: auto; background: #fafafa!important"
       :class="{ shadow: raise }"
     >
-      <v-btn
-        fab
-        text
-        v-if="$vuetify.breakpoint.mdAndUp"
-        @click.stop="drawer = !drawer"
-      >
-        <v-icon large v-text="mdiForwardburger" />
+      <v-btn fab text @click.stop="drawer = !drawer">
+        <v-icon
+          large
+          v-text="mdiMenu"
+          style="max-width: 32px"
+          color="#616161"
+        />
       </v-btn>
-      <!--      <v-app-bar-nav-icon-->
-      <!--        v-if="$vuetify.breakpoint.mdAndUp"-->
-      <!--        @click.stop="drawer = !drawer"-->
-      <!--      />-->
       <v-img
         alt="TrackSym"
-        class="shrink mx-1"
+        class="shrink mx-auto"
         contain
         src="/img/brand/blue.png"
         style="transition: width 0.2s ease"
         :width="brandWidth"
       />
 
-      <v-spacer />
       <!--      <v-btn-->
       <!--        :key="link.to"-->
       <!--        :to="{ name: link.to }"-->
@@ -65,8 +60,8 @@
       <!--          </template>-->
       <!--        </v-select>-->
       <!--      </div>-->
-      <v-divider class="mr-2" vertical light />
       <v-btn
+        small
         dark
         color="primary"
         v-if="!loggedInUser"
@@ -92,7 +87,7 @@
             >
               <v-icon small class="mr-2" v-text="item.icon" />
               <v-list-item-content>
-                <small v-text="$t(item.text)" />
+                <small> {{ $t(item.text) }} </small>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -100,7 +95,7 @@
           <v-list-item link active-class="white--text primary" @click="logout">
             <v-icon small class="mr-2" v-text="mdiLogoutVariant" />
             <v-list-item-content>
-              <small v-text="$t('auth.logOut')" />
+              <small> {{ $t("auth.logOut") }} </small>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -108,7 +103,6 @@
     </v-app-bar>
 
     <v-navigation-drawer
-      v-if="$vuetify.breakpoint.mdAndUp"
       v-model="drawer"
       fixed
       width="290"
@@ -121,29 +115,20 @@
         alt="TrackSym"
         class="shrink my-5 mx-auto"
         contain
-        :width="160"
+        :width="150"
         src="/img/brand/blue.png"
         data-v-step="0"
       />
 
       <v-list shaped>
         <v-list-item-group color="primary">
-          <template v-for="(link, i) in links">
-            <v-list-item
-              exact
-              :key="i"
-              :to="{ name: link.to }"
-              v-if="
-                (!loggedInUser && link.roles.includes('none')) ||
-                  (loggedInUser &&
-                    link.roles.includes(loggedInUser.role.toLowerCase()))
-              "
-            >
+          <template v-for="(link, i) in filterMenu('side')">
+            <v-list-item exact :key="i" :to="{ name: link.to }">
               <v-list-item-icon>
                 <v-icon v-text="link.icon" />
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title v-text="$t(link.text)" />
+                <v-list-item-title> {{ $t(link.text) }} </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -173,10 +158,10 @@
                     <small />
                   </template>
                   <template v-slot:selection="{ item }">
-                    <small class="primary--text" v-text="langText[item]" />
+                    <small class="primary--text"> {{ langText[item] }} </small>
                   </template>
                   <template v-slot:item="{ item }">
-                    <small v-text="langText[item]" />
+                    <small> {{ langText[item] }} </small>
                   </template>
                 </v-select>
               </div>
@@ -194,17 +179,8 @@
       style="border-radius: 20px 0 0 0"
       class="px-3 overflow-hidden"
     >
-      <template v-for="(link, i) in links">
-        <v-btn
-          :to="{ name: link.to }"
-          :key="i"
-          exact
-          v-if="
-            (!loggedInUser && link.roles.includes('none')) ||
-              (loggedInUser &&
-                link.roles.includes(loggedInUser.role.toLowerCase()))
-          "
-        >
+      <template v-for="link in filterMenu('bottom')">
+        <v-btn :to="{ name: link.to }" :key="link.icon" exact>
           <span>{{ $t(link.text) }}</span>
           <v-icon> {{ link.icon }}</v-icon>
         </v-btn>
@@ -222,7 +198,7 @@ import {
   mdiAccountCog,
   mdiAccountEdit,
   mdiBookOpenVariant,
-  mdiForwardburger,
+  mdiMenu,
   mdiHome,
   mdiInformation,
   mdiLogoutVariant,
@@ -232,7 +208,9 @@ import {
   mdiViewDashboard,
   mdiVirus,
   mdiAccountMultiplePlus,
-  mdiAmbulance
+  mdiAmbulance,
+  mdiHomeSearch,
+  mdiThermometerHigh
 } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
 
@@ -241,7 +219,7 @@ export default {
     return {
       mdiTranslate,
       mdiAccountCog,
-      mdiForwardburger,
+      mdiMenu,
       mdiLogoutVariant,
       mdiAccountMultiplePlus,
       drawer: false,
@@ -256,70 +234,13 @@ export default {
         ao: "AO",
         tr: "TR"
       },
-      links: [
-        {
-          text: "navbar.home",
-          icon: mdiHome,
-          to: "Home",
-          roles: ["basic", "none"]
-        },
-        {
-          text: "navbar.learn",
-          icon: mdiBookOpenVariant,
-          to: "Learn",
-          roles: ["basic", "none"]
-        },
-        {
-          text: "navbar.about",
-          icon: mdiInformation,
-          to: "About",
-          roles: ["basic", "none"]
-        },
-        {
-          text: "navbar.news",
-          icon: mdiNewspaper,
-          to: "News",
-          roles: ["basic", "none"]
-        },
-        // admins
-        {
-          text: "navbar.dashboard",
-          icon: mdiViewDashboard,
-          to: "Dashboard",
-          roles: ["ephi_user"]
-        },
-        {
-          text: "map.symptoms",
-          icon: mdiVirus,
-          to: "Symptoms",
-          roles: ["ephi_user"]
-        },
-        {
-          text: "Cases",
-          icon: mdiAmbulance,
-          to: "Cases",
-          roles: ["ephi_user"]
-        },
-        {
-          text: "navbar.users",
-          icon: mdiAccountMultiplePlus,
-          to: "Users",
-          roles: ["ephi_user"]
-        },
-        {
-          text: "navbar.inviteAdmins",
-          icon: mdiEmailSend,
-          to: "InviteAdmin",
-          roles: ["ephi_user"]
-        }
-      ],
       more_links: [
         { text: "navbar.profile", icon: mdiAccountEdit, to: "Profile" }
       ]
     };
   },
   created() {
-    const throttleFunc = throttle(1000, false, () => {
+    const throttleFunc = throttle(500, false, () => {
       this.handleScroll();
     });
     window.addEventListener("scroll", throttleFunc);
@@ -342,6 +263,19 @@ export default {
       store.dispatch("setToken", { token: null });
       store.dispatch("setUser", { user: null });
       router.push({ name: "Home" });
+    },
+    filterMenu(navType) {
+      let count = 0;
+      return this.links.filter(link => {
+        return (
+          ((!this.loggedInUser && link.roles.includes("none")) ||
+            (this.loggedInUser &&
+              link.roles.includes(this.loggedInUser.role.toLowerCase()))) &&
+          (this.$vuetify.breakpoint.mdAndUp ||
+            (navType === "bottom" && count++ < 4) ||
+            (navType === "side" && count++ >= 4))
+        );
+      });
     }
   },
   computed: {
@@ -349,13 +283,84 @@ export default {
       return this.locationY > 50;
     },
     brandWidth() {
-      return this.locationY > 50 ? 150 : 160;
+      return this.locationY > 50 ? 110 : 120;
     },
     openNavigation() {
       return store.getters.getNavigationDrawer;
     },
     isFirstVisit() {
       return store.getters.getFirstVisit;
+    },
+    links() {
+      return [
+        {
+          text: "navbar.home",
+          icon: mdiHome,
+          to: "Home",
+          roles: ["basic", "none"]
+        },
+        {
+          text: "map.symptoms",
+          icon: mdiThermometerHigh,
+          to: "DisplaySymptoms",
+          roles: ["basic", "none"]
+        },
+        {
+          text: "navbar.ethiopia",
+          icon: mdiHomeSearch,
+          to: "Ethiopia",
+          roles: ["basic", "none"]
+        },
+        {
+          text: "navbar.learn",
+          icon: mdiBookOpenVariant,
+          to: "Learn",
+          roles: ["basic", "none"]
+        },
+        {
+          text: "navbar.news",
+          icon: mdiNewspaper,
+          to: "News",
+          roles: ["basic", "none"]
+        },
+        {
+          text: "navbar.about",
+          icon: mdiInformation,
+          to: "About",
+          roles: ["basic", "none"]
+        },
+        // admins
+        {
+          text: "navbar.dashboard",
+          icon: mdiViewDashboard,
+          to: "Dashboard",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "map.symptoms",
+          icon: mdiVirus,
+          to: "Symptoms",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "navbar.cases",
+          icon: mdiAmbulance,
+          to: "Cases",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "navbar.users",
+          icon: mdiAccountMultiplePlus,
+          to: "Users",
+          roles: ["ephi_user"]
+        },
+        {
+          text: "navbar.inviteAdmins",
+          icon: mdiEmailSend,
+          to: "InviteAdmin",
+          roles: ["ephi_user"]
+        }
+      ];
     }
   },
   watch: {

@@ -1,11 +1,11 @@
 <template>
   <section class="map pb-5">
     <v-container>
-      <!--      <h3 class="display-1 font-weight-thin mb-5">-->
-      <!--        &lt;!&ndash;            {{ $t("navbar.map") }}&ndash;&gt;-->
-      <!--        Reported Symptom Tracking-->
-      <!--      </h3>-->
-      <v-row class="my-5">
+      <h1 class=" font-weight-thin mb-5">
+        {{ $t("titles.reportedSymptoms") }}
+      </h1>
+      <HighLevelStatistics class="my-5" />
+      <!-- <v-row class="my-5">
         <v-col cols="12">
           <h3
             class="display-1 font-weight-thin mb-5"
@@ -21,17 +21,17 @@
                 :key="item.key"
                 v-for="item in aggregates"
               >
-                <!--              <v-img :src="item.icon" class="small-icon mx-auto my-3" />-->
+                             <v-img :src="item.icon" class="small-icon mx-auto my-3" />
                 <p class="text-center" v-text="item.key" />
                 <h1
-                  class="display-1 text-center mb-2 primary--text"
+                  class="font-weight-thin text-center mb-2 primary--text"
                   v-text="numberWithCommas(item.value)"
                 />
               </v-col>
             </v-row>
           </v-card>
         </v-col>
-      </v-row>
+      </v-row> -->
       <v-row>
         <v-col>
           <v-card
@@ -127,10 +127,9 @@
                       <span
                         v-else-if="feature.key === 'probability'"
                         class="grey--text"
-                        v-text="
-                          (selectedInfo.probability * 100).toFixed(2) + ' %'
-                        "
-                      />
+                      >
+                        {{ (selectedInfo.probability * 100).toFixed(2) + " %" }}
+                      </span>
                       <span
                         v-else
                         class="grey--text"
@@ -233,6 +232,7 @@
 <script>
 import store from "@/store";
 import SymTrack from "./Maps/SymTrack";
+import HighLevelStatistics from "../../views-admin/symptoms/HighLevelStatistics";
 import {
   mdiBabyCarriage,
   mdiBackburger,
@@ -246,7 +246,8 @@ import {
 
 export default {
   components: {
-    SymTrack
+    SymTrack,
+    HighLevelStatistics
   },
   data() {
     return {
@@ -332,5 +333,8 @@ export default {
 <style scoped>
 .border-right {
   border-right: solid rgba(0, 0, 0, 0.1) 1px;
+}
+.display-1 {
+  font-size: 1.8rem !important;
 }
 </style>

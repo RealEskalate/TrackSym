@@ -1,4 +1,12 @@
 {
+  "profile": {
+    "symptomHistory": "Symptom History"
+  },
+  "symptomStats": {
+    "totalSymptoms": "MALLATTOOWWAN WALUMAA GALATTI GALMEEFFAMAN",
+    "mostCommon": "MALLATTOOWWAN BARAMAA TA'AN",
+    "peopleWithSymptoms": "NAMOOTA MALLATTOO QABAN"
+  },
   "sources": "Maddeen",
   "country": "Biyya",
   "world": "Addunyaa",
@@ -40,6 +48,8 @@
 
   "navbar": {
     "home": "Seensa",
+    "ethiopia": "Itoophiyaa",
+    "statistics": "Odeeffannoo",
     "learn": "Baradhaa",
     "about": "Waa'ee",
     "news": "Oduu",
@@ -47,7 +57,8 @@
     "profile": "Eenyummeessaa",
     "inviteAdmins": "Invite Admins",
     "dashboard": "Dashbordi",
-    "users": "Fayyadamtoota"
+    "users": "Fayyadamtoota",
+    "cases": "Dhukkubsattoota"
   },
 
   "titles": {
@@ -58,7 +69,8 @@
     "actions": "Maal Haa Goonu?",
     "states": "Sadarkaa Jijjiirama Dhukkubichaa",
     "learningPath": "Dabalataan Barachuuf",
-    "news": "Oduu"
+    "news": "Oduu",
+    "reportedSymptoms": "Mallattoolee galmaa'an"
   },
 
   "graphNames": {

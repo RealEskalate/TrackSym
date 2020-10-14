@@ -3,7 +3,8 @@
     <app-bar />
     <v-main class="px-md-0 px-3">
       <v-fade-transition>
-        <router-view />
+        <tracksym-splash v-if="loading" />
+        <router-view v-else />
       </v-fade-transition>
       <vue-progress-bar />
     </v-main>
@@ -13,6 +14,7 @@
 </template>
 
 <script>
+import TracksymSplash from "./components/core/TracksymSplash";
 import AppFooter from "./components/core/AppFooter.vue";
 import AppBar from "./components/core/AppBar.vue";
 import store from "@/store/";
@@ -23,11 +25,13 @@ export default {
   components: {
     AppBar,
     AppFooter,
+    TracksymSplash,
     Tour: () => import("./components/core/Tour.vue") // just to dynamically load Tour since it is not always required
   },
   data() {
     return {
-      interval: 0
+      interval: 0,
+      loading: true
     };
   },
   beforeDestroy() {
@@ -36,7 +40,9 @@ export default {
   mounted() {
     //  [App.vue specific] When App.vue is finish loading finish the progress bar
     this.$Progress.finish();
-
+    setTimeout(() => {
+      this.loading = false;
+    }, 0);
     this.$i18n.locale =
       store.getters.getLanguagePreference === null
         ? "en"
@@ -162,5 +168,8 @@ html {
 
 .v-skeleton-loader__bone {
   border-radius: 10px 3px 10px 3px !important;
+}
+.display-1 {
+  font-size: 1.8rem !important;
 }
 </style>
