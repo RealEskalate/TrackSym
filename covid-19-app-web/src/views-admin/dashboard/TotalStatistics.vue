@@ -104,6 +104,7 @@ import TrendChart from "vue-trend-chart";
 import preventOverflow from "@popperjs/core/lib/modifiers/preventOverflow.js";
 import flip from "@popperjs/core/lib/modifiers/flip.js";
 import DateRangePicker from "../../components/core/DateRangePicker";
+import moment from "moment";
 
 import { mapGetters, mapActions } from "vuex";
 
@@ -115,7 +116,7 @@ export default {
   },
   data() {
     return {
-      date_range: ["2020-03-17", "2020-03-23"],
+      date_range: [this.defaultDate(), this.defaultDate("end")],
       tooltipData: null,
       popper: null,
       popperIsActive: false,
@@ -152,6 +153,13 @@ export default {
       this.popperIsActive = !!params;
       this.popper.update();
       this.tooltipData = params || null;
+    },
+     defaultDate(mode = "start") {
+      if (mode === "start")
+        return moment(new Date())
+          .subtract(2, "week")
+          .format("YYYY-MM-DD");
+      else return moment(new Date()).format("YYYY-MM-DD");
     }
   },
   computed: {
