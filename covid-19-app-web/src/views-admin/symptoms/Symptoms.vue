@@ -175,7 +175,7 @@ export default {
     defaultDate(mode = "start") {
       if (mode === "start")
         return moment(new Date())
-          .subtract(2, "week")
+          .subtract(3, "month")
           .format("YYYY-MM-DD");
       else return moment(new Date()).format("YYYY-MM-DD");
     },
