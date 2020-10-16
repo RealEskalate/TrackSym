@@ -18,19 +18,49 @@ exports.getCaseInvestigations = async (req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 15;
-    try {
+    try { 
         const investigations = await CaseInvestigation.find(filter, {}, { skip: page - 1, limit: size * 1 });
         const populated = await CaseInvestigation.populate(investigations, [
-            { model: 'Patient', path: 'patient_id', select: '_id first_name last_name' },
+            { model: 'Patient', path: 'patient_id', select: '_id first_name last_name status updated_at' },
             { model: 'User', path: 'assigned_to', select: '_id username' },
             { model: 'User', path: 'notes.health_worker_id', select: '_id username' },
         ]);
+
+        // filter by patient status
+        if (req.query.patient_status){
+            populated.filter(document => document.patient_id.status == req.query.patient_status);
+        }
+
         const result = {
             data_count: await CaseInvestigation.countDocuments(filter),
             page_size: size,
             current_page: page,
             data: populated
         };
+        
+        // for new cases since date (24 hours ago if change == true)
+        if (req.query.change){
+            let date;
+            if (req.query.change == "true"){
+                date = new Date();
+                date.setDate(date.getDate() - 1);
+            }
+            else {
+                date = new Date(req.query.change);
+            }
+            let count = 0;
+            populated.forEach( document => {
+                if (document.patient_id.updated_at >= date) count++
+            });
+            result.new_change = count;
+        }
+
+        // if only the count is requested
+        if (req.query.count_only && req.query.count_only == "true"){
+            delete result.data;
+            delete result.page_size;
+            delete result.current_page;
+        }
         return res.send(result);
     } catch (err) {
         return res.status(500).send(err.toString());
