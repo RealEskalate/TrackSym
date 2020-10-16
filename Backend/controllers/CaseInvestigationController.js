@@ -123,6 +123,32 @@ exports.get_patients_by_status = async (req, res) => {
 }
 
 
+exports.get_count_per_status = async (req, res) =>{
+    let assignee = (req.assignee)? req.assignee : req.body.loggedInUser;
+
+    const selectedPatients = await CaseInvestigation.find({ assigned_to: mongoose.Types.ObjectId(assignee) })
+    const patientIds = []
+
+    for (var i = 0; i < selectedPatients.length; i++) {
+        patientIds.push(selectedPatients[i].patient_id);
+    }
+
+
+    const patients = await Patient.find({_id: { $in: patientIds }});
+
+    let result = {}
+
+    for(var index in patients){
+        if(!(patients[index].status in result) ){
+            result[ patients[index].status ] = 0
+        }
+        result[ patients[index].status ] += 1
+    }
+
+    res.send(result);
+}
+
+
 exports.getAssigedHealthWorkersByPatientId = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 15;
