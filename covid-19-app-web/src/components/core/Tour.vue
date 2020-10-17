@@ -131,7 +131,7 @@ export default {
       return [
         {
           ...this.tour[0],
-          target: '[data-v-step="0"]',
+          target: ".v-step-0",
           params: {
             placement: "bottom"
           },
@@ -147,7 +147,14 @@ export default {
         },
         {
           ...this.tour[1],
-          target: '[data-v-step="1"]',
+          target: ".v-step-1",
+          params: {
+            placement: "bottom"
+          }
+        },
+        {
+          ...this.tour[2],
+          target: ".v-step-2",
           params: {
             placement: "right"
           },
@@ -162,24 +169,10 @@ export default {
             })
         },
         {
-          ...this.tour[2],
-          target: '[data-v-step="2"]',
-          params: {
-            placement: "right"
-          }
-        },
-        {
           ...this.tour[3],
-          target: '[data-v-step="3"]',
+          target: ".v-step-3",
           params: {
             placement: "top"
-          }
-        },
-        {
-          ...this.tour[4],
-          target: '[data-v-step="4"]',
-          params: {
-            placement: "bottom"
           },
           before: () =>
             new Promise((resolve, reject) => {
@@ -190,6 +183,13 @@ export default {
                 else reject("Error: couldn't set navigation");
               }, 300);
             })
+        },
+        {
+          ...this.tour[4],
+          target: ".v-step-4",
+          params: {
+            placement: "bottom"
+          }
         }
       ];
     }
