@@ -15,7 +15,9 @@
                 v-text="numberWithCommas(item.totalNum)"
               />
               <v-list-item-subtitle
-                :class="`${rateConversion(item.increaseRate, item.title)[0]}--text`"
+                :class="
+                  `${rateConversion(item.increaseRate, item.title)[0]}--text`
+                "
               >
                 <v-icon
                   small
@@ -51,22 +53,24 @@ export default {
     ...mapActions(["fetchDailyData"]),
     rateConversion(rate, criterion) {
       if (rate > 0) {
-        if (criterion == "Tests Administered" || criterion == "COVID-19 Recoveries") {
+        if (
+          criterion == "Tests Administered" ||
+          criterion == "COVID-19 Recoveries"
+        ) {
           return ["green", mdiArrowUp];
-        }
-        else {
+        } else {
           return ["red", mdiArrowUp];
         }
-      } 
-      else if (rate < 0) {
-        if (criterion == "Tests Adminisered" || criterion == "COVID-19 Recoveries") {
+      } else if (rate < 0) {
+        if (
+          criterion == "Tests Adminisered" ||
+          criterion == "COVID-19 Recoveries"
+        ) {
           return ["red", mdiArrowDown];
-        }
-        else {
+        } else {
           return ["green", mdiArrowDown];
         }
-      }
-      else return ["grey", ""];
+      } else return ["grey", ""];
     }
   },
   computed: {

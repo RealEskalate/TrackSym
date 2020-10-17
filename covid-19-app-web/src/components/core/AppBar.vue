@@ -41,7 +41,7 @@
       <!--        <v-select-->
       <!--          solo-->
       <!--          flat-->
-      <!--          dense-->
+      <!--          dense-->-
       <!--          v-model="$i18n.locale"-->
       <!--          :items="languages"-->
       <!--          @change="changeLang"-->
@@ -113,17 +113,21 @@
     >
       <v-img
         alt="TrackSym"
-        class="shrink my-5 mx-auto"
+        class="shrink my-5 mx-auto v-step-0"
         contain
         :width="150"
         src="/img/brand/blue.png"
-        data-v-step="0"
       />
 
       <v-list shaped>
         <v-list-item-group color="primary">
           <template v-for="(link, i) in filterMenu('side')">
-            <v-list-item exact :key="i" :to="{ name: link.to }">
+            <v-list-item
+              :class="link.tour"
+              exact
+              :key="i"
+              :to="{ name: link.to }"
+            >
               <v-list-item-icon>
                 <v-icon v-text="link.icon" />
               </v-list-item-icon>
@@ -141,7 +145,7 @@
               <v-list-item-title v-text="'Language'" />
             </v-list-item-content>
             <v-list-item-action>
-              <div class="justify-end" style="width: 50px" data-v-step="4">
+              <div class="justify-end v-step-4" style="width: 50px">
                 <v-select
                   solo
                   flat
@@ -303,12 +307,14 @@ export default {
           text: "map.symptoms",
           icon: mdiThermometerHigh,
           to: "DisplaySymptoms",
+          tour: "v-step-1",
           roles: ["basic", "none"]
         },
         {
           text: "navbar.ethiopia",
           icon: mdiHomeSearch,
           to: "Ethiopia",
+          tour: "v-step-3",
           roles: ["basic", "none"]
         },
         {

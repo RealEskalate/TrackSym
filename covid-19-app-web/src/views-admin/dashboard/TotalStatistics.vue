@@ -154,7 +154,7 @@ export default {
       this.popper.update();
       this.tooltipData = params || null;
     },
-     defaultDate(mode = "start") {
+    defaultDate(mode = "start") {
       if (mode === "start")
         return moment(new Date())
           .subtract(2, "week")

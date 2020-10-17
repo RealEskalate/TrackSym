@@ -12,7 +12,7 @@
         <v-col>
           <v-card flat class="overflow-hidden">
             <v-tabs fixed-tabs v-model="selectedGraph" show-arrows="mobile">
-              <v-tab data-v-step="2">
+              <v-tab class="v-step-2">
                 <v-icon left>{{ mdiNumeric }}</v-icon>
                 {{ $t(graphNames[0]) }}
                 <v-spacer />
