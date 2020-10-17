@@ -1,5 +1,13 @@
 <template>
   <v-container class="align-content-center">
+    <v-btn
+      :to="{ name: 'RegisterCase' }"
+      class="v-card--shaped"
+      small
+      color="primary"
+    >
+      Register new Case
+    </v-btn>
     <HighLevelStatistics class="my-8" />
     <v-card
       outlined
@@ -13,7 +21,7 @@
         v-on:set-search="searchPerson"
         v-on:status-change="onStatusChange"
       />
-      <v-data-table
+      <v-data-tableton
         :headers="headers"
         :options.sync="options"
         :items="getCases"
@@ -34,7 +42,7 @@
         <template v-slot:[`item.date`]="{ item }">
           <span v-text="formatDate(item.date)" />
         </template>
-      </v-data-table>
+      </v-data-tableton>
 
       <DetailSidebar
         v-on:close-sidebar="onClose"

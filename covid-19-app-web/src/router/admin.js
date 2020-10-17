@@ -8,6 +8,11 @@ const Login = () => import("../views/Auth/Login.vue");
 
 const Symptoms = () => import("../views-admin/symptoms/Symptoms.vue");
 const Cases = () => import("../views-admin/cases/Cases.vue");
+const RegisterCase = () => import("../views-admin/cases/RegisterCase");
+
+const CaseInvestigations = () => import("../views-admin/case-investigation/CaseInvestigations");
+const RegisterCaseInvestigation = () => import("../views-admin/case-investigation/RegisterCaseInvestigation");
+const EditCaseInvestigation = () => import("../views-admin/case-investigation/EditCaseInvestigation");
 
 export const admin = [
   {
@@ -36,13 +41,58 @@ export const admin = [
     }
   },
   {
-    name: "Cases",
     path: "cases",
-    component: Cases,
+    component: {
+      template: "<router-view />"
+    },
     meta: {
       requiresAuth: true,
       roles: ["ephi_user"]
-    }
+    },
+    children: [
+      {
+        name: "RegisterCase",
+        path: "register",
+        component: RegisterCase,
+        meta: { requiresAuth: true, roles: ["ephi_user", "healthcare_worker"] }
+      },
+      {
+        name: "Cases",
+        path: "/",
+        component: Cases,
+        meta: { requiresAuth: true, roles: ["ephi_user"] }
+      }
+    ]
+  },
+  {
+    path: "case-investigations",
+    component: {
+      template: "<router-view />"
+    },
+    meta: {
+      requiresAuth: true,
+      roles: ["ephi_user"]
+    },
+    children: [
+      {
+        name: "RegisterCaseInvestigation",
+        path: "register",
+        component: RegisterCaseInvestigation,
+        meta: { requiresAuth: true, roles: ["ephi_user", "healthcare_worker"] }
+      },
+      {
+        name: "EditCaseInvestigation",
+        path: "edit/:id",
+        component: EditCaseInvestigation,
+        meta: { requiresAuth: true, roles: ["ephi_user", "healthcare_worker"] }
+      },
+      {
+        name: "CaseInvestigations",
+        path: "/",
+        component: CaseInvestigations,
+        meta: { requiresAuth: true, roles: ["ephi_user"] }
+      }
+    ]
   },
   {
     name: "InviteAdmin",

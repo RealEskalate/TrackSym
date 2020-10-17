@@ -41,7 +41,7 @@
       <!--        <v-select-->
       <!--          solo-->
       <!--          flat-->
-      <!--          dense-->-
+      <!--          dense-->
       <!--          v-model="$i18n.locale"-->
       <!--          :items="languages"-->
       <!--          @change="changeLang"-->
@@ -122,19 +122,20 @@
       <v-list shaped>
         <v-list-item-group color="primary">
           <template v-for="(link, i) in filterMenu('side')">
-            <v-list-item
-              :class="link.tour"
-              exact
-              :key="i"
-              :to="{ name: link.to }"
-            >
-              <v-list-item-icon>
-                <v-icon v-text="link.icon" />
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title> {{ $t(link.text) }} </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+            <v-list-group v-if="link.children" :key="link.title">
+              <template v-slot:activator>
+                <v-list-item-icon>
+                  <v-icon v-text="link.icon" />
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title> {{ $t(link.text) }} </v-list-item-title>
+                </v-list-item-content>
+              </template>
+              <template v-for="(child, i) in link.children">
+                <base-menu-item class="ml-5" :link="child" :key="i" />
+              </template>
+            </v-list-group>
+            <base-menu-item v-else :link="link" :key="i" />
           </template>
           <v-divider />
           <v-list-item inactive>
@@ -197,7 +198,7 @@
 import store from "@/store/";
 import router from "@/router/";
 import { throttle } from "throttle-debounce";
-
+import BaseMenuItem from "./BaseMenuItem";
 import {
   mdiAccountCog,
   mdiAccountEdit,
@@ -214,11 +215,17 @@ import {
   mdiAccountMultiplePlus,
   mdiAmbulance,
   mdiHomeSearch,
-  mdiThermometerHigh
+  mdiThermometerHigh,
+  mdiPlusCircle,
+  mdiViewList,
+    mdiPoliceBadge
 } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
 
 export default {
+  components: {
+    BaseMenuItem
+  },
   data: () => {
     return {
       mdiTranslate,
@@ -349,16 +356,40 @@ export default {
           roles: ["ephi_user"]
         },
         {
-          text: "navbar.cases",
-          icon: mdiAmbulance,
-          to: "Cases",
-          roles: ["ephi_user"]
-        },
-        {
           text: "navbar.users",
           icon: mdiAccountMultiplePlus,
           to: "Users",
           roles: ["ephi_user"]
+        },
+        {
+          text: "navbar.cases",
+          icon: mdiAmbulance,
+          roles: ["ephi_user"],
+          children: [
+            { text: "navbar.casesList", icon: mdiViewList, to: "Cases" },
+            {
+              text: "navbar.registerCase",
+              icon: mdiPlusCircle,
+              to: "RegisterCase"
+            }
+          ]
+        },
+        {
+          text: "navbar.caseInvestigations",
+          icon: mdiPoliceBadge,
+          roles: ["ephi_user"],
+          children: [
+            {
+              text: "navbar.caseInvestigationsList",
+              icon: mdiViewList,
+              to: "CaseInvestigations"
+            },
+            {
+              text: "navbar.registerCaseInvestigation",
+              icon: mdiPlusCircle,
+              to: "RegisterCaseInvestigation"
+            }
+          ]
         },
         {
           text: "navbar.inviteAdmins",
