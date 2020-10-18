@@ -52,6 +52,11 @@ exports.getCaseInvestigationById = async (req, res) => {
     }
 }
 
+const datesAreOnSameDay = (first, second) =>
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate();
+
 // Update or add a case investigation
 exports.addOrUpdateCaseInvestigation = async (req, res) => {
     const id = req.query.id || null;
@@ -60,17 +65,34 @@ exports.addOrUpdateCaseInvestigation = async (req, res) => {
         if (!investigation) {
             const investigation = new CaseInvestigation(_.pick(req.body, ["patient_id", "assigned_to"]));
             investigation._id = mongoose.Types.ObjectId();
-            // setting HCW id and date
-            investigation.notes ={
+            investigation.current_note = {
                 date : new Date(),
-                note : req.body.notes,
-                health_worker_id : req.body.loggedInUser
+                note : req.body.current_note,
             };
-            
+            investigation.notes = [];            
             await investigation.save();
             return res.status(201).send(investigation);
         }
-        investigation.set(req.body);
+        investigation.notes = req.body.notes || investigation.notes;
+        if (req.body.current_note) {
+            //If the current note currently saved is on a different date, add it to the previous notes
+            if (!datesAreOnSameDay(investigation.current_note.date, new Date(Date.now))) {
+                investigation.notes.push({
+                    health_worker_id: investigation.assigned_to,
+                    date: investigation.current_note.date,
+                    note: investigation.current_note.note
+                })
+            }
+            //Replace current note
+            investigation.current_note = {
+                date: new Date(),
+                note: req.body.current_note,
+            };
+        }
+        investigation.patient_id = req.body.patient_id || investigation.patient_id;
+        investigation.assigned_to = req.body.assigned_to || investigation.assigned_to;
+        investigation.markModified("current_note");
+        investigation.markModified("notes");
         await investigation.save();
         return res.send(investigation)
     } catch (error) {
