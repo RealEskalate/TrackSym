@@ -147,9 +147,12 @@ exports.get_patients_by_status = async (req, res) => {
 
 
 exports.get_count_per_status = async (req, res) =>{
-    let assignee = (req.assignee)? req.assignee : req.body.loggedInUser;
+    if (!req.query.assigned_to){
+        return res.status(400).send("Health care worker not sent")
+    }
+    let assigned_to = req.query.assigned_to;
 
-    const selectedPatients = await CaseInvestigation.find({ assigned_to: mongoose.Types.ObjectId(assignee) })
+    const selectedPatients = await CaseInvestigation.find({ assigned_to: assigned_to })
     const patientIds = [];
     const userIds = [];
 
