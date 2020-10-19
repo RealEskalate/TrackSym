@@ -158,9 +158,6 @@ exports.get_count_per_status = async (req, res) =>{
 
     for (var i = 0; i < selectedPatients.length; i++) {
         patientIds.push(selectedPatients[i].patient_id);
-        if (selectedPatients[i].user_id){
-            userIds.push(selectedPatients[i].user_id)
-        }
     }
 
 
@@ -173,6 +170,11 @@ exports.get_count_per_status = async (req, res) =>{
         }};
 
     for(var index in patients){
+
+        if (patients[index].user_id){
+            userIds.push(patients[index].user_id)
+        }
+
         if(!(patients[index].status in result) ){
             result[ patients[index].status ] = {
                 count: 0, 
@@ -190,11 +192,11 @@ exports.get_count_per_status = async (req, res) =>{
         result.total.count += 1;
     }
 
-    result.active_symptom = await SymptomUser.aggregate([
-        {$match: {$in: userIds}},
+    result.active_symptoms = (await SymptomUser.aggregate([
+        {$match: {user_id: {$in: userIds}}},
         {$group: {_id: '$user_id'}},
         {$count: "count"}
-    ])[0];
+    ]))[0];
  
     res.send(result);
 }

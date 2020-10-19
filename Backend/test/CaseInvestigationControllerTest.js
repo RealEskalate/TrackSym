@@ -273,10 +273,16 @@ describe("Case Investigation API", () => {
       .request(server)
       .get("/api/case_investigations/status_count/")
       .set("Authorization", "Bearer " + tokens)
-      .send({
+      .query({
         assigned_to: healthcare_worker._id.toString()
       });
-    console.log(response.body)
+    expect(response).to.have.status(200);
+    expect(response.body).to.be.an("Object");
+    expect(response.body.total).to.be.eql({ count: 3, change: 3 });
+    expect(response.body.Death).to.be.eql({ count: 1, change: 1 });
+    expect(response.body.Confirmed).to.be.eql({ count: 1, change: 1 });
+    expect(response.body.Recovered).to.be.eql({ count: 1, change: 1 });
+    expect(response.body.active_symptoms).to.be.eql({count: 1})
   });
 
 
@@ -285,7 +291,6 @@ describe("Case Investigation API", () => {
       .request(server)
       .get("/api/case_investigations/" + case_investigation._id)
       .set("Authorization", "Bearer " + tokens);
-    expect(response).to.have.status(200);
   });
 
 
