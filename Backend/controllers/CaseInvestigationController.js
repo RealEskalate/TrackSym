@@ -2,6 +2,7 @@ const { CaseInvestigation } = require("../models/CaseInvestigation.js");
 const mongoose = require("mongoose")
 const _ = require("lodash");
 const { Patient } = require("../models/Patient.js");
+const { SymptomUser } = require("../models/SymptomUser");
 
 // Fetch all case investigations, with filters if any
 exports.getCaseInvestigations = async (req, res) => {
@@ -149,16 +150,24 @@ exports.get_count_per_status = async (req, res) =>{
     let assignee = (req.assignee)? req.assignee : req.body.loggedInUser;
 
     const selectedPatients = await CaseInvestigation.find({ assigned_to: mongoose.Types.ObjectId(assignee) })
-    const patientIds = []
+    const patientIds = [];
+    const userIds = [];
 
     for (var i = 0; i < selectedPatients.length; i++) {
         patientIds.push(selectedPatients[i].patient_id);
+        if (selectedPatients[i].user_id){
+            userIds.push(selectedPatients[i].user_id)
+        }
     }
 
 
     const patients = await Patient.find({_id: { $in: patientIds }});
 
-    let result = {total: 0};
+    let result = {
+        total: {
+            count: 0,
+            change: 0
+        }};
 
     for(var index in patients){
         if(!(patients[index].status in result) ){
@@ -167,16 +176,23 @@ exports.get_count_per_status = async (req, res) =>{
                 change: 0
             };
         }
-        
+
         date = patients[index].updated_at;
         //check if update happened in the last 24 hours
         if ((new Date()) - date <= (1000 * 3600 * 24)){
             result[ patients[index].status ].change += 1
+            result.total.change += 1;
         }
         result[ patients[index].status ].count += 1
-        result.total += 1;
+        result.total.count += 1;
     }
 
+    result.active_symptom = await SymptomUser.aggregate([
+        {$match: {$in: userIds}},
+        {$group: {_id: '$user_id', total: {'$sum': 1}}},
+        {$count: "count"}
+    ])[0];
+ 
     res.send(result);
 }
 
