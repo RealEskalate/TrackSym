@@ -189,7 +189,7 @@ exports.get_count_per_status = async (req, res) =>{
 
     result.active_symptom = await SymptomUser.aggregate([
         {$match: {$in: userIds}},
-        {$group: {_id: '$user_id', total: {'$sum': 1}}},
+        {$group: {_id: '$user_id'}},
         {$count: "count"}
     ])[0];
  
