@@ -291,6 +291,7 @@ describe("Case Investigation API", () => {
       .request(server)
       .get("/api/case_investigations/" + case_investigation._id)
       .set("Authorization", "Bearer " + tokens);
+      expect(response).to.have.status(200);
   });
 
 
