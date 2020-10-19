@@ -158,13 +158,23 @@ exports.get_count_per_status = async (req, res) =>{
 
     const patients = await Patient.find({_id: { $in: patientIds }});
 
-    let result = {}
+    let result = {total: 0};
 
     for(var index in patients){
         if(!(patients[index].status in result) ){
-            result[ patients[index].status ] = 0
+            result[ patients[index].status ] = {
+                count: 0, 
+                change: 0
+            };
         }
-        result[ patients[index].status ] += 1
+        
+        date = patients[index].updated_at;
+        //check if update happened in the last 24 hours
+        if ((new Date()) - date <= (1000 * 3600 * 24)){
+            result[ patients[index].status ].change += 1
+        }
+        result[ patients[index].status ].count += 1
+        result.total += 1;
     }
 
     res.send(result);
