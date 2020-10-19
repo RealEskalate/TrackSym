@@ -13,6 +13,12 @@ module.exports = (function() {
         .updateOwn('password')
         .updateAny('local_policy')
         .deleteAny('local_policy')
+      .grant('healthcare_worker')      
+        .create('local_policy')
+        .create("invite_user")
+        .updateOwn('password')
+        .updateAny('local_policy')
+        .deleteAny('local_policy')
       .grant("sysadmin")
         .readAny("comment")
         
