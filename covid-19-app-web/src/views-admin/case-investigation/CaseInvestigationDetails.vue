@@ -44,10 +44,15 @@
           </v-list-item-action>
         </v-list-item>
         <v-container>
-          <v-subheader class="d-block"> Note: </v-subheader>
-          <div class="mx-5 bg-gray d-block">
-            {{ notes }}
-          </div>
+          <v-subheader class="d-block"> Notes: </v-subheader>
+          <v-list class="mx bg-gray d-block">
+            <v-list-item v-for="(note, i) in notes" :key="i">
+              <v-list-item-content>{{ note.note }}</v-list-item-content>
+              <v-list-item-action-text>{{
+                formatDate(note.date)
+              }}</v-list-item-action-text>
+            </v-list-item>
+          </v-list>
         </v-container>
       </v-list>
     </div>
@@ -56,6 +61,7 @@
 
 <script>
 import { mdiForwardburger } from "@mdi/js";
+import moment from "moment";
 
 export default {
   name: "DetailSidebar",
@@ -87,6 +93,11 @@ export default {
         return this.caseInvestigation._id;
       }
       return null;
+    }
+  },
+  methods: {
+    formatDate(item) {
+      return moment(item.created_at).format("MMM Do YYYY");
     }
   }
 };

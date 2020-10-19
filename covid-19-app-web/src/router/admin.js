@@ -7,12 +7,16 @@ const InviteAdmin = () => import("../views-admin/auth/InviteAdmin.vue");
 const Login = () => import("../views/Auth/Login.vue");
 
 const Symptoms = () => import("../views-admin/symptoms/Symptoms.vue");
-const Cases = () => import("../views-admin/cases/Cases.vue");
-const RegisterCase = () => import("../views-admin/cases/RegisterCase");
+const TestReports = () => import("../views-admin/test-reports/TestReports.vue");
+const RegisterTestReport = () =>
+  import("../views-admin/test-reports/RegisterTestReport");
 
-const CaseInvestigations = () => import("../views-admin/case-investigation/CaseInvestigations");
-const RegisterCaseInvestigation = () => import("../views-admin/case-investigation/RegisterCaseInvestigation");
-const EditCaseInvestigation = () => import("../views-admin/case-investigation/EditCaseInvestigation");
+const CaseInvestigations = () =>
+  import("../views-admin/case-investigation/CaseInvestigations");
+const RegisterCaseInvestigation = () =>
+  import("../views-admin/case-investigation/RegisterCaseInvestigation");
+const EditCaseInvestigation = () =>
+  import("../views-admin/case-investigation/EditCaseInvestigation");
 
 export const admin = [
   {
@@ -41,7 +45,7 @@ export const admin = [
     }
   },
   {
-    path: "cases",
+    path: "test-reports",
     component: {
       template: "<router-view />"
     },
@@ -51,15 +55,15 @@ export const admin = [
     },
     children: [
       {
-        name: "RegisterCase",
+        name: "RegisterTestReport",
         path: "register",
-        component: RegisterCase,
+        component: RegisterTestReport,
         meta: { requiresAuth: true, roles: ["ephi_user", "healthcare_worker"] }
       },
       {
-        name: "Cases",
+        name: "TestReports",
         path: "/",
-        component: Cases,
+        component: TestReports,
         meta: { requiresAuth: true, roles: ["ephi_user"] }
       }
     ]

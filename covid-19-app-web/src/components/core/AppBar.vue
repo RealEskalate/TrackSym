@@ -218,7 +218,7 @@ import {
   mdiThermometerHigh,
   mdiPlusCircle,
   mdiViewList,
-    mdiPoliceBadge
+  mdiPoliceBadge
 } from "@mdi/js";
 import { languages } from "../../plugins/i18n";
 
@@ -362,15 +362,15 @@ export default {
           roles: ["ephi_user"]
         },
         {
-          text: "navbar.cases",
+          text: "navbar.testReports",
           icon: mdiAmbulance,
           roles: ["ephi_user"],
           children: [
-            { text: "navbar.casesList", icon: mdiViewList, to: "Cases" },
+            { text: "navbar.list", icon: mdiViewList, to: "TestReports" },
             {
-              text: "navbar.registerCase",
+              text: "navbar.registerTestReport",
               icon: mdiPlusCircle,
-              to: "RegisterCase"
+              to: "RegisterTestReport"
             }
           ]
         },
@@ -380,7 +380,7 @@ export default {
           roles: ["ephi_user"],
           children: [
             {
-              text: "navbar.caseInvestigationsList",
+              text: "navbar.list",
               icon: mdiViewList,
               to: "CaseInvestigations"
             },

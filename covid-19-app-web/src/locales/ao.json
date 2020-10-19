@@ -58,9 +58,11 @@
     "inviteAdmins": "Invite Admins",
     "dashboard": "Dashbordi",
     "users": "Fayyadamtoota",
-    "registerCase": "Dhukkubsattoota Galmessi",
-    "casesList": "Dhukkubsattoota",
-    "cases": "Dhukkubsattoota"
+    "list": "List",
+    "testReports": "Test Report",
+    "registerTestReport": "Register Test Report",
+    "registerCaseInvestigation": "Add new",
+    "caseInvestigations": "Case Investigations"
   },
 
   "titles": {

@@ -34,6 +34,16 @@
         item-class="table-row"
       >
         <template v-slot:[`item.actions`]="{ item }">
+          <v-btn
+            icon
+            small
+            color="primary"
+            :to="{ name: 'EditCaseInvestigation', params: { id: item._id } }"
+          >
+            <v-icon class="mr-2">
+              {{ mdiPencil }}
+            </v-icon>
+          </v-btn>
           <v-btn icon small color="primary">
             <v-icon class="mr-2" @click="showDetail(item)">
               {{ mdiAccountDetails }}
@@ -70,7 +80,8 @@ import {
   mdiAccountDetails,
   mdiDeleteForever,
   mdiFilterVariant,
-  mdiSearchWeb
+  mdiSearchWeb,
+  mdiPencil
 } from "@mdi/js";
 
 import { mapActions, mapGetters } from "vuex";
@@ -88,6 +99,7 @@ export default {
   },
   data() {
     return {
+      mdiPencil,
       mdiFilterVariant,
       mdiAccountDetails,
       mdiDeleteForever,
@@ -112,7 +124,7 @@ export default {
           sortable: false
         },
         { text: "Assigned to", value: "assigned_to.username", sortable: false },
-        { text: "Notes", value: "notes", sortable: false },
+        { text: "Current Note", value: "current_note.note", sortable: false },
         { text: "Actions", value: "actions", sortable: false }
       ],
       options: { page: 1, itemsPerPage: 10 },
@@ -143,7 +155,9 @@ export default {
     ...mapActions(["fetchCaseInvestigations"]),
     deleteCaseInvestigation(id) {
       if (id !== null) {
-        ajax.delete(`case_investigations/${id}`);
+        ajax.delete(`case_investigations/${id}`).then(() => {
+          this.fetch({}, true);
+        });
       }
       this.deleteDialog = false;
     },

@@ -15,6 +15,7 @@ import users from "./admin/people";
 import dashboard from "./admin/dashboard";
 import cases from "./admin/cases";
 import caseInvestigations from "./admin/case-investigation";
+import patients from "./admin/patients";
 
 import createPersistedState from "vuex-persistedstate";
 import ajax from "../auth/ajax";
@@ -138,6 +139,7 @@ export default new Vuex.Store({
     users,
     cases,
     dashboard,
-    caseInvestigations
+    caseInvestigations,
+    patients
   }
 });

@@ -58,9 +58,11 @@
     "inviteAdmins": "አስተዳዳሪን ይጋብዙ",
     "dashboard": "ዳሽቦርድ",
     "users": "ተጠቃሚዎች",
-    "registerCase": "በበሽታው የተያዘ ይመዝገቡ",
-    "casesList": "በበሽታው የተያዘ ዝርዝር",
-    "cases": "በበሽታው የተያዘ"
+    "list": "ዝርዝር",
+    "testReports": "የተመረመሩ",
+    "registerTestReport": "የተመረመሩ ይመዝገቡ",
+    "registerCaseInvestigation": "Add new",
+    "caseInvestigations": "Case Investigations"
   },
 
   "titles": {

@@ -1,12 +1,12 @@
 <template>
   <v-container class="align-content-center">
     <v-btn
-      :to="{ name: 'RegisterCase' }"
+      :to="{ name: 'RegisterTestReport' }"
       class="v-card--shaped"
       small
       color="primary"
     >
-      Register new Case
+      Register new test report
     </v-btn>
     <HighLevelStatistics class="my-8" />
     <v-card
@@ -21,7 +21,7 @@
         v-on:set-search="searchPerson"
         v-on:status-change="onStatusChange"
       />
-      <v-data-tableton
+      <v-data-table
         :headers="headers"
         :options.sync="options"
         :items="getCases"
@@ -42,7 +42,7 @@
         <template v-slot:[`item.date`]="{ item }">
           <span v-text="formatDate(item.date)" />
         </template>
-      </v-data-tableton>
+      </v-data-table>
 
       <DetailSidebar
         v-on:close-sidebar="onClose"
@@ -64,7 +64,7 @@
 
 <script>
 import HighLevelStatistics from "./HighLevelStatistics";
-import CaseFilter from "./CaseFilter";
+import CaseFilter from "./TestReportFilter";
 import { mdiFilterVariant } from "@mdi/js";
 import moment from "moment";
 
