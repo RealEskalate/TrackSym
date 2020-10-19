@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 
 let { CaseInvestigation } = require("../models/CaseInvestigation");
 let { Patient } = require("../models/Patient");
+let { SymptomUser } = require("../models/SymptomUser");
 
 let mongoose = require("mongoose");
 const { use } = require("chai");
@@ -18,7 +19,14 @@ chai.use(chaiHttp);
 describe("Case Investigation API", () => {
   let healthcare_worker;
   let patient;
+  let patient2;
+  let patient3;
+  let patient4;
+  let symptomuser;
+  let symptomuser2;
   let case_investigation;
+  let case_investigation2;
+  let case_investigation3;
   let tokens;
 
 
@@ -55,10 +63,79 @@ describe("Case Investigation API", () => {
       city: "Addis Ababa",
       status: "Death",
       sms_status: true,
-    })
+    });
 
     await patient.save();
 
+    patient2 = new Patient({
+      _id: mongoose.Types.ObjectId(),
+      user_id: mongoose.Types.ObjectId(),
+      first_name: "Luke",
+      last_name: "Skywalker",
+      dob: new Date('May 25, 1970'),
+      phone_number: "+25189098392",
+      language: "English",
+      gender: "MALE",
+      woreda: "Nefas Silk",
+      street_address: "Jemo 2",
+      city: "Addis Ababa",
+      status: "Confirmed",
+      sms_status: true,
+    });
+
+    await patient2.save();
+
+    symptomuser = new SymptomUser({
+      _id: mongoose.Types.ObjectId(),
+      user_id: patient2.user_id,
+      symptom_id: mongoose.Types.ObjectId()
+    });
+
+    await symptomuser.save();
+
+    patient3 = new Patient({
+      _id: mongoose.Types.ObjectId(),
+      user_id: mongoose.Types.ObjectId(),
+      first_name: "Anakin",
+      last_name: "Skywalker",
+      dob: new Date('May 25, 1947'),
+      phone_number: "+25183028392",
+      language: "English",
+      gender: "MALE",
+      woreda: "Nefas Silk",
+      street_address: "Jemo 2",
+      city: "Addis Ababa",
+      status: "Recovered",
+      sms_status: true,
+    });
+
+    await patient3.save();
+    
+    patient4 = new Patient({
+      _id: mongoose.Types.ObjectId(),
+      user_id: mongoose.Types.ObjectId(),
+      first_name: "C-3PO",
+      last_name: "Droid",
+      dob: new Date('May 25, 1966'),
+      phone_number: "+25189428392",
+      language: "English",
+      gender: "MALE",
+      woreda: "Nefas Silk",
+      street_address: "Jemo 2",
+      city: "Addis Ababa",
+      status: "New",
+      sms_status: true,
+    });
+
+    await patient4.save();
+
+    symptomuser2 = new SymptomUser({
+      _id: mongoose.Types.ObjectId(),
+      user_id: patient4.user_id,
+      symptom_id: mongoose.Types.ObjectId()
+    });
+
+    await symptomuser2.save();
 
     case_investigation = new CaseInvestigation({
         _id: mongoose.Types.ObjectId(),
@@ -79,13 +156,58 @@ describe("Case Investigation API", () => {
 
     await case_investigation.save();
 
+    case_investigation2 = new CaseInvestigation({
+      _id: mongoose.Types.ObjectId(),
+      patient_id: patient2._id,
+      assigned_to: healthcare_worker._id,
+      current_note: {
+          note: "This is a test note...",
+          date: new Date(),
+      },
+      notes: [
+          {
+              note: "This is a test note...",
+              date: new Date(),
+              health_worker_id: healthcare_worker._id,
+          },
+      ],
+    });
+
+    await case_investigation2.save();
+    
+    case_investigation3 = new CaseInvestigation({
+      _id: mongoose.Types.ObjectId(),
+      patient_id: patient3._id,
+      assigned_to: healthcare_worker._id,
+      current_note: {
+          note: "This is a test note...",
+          date: new Date(),
+      },
+      notes: [
+          {
+              note: "This is a test note...",
+              date: new Date(),
+              health_worker_id: healthcare_worker._id,
+          },
+      ],
+    });
+
+    await case_investigation3.save();
+
   });
 
 
   afterEach(async () => {
     await Patient.findByIdAndDelete(patient._id);
+    await Patient.findByIdAndDelete(patient2._id);
+    await Patient.findByIdAndDelete(patient3._id);
+    await Patient.findByIdAndDelete(patient4._id);
+    await SymptomUser.findByIdAndDelete(symptomuser._id);
+    await SymptomUser.findByIdAndDelete(symptomuser2._id);
     await User.findByIdAndDelete(healthcare_worker._id);
     await CaseInvestigation.findByIdAndDelete(case_investigation._id);
+    await CaseInvestigation.findByIdAndDelete(case_investigation2._id);
+    await CaseInvestigation.findByIdAndDelete(case_investigation3._id);
   });
 
 
@@ -146,12 +268,30 @@ describe("Case Investigation API", () => {
   });
 
 
+  it("It should get count by patient status", async() => {
+    let response = await chai
+      .request(server)
+      .get("/api/case_investigations/status_count/")
+      .set("Authorization", "Bearer " + tokens)
+      .query({
+        assigned_to: healthcare_worker._id.toString()
+      });
+    expect(response).to.have.status(200);
+    expect(response.body).to.be.an("Object");
+    expect(response.body.total).to.be.eql({ count: 3, change: 3 });
+    expect(response.body.Death).to.be.eql({ count: 1, change: 1 });
+    expect(response.body.Confirmed).to.be.eql({ count: 1, change: 1 });
+    expect(response.body.Recovered).to.be.eql({ count: 1, change: 1 });
+    expect(response.body.active_symptoms).to.be.eql({count: 1})
+  });
+
+
   it("It should get a Case Investigation", async () => {
     let response = await chai
       .request(server)
       .get("/api/case_investigations/" + case_investigation._id)
       .set("Authorization", "Bearer " + tokens);
-    expect(response).to.have.status(200);
+      expect(response).to.have.status(200);
   });
 
 

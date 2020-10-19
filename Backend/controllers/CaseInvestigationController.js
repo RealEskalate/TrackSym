@@ -2,6 +2,7 @@ const { CaseInvestigation } = require("../models/CaseInvestigation.js");
 const mongoose = require("mongoose")
 const _ = require("lodash");
 const { Patient } = require("../models/Patient.js");
+const { SymptomUser } = require("../models/SymptomUser");
 
 // Fetch all case investigations, with filters if any
 exports.getCaseInvestigations = async (req, res) => {
@@ -146,10 +147,14 @@ exports.get_patients_by_status = async (req, res) => {
 
 
 exports.get_count_per_status = async (req, res) =>{
-    let assignee = (req.assignee)? req.assignee : req.body.loggedInUser;
+    if (!req.query.assigned_to){
+        return res.status(400).send("Health care worker not sent")
+    }
+    let assigned_to = req.query.assigned_to;
 
-    const selectedPatients = await CaseInvestigation.find({ assigned_to: mongoose.Types.ObjectId(assignee) })
-    const patientIds = []
+    const selectedPatients = await CaseInvestigation.find({ assigned_to: assigned_to })
+    const patientIds = [];
+    const userIds = [];
 
     for (var i = 0; i < selectedPatients.length; i++) {
         patientIds.push(selectedPatients[i].patient_id);
@@ -158,15 +163,41 @@ exports.get_count_per_status = async (req, res) =>{
 
     const patients = await Patient.find({_id: { $in: patientIds }});
 
-    let result = {}
+    let result = {
+        total: {
+            count: 0,
+            change: 0
+        }};
 
     for(var index in patients){
-        if(!(patients[index].status in result) ){
-            result[ patients[index].status ] = 0
+
+        if (patients[index].user_id){
+            userIds.push(patients[index].user_id)
         }
-        result[ patients[index].status ] += 1
+
+        if(!(patients[index].status in result) ){
+            result[ patients[index].status ] = {
+                count: 0, 
+                change: 0
+            };
+        }
+
+        date = patients[index].updated_at;
+        //check if update happened in the last 24 hours
+        if ((new Date()) - date <= (1000 * 3600 * 24)){
+            result[ patients[index].status ].change += 1
+            result.total.change += 1;
+        }
+        result[ patients[index].status ].count += 1
+        result.total.count += 1;
     }
 
+    result.active_symptoms = (await SymptomUser.aggregate([
+        {$match: {user_id: {$in: userIds}}},
+        {$group: {_id: '$user_id'}},
+        {$count: "count"}
+    ]))[0];
+ 
     res.send(result);
 }
 
