@@ -61,15 +61,21 @@ describe("Case Investigation API", () => {
 
 
     case_investigation = new CaseInvestigation({
-      _id: mongoose.Types.ObjectId(),
-      patient_id: patient._id,
-      assigned_to: healthcare_worker._id,
-      notes: {
-        note: "This is a test note...",
-        date: new Date(),
-        health_worker_id: healthcare_worker._id
-      }
-    })
+        _id: mongoose.Types.ObjectId(),
+        patient_id: patient._id,
+        assigned_to: healthcare_worker._id,
+        current_note: {
+            note: "This is a test note...",
+            date: new Date(),
+        },
+        notes: [
+            {
+                note: "This is a test note...",
+                date: new Date(),
+                health_worker_id: healthcare_worker._id,
+            },
+        ],
+    });
 
     await case_investigation.save();
 
@@ -85,14 +91,14 @@ describe("Case Investigation API", () => {
 
   it("It should add a new Case Investigation", async () => {
     let response = await chai
-      .request(server)
-      .patch("/api/case_investigations/")
-      .set("Authorization", "Bearer " + tokens)
-      .send({
-        patient_id: mongoose.Types.ObjectId(),
-        assigned_to: healthcare_worker._id,
-        notes: "This is a test note...",
-      });
+        .request(server)
+        .patch("/api/case_investigations/")
+        .set("Authorization", "Bearer " + tokens)
+        .send({
+            patient_id: mongoose.Types.ObjectId(),
+            assigned_to: healthcare_worker._id,
+            current_note: "This is a test note...",
+        });
     expect(response).to.have.status(201);
     expect(response.body).to.be.a("object");
   });
@@ -100,13 +106,13 @@ describe("Case Investigation API", () => {
 
   it("It should add a new Case Investigation", async () => {
     let response = await chai
-      .request(server)
-      .patch("/api/case_investigations/")
-      .set("Authorization", "Bearer " + tokens)
-      .send({
-        patient_id: patient._id,
-        notes: "This is a test note...",
-      });
+        .request(server)
+        .patch("/api/case_investigations/")
+        .set("Authorization", "Bearer " + tokens)
+        .send({
+            patient_id: patient._id,
+            current_note: "This is a test note...",
+        });
     expect(response).to.have.status(201);
     expect(response.body).to.be.a("object");
   });
@@ -128,13 +134,13 @@ describe("Case Investigation API", () => {
 
   it("It should not add a new Case Investigation", async () => {
     let response = await chai
-      .request(server)
-      .patch("/api/case_investigations/")
-      .set("Authorization", "Bearer " + tokens)
-      .send({
-        assigned_to: healthcare_worker._id,
-        notes: "This is a test note...",
-      });
+        .request(server)
+        .patch("/api/case_investigations/")
+        .set("Authorization", "Bearer " + tokens)
+        .send({
+            assigned_to: healthcare_worker._id,
+            current_note: "This is a test note...",
+        });
     expect(response).to.have.status(500);
     expect(response.body).to.be.a("object");
   });
@@ -160,14 +166,14 @@ describe("Case Investigation API", () => {
 
   it("It should update a case investigation", async () => {
     let response = await chai
-      .request(server)
-      .patch(`/api/case_investigations?id=${case_investigation._id}`)
-      .set("Authorization", "Bearer " + tokens)
-      .send({
-        patient_id: patient._id,
-        assigned_to: healthcare_worker._id,
-        notes: "This is another test note...",
-      });
+        .request(server)
+        .patch(`/api/case_investigations?id=${case_investigation._id}`)
+        .set("Authorization", "Bearer " + tokens)
+        .send({
+            patient_id: patient._id,
+            assigned_to: healthcare_worker._id,
+            current_note: "This is another test note...",
+        });
 
     expect(response).to.have.status(200);
     expect(response.body).to.be.a("object");
