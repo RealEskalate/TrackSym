@@ -7,6 +7,7 @@ class PatientCard extends StatefulWidget {
   Case patient_case;
 
   PatientCard({@required this.patient_case});
+
   @override
   _PatientCardState createState() =>
       _PatientCardState(patient_case: this.patient_case);
@@ -14,6 +15,7 @@ class PatientCard extends StatefulWidget {
 
 class _PatientCardState extends State<PatientCard> {
   _PatientCardState({this.patient_case});
+
   //Reply sampleReply;
   Case patient_case;
 
@@ -32,11 +34,14 @@ class _PatientCardState extends State<PatientCard> {
     var sizeH = MediaQuery.of(context).size.height;
     var sizeW = MediaQuery.of(context).size.width;
     return Container(
-        margin: EdgeInsets.only(bottom: 5),
+        // margin: EdgeInsets.only(bottom: 5),
         child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
             elevation: 2.0,
             child: Container(
-                margin: EdgeInsets.all(3),
+                // margin: EdgeInsets.all(3),
                 child: ListTile(
                   onTap: () => Navigator.push(
                     context,
@@ -44,10 +49,10 @@ class _PatientCardState extends State<PatientCard> {
                       builder: (_) => PatientDetailView(),
                     ),
                   ),
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/user1.jpg'),
-                    maxRadius: 25,
-                  ),
+                  // leading: CircleAvatar(
+                  //   backgroundImage: AssetImage('assets/images/user1.jpg'),
+                  //   maxRadius: 25,
+                  // ),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

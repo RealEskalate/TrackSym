@@ -60,14 +60,14 @@ class _CurrentSymptomsState extends State<CurrentSymptoms> {
           child: Text(
             "Current Symptoms",
             style: TextStyle(
-              color: Colors.grey,
+              color: Colors.black,
             ),
           ),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           iconSize: 30.0,
-          color: Colors.grey,
+          color: Colors.black,
           onPressed: () {
             Navigator.pop(context);
           },
@@ -126,7 +126,7 @@ class _CurrentSymptomsState extends State<CurrentSymptoms> {
                 child: Card(
                   elevation: 2.0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0.0),
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Container(
                     width: MediaQuery.of(context).size.width,
