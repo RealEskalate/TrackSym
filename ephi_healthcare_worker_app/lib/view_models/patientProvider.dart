@@ -31,11 +31,9 @@ class PatientViewModel {
       List<Patient> caseList = [];
       var caseListResponse = json.decode(response.body);
       if (response.statusCode == 200) {
-        for (int index = 0;
-            index < caseListResponse['patients'].length;
-            index++) {
+        for (int index = 0; index < caseListResponse['data'].length; index++) {
           //print(articlesListResponse['data'][index]['title']);
-          caseList.add(Patient.fromJson(caseListResponse['patients'][index]));
+          caseList.add(Patient.fromJson(caseListResponse['data'][index]));
         }
       } else {
         print("Status code fail " + response.statusCode.toString());
