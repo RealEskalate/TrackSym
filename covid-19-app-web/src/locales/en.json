@@ -59,7 +59,11 @@
     "inviteAdmins": "Invite Admins",
     "dashboard": "Dashboard",
     "users": "Users",
-    "cases": "Cases"
+    "list": "List",
+    "testReports": "Test Report",
+    "registerTestReport": "Register Test Report",
+    "registerCaseInvestigation": "Add new",
+    "caseInvestigations": "Case Investigations"
   },
 
   "titles": {

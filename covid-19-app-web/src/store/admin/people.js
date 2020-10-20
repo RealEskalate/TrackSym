@@ -44,6 +44,7 @@ const actions = {
         response => {
           commit("setUsers", response.data.data);
           commit("setUsersCount", response.data.data_count);
+          console.log(response.data.data);
         },
         error => {
           console.log(error);

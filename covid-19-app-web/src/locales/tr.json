@@ -58,7 +58,11 @@
     "inviteAdmins": "Yönetici Davet Et",
     "dashboard": "Gösterge Paneli",
     "users": "kullanıcılar",
-    "cases": "Cases"
+    "list": "List",
+    "testReports": "Test Report",
+    "registerTestReport": "Register Test Report",
+    "registerCaseInvestigation": "Add new",
+    "caseInvestigations": "Case Investigations"
   },
 
   "titles": {

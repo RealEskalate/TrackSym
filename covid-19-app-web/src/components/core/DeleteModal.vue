@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title class="headline">Delete confirmation</v-card-title>
       <v-card-text>
-        Are you sure you want to permanently delete {{ item }}
+        Are you sure you want to permanently delete <b> {{ item }} </b>
       </v-card-text>
 
       <v-card-actions>
@@ -24,10 +24,10 @@
 <script>
 export default {
   name: "DeleteModal",
-  props: ["open", "item"],
+  props: ["open", "item", "id"],
   methods: {
     result(delItem) {
-      this.$emit("onConfirmation", delItem);
+      this.$emit("onConfirmation", delItem ? this.id : null); // if confirmed emit id otherwise null
     }
   }
 };
