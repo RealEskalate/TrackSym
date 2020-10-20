@@ -1,7 +1,7 @@
 //API end points
 class CaseEndPoints {
   static String getCases(String healthCareWorkerId) {
-    return "https://api.tracksym.app/api/case_investigations/" +
+    return "https://api.tracksym.app/api/case_investigations?assignee=" +
         healthCareWorkerId;
   }
 
@@ -26,7 +26,8 @@ class SymptomEndPoints {
 
 class PatientsEndPoints {
   static String getPatients(String healthCareWorkerId) {
-    return "https://api.tracksym.app/api/patients/" + healthCareWorkerId;
+    return "https://api.tracksym.app/api/test-report?reporter_id" +
+        healthCareWorkerId;
   }
 
   static String getPatientDetails(String patientId) {
