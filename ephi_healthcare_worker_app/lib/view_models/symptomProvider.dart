@@ -32,11 +32,11 @@ class SymptomViewModel {
       var symptomListResponse = json.decode(response.body);
       if (response.statusCode == 200) {
         for (int index = 0;
-            index < symptomListResponse['symptoms'].length;
+            index < symptomListResponse['data'].length;
             index++) {
           //print(articlesListResponse['data'][index]['title']);
-          symptomList.add(
-              PatientSymptom.fromJson(symptomListResponse['symptoms'][index]));
+          symptomList
+              .add(PatientSymptom.fromJson(symptomListResponse['data'][index]));
         }
       } else {
         print("Status code fail " + response.statusCode.toString());
@@ -67,11 +67,11 @@ class SymptomViewModel {
       var symptomListResponse = json.decode(response.body);
       if (response.statusCode == 200) {
         for (int index = 0;
-            index < symptomListResponse['curretnSymptoms'].length;
+            index < symptomListResponse['data'].length;
             index++) {
           //print(articlesListResponse['data'][index]['title']);
-          symptomList.add(PatientSymptom.fromJson(
-              symptomListResponse['curretnSymptoms'][index]));
+          symptomList
+              .add(PatientSymptom.fromJson(symptomListResponse['data'][index]));
         }
       } else {
         print("Status code fail " + response.statusCode.toString());
@@ -102,11 +102,11 @@ class SymptomViewModel {
       var symptomListResponse = json.decode(response.body);
       if (response.statusCode == 200) {
         for (int index = 0;
-            index < symptomListResponse['symptomsHistory'].length;
+            index < symptomListResponse['data'].length;
             index++) {
           //print(articlesListResponse['data'][index]['title']);
-          symptomList.add(PatientSymptom.fromJson(
-              symptomListResponse['symptomsHistory'][index]));
+          symptomList
+              .add(PatientSymptom.fromJson(symptomListResponse['data'][index]));
         }
       } else {
         print("Status code fail " + response.statusCode.toString());
