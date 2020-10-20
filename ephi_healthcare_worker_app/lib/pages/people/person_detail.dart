@@ -127,6 +127,9 @@ class PatientDetailViewState extends State<PatientDetailView> {
                       children: <Widget>[
                         Expanded(
                             child: FlatButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
                                 color: Theme.of(context).primaryColor,
                                 textColor: Colors.white,
                                 onPressed: () {},
@@ -134,24 +137,26 @@ class PatientDetailViewState extends State<PatientDetailView> {
                         SizedBox(width: 10),
                         Expanded(
                             child: FlatButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
                                 color: Theme.of(context).primaryColor,
                                 textColor: Colors.white,
                                 onPressed: () {},
                                 child: Text("Contact")))
                       ],
                     )),
-                SizedBox(height: 10),
+                // SizedBox(height: 10),
                 Container(
                     child: Column(
                   children: <Widget>[
                     cardWidgetBuilder(context, "Current Symptoms"),
-                    SizedBox(height: 10),
-                    cardWidgetBuilder(context, "Symptom History"),
-                    SizedBox(height: 10),
+                    // SizedBox(height: 10),
+                    // cardWidgetBuilder(context, "Symptom History"),
                     cardWidgetBuilder(context, "Test Result History")
                   ],
                 )),
-                SizedBox(height: 20.2),
+                // SizedBox(height: 20.2),
               ],
             )));
   }
@@ -159,8 +164,10 @@ class PatientDetailViewState extends State<PatientDetailView> {
   cardWidgetBuilder(BuildContext context, String title) {
     return Container(
         height: 70,
-        margin: EdgeInsets.only(bottom: 5),
         child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
             elevation: 2.0,
             child: Container(
                 margin: EdgeInsets.all(3),

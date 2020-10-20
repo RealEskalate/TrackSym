@@ -137,6 +137,9 @@ class DetailViewState extends State<DetailView> {
                       children: <Widget>[
                         Expanded(
                             child: FlatButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
                                 color: Theme.of(context).primaryColor,
                                 textColor: Colors.white,
                                 onPressed: () {},
@@ -144,6 +147,9 @@ class DetailViewState extends State<DetailView> {
                         SizedBox(width: 10),
                         Expanded(
                             child: FlatButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
                                 color: Theme.of(context).primaryColor,
                                 textColor: Colors.white,
                                 onPressed: () {},
@@ -155,8 +161,8 @@ class DetailViewState extends State<DetailView> {
                     child: Column(
                   children: <Widget>[
                     cardWidgetBuilder(context, "Current Symptoms"),
-                    SizedBox(height: 10),
-                    cardWidgetBuilder(context, "Symptom History")
+                    // SizedBox(height: 10),
+                    // cardWidgetBuilder(context, "Symptom History")
                   ],
                 )),
                 SizedBox(height: 20.2),
@@ -166,37 +172,37 @@ class DetailViewState extends State<DetailView> {
 
   cardWidgetBuilder(BuildContext context, String title) {
     return Container(
-        height: 70,
-        margin: EdgeInsets.only(bottom: 5),
         child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
             elevation: 2.0,
             child: Container(
-                margin: EdgeInsets.all(3),
                 child: ListTile(
-                  onTap: () {
-                    switch (title) {
-                      case "Current Symptoms":
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CurrentSymptoms(),
-                            ));
-                        break;
-                      case "Symptom History":
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SymptomHistory(),
-                            ));
-                        break;
-                    }
-                  },
-                  title: Text(title,
-                      style: TextStyle(
-                        fontSize: 16,
-                      )),
-                  dense: false,
-                  trailing: InkWell(child: Icon(Icons.arrow_forward_ios)),
-                ))));
+              onTap: () {
+                switch (title) {
+                  case "Current Symptoms":
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CurrentSymptoms(),
+                        ));
+                    break;
+                  // case "Symptom History":
+                  //   Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (_) => SymptomHistory(),
+                  //       ));
+                  //   break;
+                }
+              },
+              title: Text(title,
+                  style: TextStyle(
+                    fontSize: 16,
+                  )),
+              dense: false,
+              trailing: InkWell(child: Icon(Icons.arrow_forward_ios)),
+            ))));
   }
 }
