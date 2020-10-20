@@ -86,7 +86,7 @@ class AppDrawer extends StatelessWidget {
                   maxRadius: 30,
                 ),
                 SizedBox(width: 10),
-                Text("Dr. Feysel Mubarek",
+                Text("Dr. Lensa Billion",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
