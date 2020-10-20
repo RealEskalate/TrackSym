@@ -7,6 +7,7 @@ class Case {
   String updatedAt;
   String creationTime;
   String currentTestResult;
+
   Case(
       {this.id,
       this.patientName,
@@ -16,6 +17,7 @@ class Case {
       this.updatedAt,
       this.creationTime,
       this.currentTestResult});
+
   factory Case.fromJson(Map<String, dynamic> json) {
     return Case(
       id: json['_id'] as String,
