@@ -1,3 +1,4 @@
+import 'package:ephi_healthcare_worker_app/pages/profile/profilePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
@@ -119,6 +120,12 @@ Widget _createDrawerItem(
         case "Settings":
           break;
         case "Profile":
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ProfilePage(),
+            ),
+          );
           break;
         case "Logout":
           Navigator.push(
