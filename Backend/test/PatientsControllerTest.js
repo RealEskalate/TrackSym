@@ -52,7 +52,7 @@ describe("Patient API", () => {
         woreda: "Nefas Silk",
         street_address: "Jemo 2",
         city: "Addis Ababa",
-        status: "Death",
+        status: "Died",
         sms_status: true,
     })
 
@@ -82,7 +82,7 @@ describe("Patient API", () => {
         woreda: "Arada",
         street_address: "4 killo",
         city: "Addis Ababa",
-        status: "Death",
+        status: "Died",
         sms_status: true,
       });
     expect(response).to.have.status(200);
@@ -99,7 +99,7 @@ describe("Patient API", () => {
         first_name: "Darth",
         last_name: "Vader",
         gender: "MALE",
-        status: "Death",
+        status: "Died",
       });
     expect(response).to.have.status(200);
     expect(response.body).to.be.a("object");
@@ -120,7 +120,7 @@ describe("Patient API", () => {
         woreda: "Arada",
         street_address: "4 killo",
         city: "Addis Ababa",
-        status: "Death",
+        status: "Died",
         sms_status: true,
       });
     expect(response).to.have.status(500);
@@ -140,7 +140,7 @@ describe("Patient API", () => {
         woreda: "Arada",
         street_address: "4 killo",
         city: "Addis Ababa",
-        status: "Death",
+        status: "Died",
         sms_status: true,
       });
     expect(response).to.have.status(500);
@@ -184,7 +184,7 @@ describe("Patient API", () => {
         woreda: "Nefas Silk",
         street_address: "Jemo 1",
         city: "Addis Ababa",
-        status: "Death",
+        status: "Died",
         sms_status: true,
       });
 

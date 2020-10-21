@@ -188,7 +188,7 @@ exports.delete_patient = async (req, res) => {
         } else {
 
             //----- updating log ----//
-            let date = new Date(patient.updated);
+            let date = new Date(patient.updated_at);
             date.setHours(0,0,0,0);
 
             let log =await PatientLog.findOne({date:date,test_status:patient.status});

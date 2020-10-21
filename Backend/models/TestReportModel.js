@@ -15,6 +15,7 @@ const testReportSchema = new mongoose.Schema({
     },
     patient_id:{
         type: mongoose.Schema.Types.ObjectId,
+        required: true,
         ref: 'Patient'
     }
 

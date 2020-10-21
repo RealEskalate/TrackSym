@@ -121,7 +121,7 @@ exports.post_test_report = async (req, res) => {
             await new PatientLog({test_status:"Positive", date: date}).save();
         }
 
-        let patient = await Patient.find(req.body.patient_id);
+        let patient = await Patient.findOne(req.body.patient_id);
         patient.status = "Confirmed";
         await patient.save();
 
@@ -152,16 +152,17 @@ exports.update_test_report = async (req, res) => {
         
         if(req.body.test_status == 'Positive'){
 
-            let log =await PatientLog.findOne({date:date,test_status:"Positive"});
+            let log =await PatientLog.findOne({date:date,test_status:"Confirmed"});
 
             if(log){
                 log.count+=1;
                 await log.save();
             }else{
-                await new PatientLog({test_status:"Positive", date: date}).save();
+                await new PatientLog({test_status:"Confirmed", date: date}).save();
             }
 
-            let patient = await Patient.find(req.body.patient_id);
+            let patient = await Patient.findOne(report.patient_id);
+
             patient.status = "Confirmed";
             await patient.save();
 
@@ -211,7 +212,7 @@ exports.delete_test_report = async (req, res) => {
                     await log.save();
                 }
 
-                let patient = await Patient.find(report.patient_id);
+                let patient = await Patient.findOne(report.patient_id);
                 patient.status = "Unkonwn";
                 await patient.save();
 

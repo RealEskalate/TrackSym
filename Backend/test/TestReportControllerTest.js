@@ -43,7 +43,7 @@ describe("Test Report API", () => {
       woreda: "Nefas Silk",
       street_address: "Jemo 2",
       city: "Addis Ababa",
-      status: "Death",
+      status: "Died",
       sms_status: true,
   })
 
@@ -85,7 +85,7 @@ describe("Test Report API", () => {
       .set("Authorization", "Bearer " + tokens)
       .send({
         test_status: "Negative",
-        user_id: patient._id,
+        patient_id: patient._id,
       });
     expect(response).to.have.status(200);
     expect(response.body).to.be.a("object");
@@ -98,7 +98,7 @@ describe("Test Report API", () => {
       .post("/api/test-report/")
       .set("Authorization", "Bearer " + tokens)
       .send({
-        user_id: patient._id,
+        patient_id: patient._id,
       });
     expect(response).to.have.status(200);
     expect(response.body).to.be.a("object");
@@ -134,7 +134,7 @@ describe("Test Report API", () => {
       .set("Authorization", "Bearer " + tokens)
       .send({
         test_id: test_report._id,
-        test_status: "Recovered"
+        test_status: "Positive"
       });
 
     expect(response).to.have.status(202);
