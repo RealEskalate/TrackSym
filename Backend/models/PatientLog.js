@@ -41,7 +41,6 @@ const patientLogSchemaDemo = new mongoose.Schema({
     },
     test_status:{
         type: String,
-        default: "New",
         index: true
     },
 

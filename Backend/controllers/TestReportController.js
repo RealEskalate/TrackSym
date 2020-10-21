@@ -213,7 +213,7 @@ exports.delete_test_report = async (req, res) => {
                 }
 
                 let patient = await Patient.findOne(report.patient_id);
-                patient.status = "Unkonwn";
+                patient.status = "Unknown";
                 await patient.save();
 
             }

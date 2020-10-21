@@ -84,7 +84,7 @@ describe("Interview API", () => {
             city: "Addis Ababa",
             state: "Addis Ababa",
             sms_status: false,
-            status: "Unkonwn",
+            status: "Unknown",
             history: [],
             emergency_contact: {
                 first_name: "Test_FirstName",

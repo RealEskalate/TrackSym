@@ -46,14 +46,14 @@ const patientSchema = new mongoose.Schema({
     },
     hospitalization:{
         type:String,
-        enum:["Hospitalized","ICU","Unkonwn"],
-        default: "Unkonwn"
+        enum:["Hospitalized","ICU","Unknown"],
+        default: "Unknown"
     },
     status:{
         type: String,
-        enum: ["Unkonwn","Recovered","Confirmed","Died"],
+        enum: ["Unknown","Recovered","Confirmed","Died"],
         required: true,
-        default: "Unkonwn"
+        default: "Unknown"
     },
     history:[],
     emergency_contact:{

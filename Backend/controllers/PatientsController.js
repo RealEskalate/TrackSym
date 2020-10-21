@@ -115,7 +115,7 @@ exports.post_patient_data = async (req, res) => {
         let date = new Date();
         date.setHours(0,0,0,0);
 
-        if(req.body.status != 'Unkonwn'){
+        if(req.body.status != 'Unknown'){
 
             let log =await PatientLog.findOne({date:date,test_status:req.body.status});
 
