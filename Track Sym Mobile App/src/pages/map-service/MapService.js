@@ -168,8 +168,11 @@ export default class MapService extends React.Component {
 
   // Cluster has been clicked. Identifies the cluster that has been clicked and sets modal to visible
   async onGridLayerPress(e) {
-    console.log('Inside grid layer press');
     const feature = e.nativeEvent.payload;
+    console.log(feature);
+    if (feature.properties.cluster === true) {
+      return;
+    }
     animating = true;
     const user_id = feature.id;
 
@@ -186,10 +189,10 @@ export default class MapService extends React.Component {
 
   // Data point has been clicked.
   async onSourceLayerPress(e) {
+    console.log(e);
     const feature = e.nativeEvent.payload;
     animating = true;
     if (feature.properties.cluster) {
-      console.log('cluster clicked');
       const cluster_data = {
         male: 0,
         female: 0,
@@ -225,9 +228,7 @@ export default class MapService extends React.Component {
       const res = await Geocoder.geocodePosition(loc);
       const address = res[1].formattedAddress.toString();
       cluster_data.address = address;
-      console.log(
-        '-----------CLUSTER ADDRESS-------------' + cluster_data.address
-      );
+      
       try {
         const leaves = this.state.small_cluster.getLeaves(
           feature.properties.cluster_id,
@@ -354,7 +355,7 @@ export default class MapService extends React.Component {
             )
               .then((res) => res.json())
               .then((data) => {
-                console.log(data);
+                //console.log(data);
                 for (let i = 0; i < data.length; i++) {
                   const symptom = data[i].Symptom.name.toLowerCase();
                   const age_group = data[i].age_group;
@@ -372,8 +373,8 @@ export default class MapService extends React.Component {
                   cluster_data[age_group]++;
                   cluster_data[gender.toLowerCase()]++;
                 }
-                console.log('Cluster data');
-                console.log(cluster_data);
+                // console.log('Cluster data');
+                // console.log(cluster_data);
               })
               .catch((err) => {
                 console.log(err);
@@ -452,7 +453,7 @@ export default class MapService extends React.Component {
       )
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           for (let i = 0; i < data.length; i++) {
             const symptom = data[i].Symptom.name.toLowerCase();
             point_info.age_group = data[i].age_group;
@@ -483,9 +484,7 @@ export default class MapService extends React.Component {
     this.setState({ bottom_right_bound: bottom_right });
 
     // call fetch symptoms
-    console.log('calling fetch symptoms');
     this.fetchSymptoms();
-    console.log('calling update clusters');
     // call updateClusters
     this.updateClusters();
     zoom_level = this.map.getZoom();
@@ -493,12 +492,7 @@ export default class MapService extends React.Component {
 
   // gets user city and calls fetchSymptoms
   async onFinishedLoadingMap() {
-    console.log(
-      'LOCATION: ' +
-        this.state.user_longitude +
-        ' , ' +
-        this.state.user_latitude
-    );
+    
 
     this.setState({
       location: [this.state.user_longitude, this.state.user_latitude],
@@ -528,15 +522,12 @@ export default class MapService extends React.Component {
       bottom_right_bound: bottom_right,
     });
     animating = false;
-    console.log(
-      '-----------------SETTING COUNTRY ---------- ' + this.state.user_country
-    );
+   
     this.fetchSymptoms();
   }
 
   // handles user navigating through the map
   onTrackingChange() {
-    console.log('tracking changed!');
     const location_prev = this.state.location;
     const location_new = [this.state.user_longitude, this.state.user_latitude];
 
@@ -569,7 +560,6 @@ export default class MapService extends React.Component {
       .then((res) => res.json())
       .then((data) => {
         const city_names = [];
-        console.log(data);
         Object.keys(data).forEach((key, idx) => {
           const city_name = key + ', ' + data[key][0].country;
           const id = idx;
@@ -580,7 +570,6 @@ export default class MapService extends React.Component {
           };
           city_names.push(city);
         });
-        console.log('----------- city data loaded --------------');
         this.setState({
           cities: data,
           city_names: city_names,
@@ -614,29 +603,16 @@ export default class MapService extends React.Component {
       }
     )
       .then((res) => {
-        console.log('res = ');
-        console.log(res.status);
-
+        
         if (res.status === 500) {
           animating = false;
-          console.log('No locations with users and symptoms found.');
-          console.log(
-            this.state.user_longitude + ' , ' + this.state.user_latitude
-          );
-          console.log(this.state.top_left_bound);
-          console.log(this.state.top_right_bound);
-          console.log(this.state.bottom_left_bound);
-          console.log(this.state.bottom_right_bound);
           return;
         } else {
           return res.json();
         }
       })
       .then((data) => {
-        console.log('Data loaded!!!!!!!!');
         if (data.length > 0 && data[0].probability === undefined) {
-          console.log('Rendering Grids');
-          console.log(data);
           const gridCollections = this.gridsToGeoJson(data);
           const small_cluster = new Supercluster({ radius: 40, maxZoom: 14 });
           const medium_cluster = new Supercluster({ radius: 40, maxZoom: 14 });
@@ -658,7 +634,6 @@ export default class MapService extends React.Component {
           }
           this.updateClusters();
         } else {
-          console.log('-----------else-------');
           this.setState({
             symptoms: data,
           });
@@ -715,7 +690,6 @@ export default class MapService extends React.Component {
         reject(err);
       });
     MapboxGL.setTelemetryEnabled(false);
-    console.log('-----------inside fetch symptoms--------');
     this.fetchCities();
 
     this.props.navigation.addListener('focus', async () => {
@@ -729,7 +703,6 @@ export default class MapService extends React.Component {
   }
 
   updateClusters = async () => {
-    console.log('inside update--');
 
     const small_cluster = this.state.small_cluster;
     const medium_cluster = this.state.medium_cluster;
@@ -889,7 +862,6 @@ export default class MapService extends React.Component {
   };
 
   gridsToGeoJson(grids) {
-    console.log('Grids to GeoJson');
     const gridCollections = {
       smallGridCollection: {
         type: 'FeatureCollection',
@@ -982,7 +954,6 @@ export default class MapService extends React.Component {
   }
 
   renderClusterInfo(cluster_data, country) {
-    console.log('ADDRESS IS: ' + cluster_data.address);
     const chartConfig = {
       backgroundGradientFrom: '#1E2923',
       backgroundGradientFromOpacity: 0,
@@ -1044,12 +1015,11 @@ export default class MapService extends React.Component {
             : 0;
         const total_chills = shaking_chills + chills;
         current_grid_info.value['Chills'] = total_chills;
-        console.log('-----------Total chills = ' + total_chills);
         current_grid_info.value['Repeated Shaking with Chills'] = -1;
       }
 
       Object.keys(current_grid_info.value).forEach((key, idx) => {
-        if (key.toLowerCase() !== 'repeated shaking with chills') {
+        if (key.toLowerCase() !== 'repeated shaking with chills' && parseInt(current_grid_info.value[key]) > 0) {
           data.push({
             id: idx,
             name: current_grid_info.value[key] + ' ' + key.toLowerCase(),
@@ -1099,25 +1069,27 @@ export default class MapService extends React.Component {
       }
       for (i = 0; i < age_groups.length; i++) {
         const age_group = age_groups[i];
-        if (parseInt(current_grid_info.ages[age_group]) > 0) var chart_element;
-        if (age_group === '>90') {
-          chart_element = {
-            name: age_group,
-            symptomatic: current_grid_info.ages[age_group],
-            color: age_colors[i],
-            legendFontColor: '#7F7F7F',
-            legendFontSize: 15,
-          };
-        } else {
-          chart_element = {
-            name: ' between ' + age_group,
-            symptomatic: current_grid_info.ages[age_group],
-            color: age_colors[i],
-            legendFontColor: '#7F7F7F',
-            legendFontSize: 15,
-          };
+        if (parseInt(current_grid_info.ages[age_group]) > 0) {
+          var chart_element;
+          if (age_group === '>90') {
+            chart_element = {
+              name: age_group,
+              symptomatic: current_grid_info.ages[age_group],
+              color: age_colors[i],
+              legendFontColor: '#7F7F7F',
+              legendFontSize: 15,
+            };
+          } else {
+            chart_element = {
+              name: ' between ' + age_group,
+              symptomatic: current_grid_info.ages[age_group],
+              color: age_colors[i],
+              legendFontColor: '#7F7F7F',
+              legendFontSize: 15,
+            };
+          }
+          piechart_data.push(chart_element);
         }
-        piechart_data.push(chart_element);
       }
     } else {
       male_symps = parseInt(cluster_data.male);
@@ -1177,7 +1149,6 @@ export default class MapService extends React.Component {
         }
       }
       if (i === cluster_data.length - 1) {
-        console.log('setting animating to false');
         animating = false;
       }
 
@@ -1381,7 +1352,6 @@ export default class MapService extends React.Component {
     }
 
     if (i === info.symptoms.length - 1) {
-      console.log('setting animating to false');
       animating = false;
     }
 
@@ -1472,9 +1442,9 @@ export default class MapService extends React.Component {
           <MapboxGL.SymbolLayer
             id={id + ' pointcount'}
             style={{
-              textAllowOverlap: true,
-              iconAllowOverlap: true,
-              textIgnorePlacement: true,
+              textAllowOverlap: false,
+              iconAllowOverlap: false,
+              textIgnorePlacement: false,
               textField: ['get', 'total'],
               textFont: ['Ubuntu Medium', 'Arial Unicode MS Regular'],
               textSize: 20,
@@ -1485,7 +1455,7 @@ export default class MapService extends React.Component {
           />
           <MapboxGL.CircleLayer
             id={id + ' gridCluster'}
-            belowLayerID={id + ' singleCluster'}
+            aboveLayerID={id + ' singleCluster'}
             filter={['has', 'point_count']}
             style={highStyles.clusteredPoints}
           />
@@ -1570,8 +1540,6 @@ export default class MapService extends React.Component {
           <SearchableDropdown
             onItemSelect={(item) => {
               const city_name = item.name.substring(0, item.name.search(','));
-
-              console.log('City name = ' + city_name);
 
               const latitude = this.state.cities[city_name][0].latitude;
               const longitude = this.state.cities[city_name][0].longitude;
@@ -1907,18 +1875,18 @@ const highStyles = {
   },
   clusteredPoints: {
     circlePitchAlignment: 'map',
-    circleColor: [
-      'step',
-      ['get', 'point_count'],
-      '#B71C1C',
-      100,
-      '#E91E63',
-      750,
-      '#9C27B0',
-    ],
-
+    // circleColor: [
+    //   'step',
+    //   ['get', 'point_count'],
+    //   '#B71C1C',
+    //   100,
+    //   '#E91E63',
+    //   750,
+    //   '#9C27B0',
+    // ],
+    circleColor: '#9C27B0',
     circleRadius: ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
-    circleOpacity: 0.6,
+    circleOpacity: 1.0,
     circleStrokeWidth: 4,
     circleStrokeColor: '#3E2723',
   },
