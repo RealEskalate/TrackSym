@@ -1,13 +1,14 @@
 const { Patient } = require("../models/Patient.js");
 var mongoose = require("mongoose");
+const { PatientLog } = require("../models/PatientLog.js");
 
 // getting all patients
 exports.get_all_patients = async (req, res) => {
     let filter = {};
 
-    if(req.query.user_id){
-        filter.user_id = req.query.user_id;
-    }
+    // if(req.query.user_id){
+    //     filter.user_id = req.query.user_id;
+    // }
 
     if(req.query.name){
         let re = new RegExp(req.query.name, 'i') 
@@ -60,13 +61,21 @@ exports.get_all_patients = async (req, res) => {
         filter.sms_status = req.query.sms_status
     }
 
+    if(req.query.status!=undefined){
+        filter.status = req.query.status
+    }
+
+    if(req.query.hospitalization!=undefined){
+        filter.hospitalization = req.query.hospitalization
+    }
+
     let page = parseInt(req.query.page) || 1;
     let size = parseInt(req.query.size) || 15;
 
     const patients = await Patient.find(
         filter,{},
         { skip: (page - 1) * size, limit: size * 1 }
-    ).populate("user_id");
+    );//.populate("user_id");
 
     let result = {
         data_count: await Patient.countDocuments(filter),
@@ -101,6 +110,25 @@ exports.post_patient_data = async (req, res) => {
 
     try {
         await patient.save();
+
+        //----- updating patient model and log ----//
+        let date = new Date();
+        date.setHours(0,0,0,0);
+
+        if(req.body.status != 'Unkonwn'){
+
+            let log =await PatientLog.findOne({date:date,test_status:req.body.status});
+
+            if(log){
+                log.count+=1;
+                await log.save();
+            }else{
+                await new PatientLog({test_status:req.body.status, date: date}).save();
+            }
+        }
+        //----- end updating patient model and log ----//
+
+
         return res.send(patient);
     } catch (err) {
         return res.status(500).send(err.toString());
@@ -123,7 +151,25 @@ exports.update_patient = async (req, res) => {
                 status:oldData.status,
             })
             patient.save();
+
+
+            //----- updating log ----//
+            let date = new Date();
+            date.setHours(0,0,0,0);
+
+            let log =await PatientLog.findOne({date:date,test_status:patient.status});
+
+            if(log){
+                log.count+=1;
+                await log.save();
+            }else{
+                await new PatientLog({test_status:patient.status, date: date}).save();
+            }
+            //----- end updating log ----//
+
         }
+
+        
         
         return res.status(202).send(patient);
     } catch (err) {
@@ -140,6 +186,19 @@ exports.delete_patient = async (req, res) => {
         if (!patient) {
             res.status(404).send("Patient doesnt exist!");
         } else {
+
+            //----- updating log ----//
+            let date = new Date(patient.updated);
+            date.setHours(0,0,0,0);
+
+            let log =await PatientLog.findOne({date:date,test_status:patient.status});
+
+            if(log){
+                log.count -= 1;
+                await log.save();
+            }
+            //----- end updating log ----//
+
             res.status(204).send(patient);
         }
     } catch (err) {

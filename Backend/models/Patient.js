@@ -44,9 +44,14 @@ const patientSchema = new mongoose.Schema({
     sms_status: {
         type: Boolean,
     },
+    hospitalization:{
+        type:String,
+        enum:["Hospitalized","ICU","Not-Hospitalized"],
+        default: "Not-Hospitalized"
+    },
     status:{
         type: String,
-        enum: ["New","Recovered","Confirmed","Death"],
+        enum: ["New","Recovered","Confirmed","Died"],
         required: true,
         default: "New"
     },

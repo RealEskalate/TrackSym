@@ -111,38 +111,39 @@ exports.ephi_test_stats = async (req, res) => {
         // Populating 0s for the web graph to render
         if (!(date in result)) {
             result[date] = {
-                positive: 0,
-                negative: 0,
-                death: 0,
-                recovered: 0,
-                administered: 0
+                Confirmed: 0,
+                Died: 0,
+                Recovered: 0,
+                Administered: 0
             };
         }
-        if (log.test_status == "Positive") {
-            result[date].positive += log.count;
-            result[date].administered += log.count;
-        } else if (log.test_status == "Negative") {
-            result[date].negative += log.count;
-            result[date].administered += log.count;
+        if (log.test_status == "Confirmed") {
+            result[date].Confirmed += log.count;
+        
         } else if (log.test_status == "Recovered") {
-            result[date].recovered += log.count;
+            result[date].Recovered += log.count;
+
         } else if (log.test_status == "Died") {
-            result[date].death += log.count;
-            result[date].administered += log.count;
+            result[date].Died += log.count;
+
+        } else if(log.test_status == "TestCount"){
+            result[date].Administered += log.count;
         }
+
     }
+
     // Populating if a date is skipped - again for the sake of the web graph
     const endDate = new Date(req.query.end_date);
     const nextDate = new Date(req.query.start_date);
+
     while (nextDate <= endDate) {
         const dateKey = "" + nextDate.toISOString().slice(0, 10);
         if (!(dateKey in result)) {
             result[dateKey] = {
-                positive: 0,
-                negative: 0,
-                death: 0,
-                recovered: 0,
-                administered: 0
+                Confirmed: 0,
+                Died: 0,
+                Recovered: 0,
+                Administered: 0
             };
         }
         nextDate.setDate(nextDate.getDate() + 1);

@@ -3,13 +3,14 @@ var mongoose = require("mongoose");
 var UserModels = require("../models/UserModel.js");
 const User = UserModels.User;
 const { PatientLog } = require("../models/PatientLog.js");
+const { Patient } = require("../models/Patient.js");
 
 // getting all test reports
 exports.get_all_test_reports = async (req, res) => {
     let filter = {};
 
-    if(req.query.user_id){
-        filter.user_id = req.query.user_id;
+    if(req.query.patient_id){
+        filter.patient_id = req.query.patient_id;
     }
 
     if(req.query.reporter_id){
@@ -36,16 +37,19 @@ exports.get_all_test_reports = async (req, res) => {
     }
 
 
-    if(req.query.username){
-        let re = new RegExp(req.query.username, 'i') 
-        let userId =await User.find({username : { $regex: re }}).select('_id')
+    if(req.query.name){
+        let re = new RegExp(req.query.name, 'i') 
+        
+        let patientId =await Patient.find({
+            $or:[ {first_name : { $regex: re }}, {last_name : { $regex: re }}]
+        }).select('_id')
 
-        let listOfUserId = [];
-
-        for(var user_id in userId){
-            listOfUserId.push(userId[user_id]._id)
+        let listOfPatients = [];
+        for(var patient_id in patientId){
+            listOfPatients.push(patientId[patient_id]._id)
         }
-        filter.user_id= { $in: listOfUserId };
+
+        filter.patient_id =  { $in: listOfPatients };
     }
 
 
@@ -53,11 +57,13 @@ exports.get_all_test_reports = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let size = parseInt(req.query.size) || 15;
 
+    
     let TestReportModel = (req.query.demo) ? TestReportDemo : TestReport;
     const testReports = await TestReportModel.find(
         filter,{},
         { skip: (page - 1) * size, limit: size * 1 }
-    ).populate("user_id").populate("healthcare_worker_id");
+    ).populate("patient_id").populate("healthcare_worker_id");
+
 
     let result = {
         data_count: await TestReportModel.countDocuments(filter),
@@ -73,6 +79,7 @@ exports.get_all_test_reports = async (req, res) => {
     }
 };
 
+
 // Post a test report
 exports.post_test_report = async (req, res) => {
 
@@ -80,27 +87,47 @@ exports.post_test_report = async (req, res) => {
 
     const report = new TestReport({
         _id: mongoose.Types.ObjectId(),
-        user_id: req.body.user_id,
+        patient_id: req.body.patient_id,
         healthcare_worker_id: reporter_id,
         test_status: req.body.test_status
     });
 
-    //------ saving updating logs --- //
+
+    //------ saving updating logsfor test count  --- //
     let date = new Date();
     date.setHours(0,0,0,0);
     
-    let log =await PatientLog.findOne({date:date,test_status:req.body.test_status});
+
+    let log =await PatientLog.findOne({date:date,test_status:"TestCount"});
 
     if(log){
         log.count+=1;
         await log.save();
     }else{
-        await new PatientLog({
-            test_status:req.body.test_status,
-            date: date
-        }).save();
+        await new PatientLog({ test_status:"TestCount", date: date }).save();
     }
-    //------ end of saving updating logs --- //
+    //------ end of saving updating logsfor test count --- //
+
+    
+    //----- updating patient model and log ----//
+    if(req.body.test_status == 'Positive'){
+
+        let log =await PatientLog.findOne({date:date,test_status:"Positive"});
+
+        if(log){
+            log.count+=1;
+            await log.save();
+        }else{
+            await new PatientLog({test_status:"Positive", date: date}).save();
+        }
+
+        let patient = await Patient.find(req.body.patient_id);
+        patient.status = "Confirmed";
+        await patient.save();
+
+    }
+    //----- end updating patient model and log ----//
+
 
     try {
         await report.save();
@@ -115,26 +142,33 @@ exports.post_test_report = async (req, res) => {
 exports.update_test_report = async (req, res) => {
     try {
         const report = await TestReport.findById(req.body.test_id);
-
-        //------ saving updating logs --- //
-        let date = new Date();
-        date.setHours(0,0,0,0);
-        const log = await PatientLog.findOne({date:date,test_status:req.body.test_status});
-        
-        if(log){
-            log.count+=1;
-            log.save();
-        }else{
-            await new PatientLog({
-                test_status:req.body.test_status,
-                date: date
-            }).save();
-        }
-        //------ end of saving updating logs --- //
-
         report.test_status = req.body.test_status
         await report.save();
+
+
+        //----- updating patient model and log ----//
+        let date = new Date();
+        date.setHours(0,0,0,0);
         
+        if(req.body.test_status == 'Positive'){
+
+            let log =await PatientLog.findOne({date:date,test_status:"Positive"});
+
+            if(log){
+                log.count+=1;
+                await log.save();
+            }else{
+                await new PatientLog({test_status:"Positive", date: date}).save();
+            }
+
+            let patient = await Patient.find(req.body.patient_id);
+            patient.status = "Confirmed";
+            await patient.save();
+
+        }
+        //----- end updating patient model and log ----//
+        
+
         return res.status(202).send(report);
     } catch (err) {
         return res.status(500).send(err.toString());
@@ -147,9 +181,45 @@ exports.delete_test_report = async (req, res) => {
 
     try {
         const report = await TestReport.findByIdAndRemove(req.params.id);
+
         if (!report) {
             res.status(404).send("Report doesnt exist!");
         } else {
+
+            //----- updating patient model and log ----//
+
+            let date = new Date(report.created_at);
+            date.setHours(0,0,0,0);
+
+            let date_2 = new Date(report.update_at);
+            date_2.setHours(0,0,0,0);
+            
+            
+            let log =await PatientLog.findOne({date:date,test_status:"TestCount"});
+            if(log){
+                log.count-=1;
+                await log.save();
+            }
+            
+            //------------ patient log ----//
+            if(req.body.test_status == 'Positive'){
+
+                let log =await PatientLog.findOne({date:date_2,test_status:"Positive"});
+
+                if(log){
+                    log.count-=1;
+                    await log.save();
+                }
+
+                let patient = await Patient.find(report.patient_id);
+                patient.status = "Unkonwn";
+                await patient.save();
+
+            }
+            //----- end updating patient model and log ----//
+
+
+
             res.status(204).send(report);
         }
     } catch (err) {
