@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
                 CardWidget(
                     sizeHeight: 0.15,
                     sizeWidth: 0.25,
-                    color: Colors.lightBlue[700],
+                    color: Colors.lightBlueAccent[700],
                     iconPath: "assets/images/covid.png",
                     value: "1453",
                     change: "+25",

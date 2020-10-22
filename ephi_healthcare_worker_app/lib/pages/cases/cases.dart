@@ -98,7 +98,7 @@ class CasesListState extends State<CasesList> {
                       CardWidget(
                           sizeHeight: 0.10,
                           sizeWidth: 0.35,
-                          color: Colors.lightBlue[700],
+                          color: Colors.lightBlueAccent[700],
                           value: "1,453",
                           change: "+25",
                           text: "Total Cases",

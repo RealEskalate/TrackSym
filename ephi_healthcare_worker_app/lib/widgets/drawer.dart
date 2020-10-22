@@ -1,3 +1,4 @@
+import 'package:ephi_healthcare_worker_app/pages/patient_registry_page/patientRegistryPage.dart';
 import 'package:ephi_healthcare_worker_app/pages/profile/profilePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +21,17 @@ class AppDrawer extends StatelessWidget {
                 _createDrawerItem(
                     icon: Icons.person, text: 'Profile', context: context),
                 _createDrawerItem(
+                    icon: Icons.local_hospital,
+                    text: 'Patient Registry',
+                    context: context),
+                _createDrawerItem(
                     icon: Icons.settings, text: 'Settings', context: context),
                 // _createDrawerItem(icon: Icons.bug_report, text: 'Bug Report'),
                 _createDrawerItem(
                     icon: Icons.info, text: 'About', context: context),
                 _createDrawerItem(
                     icon: Icons.exit_to_app, text: 'Logout', context: context),
-                SizedBox(height: size.height * 0.2),
+                SizedBox(height: size.height * 0.1),
                 Column(
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -118,6 +123,14 @@ Widget _createDrawerItem(
     onTap: () {
       switch (text) {
         case "Settings":
+          break;
+        case "Patient Registry":
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => PatientRegistryPage(),
+            ),
+          );
           break;
         case "Profile":
           Navigator.push(
