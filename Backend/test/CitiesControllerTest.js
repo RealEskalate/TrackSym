@@ -12,7 +12,6 @@ describe("Cities controller", () => {
         .request(server)
         .get("/api/cities/listed");
 
-        console.log(response.body);
         expect(response).to.have.status(200);
         expect(response.body).to.be.an("array");
         expect(response.body).to.have.length.above(0);
