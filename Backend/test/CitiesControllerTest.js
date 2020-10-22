@@ -34,9 +34,10 @@ describe("Cities controller", () => {
         let response = await chai
         .request(server)
         .get("/api/cities")
-        .query({match: "Tok"});
+        .query({matches: "Tok"});
 
         expect(response).to.have.status(200);
-        expect(response.body).to.be.an("object");
+        expect(response.body).to.be.an("array");
+        expect(response.body).to.have.length.above(0);
     })
 })
