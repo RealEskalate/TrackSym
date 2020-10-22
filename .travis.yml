@@ -1,7 +1,7 @@
 before_install: cd Backend
 language: node_js
 node_js: 
-  - "stable"
+  - 12
 cache:
   directories:
     - "node_modules"
