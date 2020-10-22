@@ -99,7 +99,7 @@ describe("Interview API", () => {
 
         test_report = new TestReport({
             _id: mongoose.Types.ObjectId(),
-            user_id: user_patient._id,
+            patient_id: user_patient._id,
             healthcare_worker_id: user_interviewer._id,
             test_status: "Positive",
         });
