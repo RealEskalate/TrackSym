@@ -1,4 +1,12 @@
 {
+  "profile": {
+    "symptomHistory": "የምልክት ታሪክ"
+  },
+  "symptomStats": {
+    "totalSymptoms": "አጠቃላይ የተመዘገቡ ምልክቶች",
+    "mostCommon": "በጣም የተለመደ ምልክት",
+    "peopleWithSymptoms": "ምልክቶች የሚታዩባቸው ሰዎች"
+  },
   "sources": "ምንጮች",
   "country": "ሀገር",
   "world": "አለም",
@@ -40,6 +48,8 @@
 
   "navbar": {
     "home": "መግቢያ",
+    "ethiopia": "ኢትዮጵያ",
+    "statistics": "ስታትስቲክስ",
     "learn": "ይማሩ",
     "about": "ስለኛ",
     "news": "ዜና",
@@ -47,7 +57,12 @@
     "profile": "መገለጫ",
     "inviteAdmins": "አስተዳዳሪን ይጋብዙ",
     "dashboard": "ዳሽቦርድ",
-    "users": "ተጠቃሚዎች"
+    "users": "ተጠቃሚዎች",
+    "list": "ዝርዝር",
+    "testReports": "የተመረመሩ",
+    "registerTestReport": "የተመረመሩ ይመዝገቡ",
+    "registerCaseInvestigation": "Add new",
+    "caseInvestigations": "Case Investigations"
   },
 
   "titles": {
@@ -58,7 +73,8 @@
     "actions": "መደረግ ያለበት",
     "states": "የበሽታው የሽግግር ሂደት",
     "learningPath": "የበለጠ ለመረዳት",
-    "news": "ዜና"
+    "news": "ዜና",
+    "reportedSymptoms": "የተመዘገበው ምልክቶች"
   },
 
   "graphNames": {

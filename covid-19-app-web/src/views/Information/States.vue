@@ -1,10 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <h3
-        class="display-1 font-weight-thin mb-10"
-        v-text="$t('titles.states')"
-      />
+      <h1 class="font-weight-thin mb-10">{{ $t("titles.states") }}</h1>
     </v-row>
     <v-card shaped style="overflow: hidden" outlined>
       <v-row>

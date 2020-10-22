@@ -1,5 +1,13 @@
 <template>
   <v-container class="align-content-center">
+    <v-btn
+      :to="{ name: 'RegisterTestReport' }"
+      class="v-card--shaped"
+      small
+      color="primary"
+    >
+      Register new test report
+    </v-btn>
     <HighLevelStatistics class="my-8" />
     <v-card
       outlined
@@ -56,7 +64,7 @@
 
 <script>
 import HighLevelStatistics from "./HighLevelStatistics";
-import CaseFilter from "./CaseFilter";
+import CaseFilter from "./TestReportFilter";
 import { mdiFilterVariant } from "@mdi/js";
 import moment from "moment";
 
@@ -165,7 +173,7 @@ export default {
     defaultDate(mode = "start") {
       if (mode === "start")
         return moment(new Date())
-          .subtract(2, "week")
+          .subtract(3, "month")
           .format("YYYY-MM-DD");
       else return moment(new Date()).format("YYYY-MM-DD");
     },

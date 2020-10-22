@@ -1,4 +1,4 @@
-const { TestReport } = require("../models/TestReportModel.js");
+const { TestReport, TestReportDemo } = require("../models/TestReportModel.js");
 var mongoose = require("mongoose");
 var UserModels = require("../models/UserModel.js");
 const User = UserModels.User;
@@ -53,13 +53,14 @@ exports.get_all_test_reports = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let size = parseInt(req.query.size) || 15;
 
-    const testReports = await TestReport.find(
+    let TestReportModel = (req.query.demo) ? TestReportDemo : TestReport;
+    const testReports = await TestReportModel.find(
         filter,{},
         { skip: (page - 1) * size, limit: size * 1 }
     ).populate("user_id").populate("healthcare_worker_id");
 
     let result = {
-        data_count: await TestReport.countDocuments(filter),
+        data_count: await TestReportModel.countDocuments(filter),
         page_size: size,
         current_page: page,
         data: testReports,

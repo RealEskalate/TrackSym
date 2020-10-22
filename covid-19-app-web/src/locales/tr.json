@@ -1,4 +1,12 @@
 {
+  "profile": {
+    "symptomHistory": "Semptom Geçmişi"
+  },
+  "symptomStats": {
+    "totalSymptoms": "KAYDEDİLEN TOPLAM SEMPTOMLAR",
+    "mostCommon": "EN YAYGIN SEMPTOMLAR",
+    "peopleWithSymptoms": "SEMPTOMLARI OLAN KİŞİLER"
+  },
   "sources": "Kaynaklar",
   "country": "Ülke",
   "world": "Dünya",
@@ -40,6 +48,8 @@
 
   "navbar": {
     "home": "Ana Sayfa",
+    "ethiopia": "Etiyopya",
+    "statistics": "Istatistikler",
     "learn": "Bilgi",
     "about": "Hakkında",
     "news": "Haberler",
@@ -47,7 +57,12 @@
     "profile": "Profil",
     "inviteAdmins": "Yönetici Davet Et",
     "dashboard": "Gösterge Paneli",
-    "users": "kullanıcılar"
+    "users": "kullanıcılar",
+    "list": "List",
+    "testReports": "Test Report",
+    "registerTestReport": "Register Test Report",
+    "registerCaseInvestigation": "Add new",
+    "caseInvestigations": "Case Investigations"
   },
 
   "titles": {
@@ -58,7 +73,8 @@
     "actions": "Ne yapmalı?",
     "states": "Hastalığın aşamaları",
     "learningPath": "Daha da fazla bilgi",
-    "news": "Haberler"
+    "news": "Haberler",
+    "reportedSymptoms": "Reported symptoms"
   },
 
   "graphNames": {

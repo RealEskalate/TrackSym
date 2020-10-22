@@ -3,17 +3,16 @@
     <v-container>
       <v-row>
         <v-col>
-          <h3
-            class="display-1 font-weight-thin mb-5"
-            v-text="$t('titles.globalStatisticsTitle')"
-          />
+          <h1 class="font-weight-thin mb-5">
+            {{ $t("titles.globalStatisticsTitle") }}
+          </h1>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
           <v-card flat class="overflow-hidden">
             <v-tabs fixed-tabs v-model="selectedGraph" show-arrows="mobile">
-              <v-tab data-v-step="2">
+              <v-tab class="v-step-2">
                 <v-icon left>{{ mdiNumeric }}</v-icon>
                 {{ $t(graphNames[0]) }}
                 <v-spacer />

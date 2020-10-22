@@ -7,12 +7,12 @@
     absolute
     class="shadow-sm"
   >
-    <div v-if="loading">
+    <div v-if="loading" class="px-3">
       <v-skeleton-loader
         :loading="loading"
         v-bind="attrs"
         type="table-heading, list-item-two-line, card, table-tfoot"
-      ></v-skeleton-loader>
+      />
     </div>
     <div v-else>
       <v-list-item class="my-2 shadow-sm p-sticky">

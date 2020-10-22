@@ -1,23 +1,8 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12">
-        <h3 class="display-1 font-weight-thin mb-5" data-v-step="3">
-          {{ $t("titles.ethiopiaStatisticsTitle") }}
-          <!--          <v-img-->
-          <!--            src="/img/ethiopia/under-construction.svg"-->
-          <!--            class="v-icon mx-auto"-->
-          <!--            width="15rem"-->
-          <!--          />-->
-        </h3>
-        <!--        <small-->
-        <!--          class="red&#45;&#45;text"-->
-        <!--          v-text="-->
-        <!--            '*The following statistical data of Ethiopia is not accurate.'-->
-        <!--          "-->
-        <!--        />-->
-      </v-col>
-    </v-row>
+    <h2 class="font-weight-thin mb-5" data-v-step="3">
+      {{ $t("titles.ethiopiaStatisticsTitle") }}
+    </h2>
     <v-row class="my-5" v-if="ethiopianData">
       <v-col cols="12">
         <v-card class="overflow-hidden" outlined shaped>
@@ -31,10 +16,9 @@
             >
               <!--              <v-img :src="item.icon" class="small-icon mx-auto my-3" />-->
               <p class="text-center" v-text="$t(item.label)" />
-              <h1
-                class="display-1 text-center mb-2 primary--text"
-                v-text="numberWithCommas(ethiopianData.total[item.key])"
-              />
+              <h2 class="font-weight-thin text-center mb-2 primary--text">
+                {{ numberWithCommas(ethiopianData.total[item.key]) }}
+              </h2>
             </v-col>
           </v-row>
         </v-card>

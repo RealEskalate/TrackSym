@@ -10,7 +10,7 @@
           :key="item.title"
         >
           <p class="display-1 font-weight-light text-center pt-3">
-            {{ getHighLevelStats[item.value] }}
+            {{ numberWithCommas(getHighLevelStats[item.value]) }}
           </p>
           <v-subheader
             class="text-center p-0 justify-center"

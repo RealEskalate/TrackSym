@@ -41,7 +41,8 @@ export default {
     },
     dashboardLoaders: {
       graphInput: false,
-      daily: false
+      daily: false,
+      mostAffected: false
     }
   },
   getters: {

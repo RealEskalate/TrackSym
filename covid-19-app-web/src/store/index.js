@@ -10,10 +10,12 @@ import symTrack from "./sym-track";
 import user from "./user";
 import ethiopia from "./ethiopia";
 import privacyPolicy from "./privacy-policy";
-import symptoms from "./symptoms";
+import symptoms from "./admin/symptoms";
 import users from "./admin/people";
 import dashboard from "./admin/dashboard";
-import cases from "./cases";
+import cases from "./admin/cases";
+import caseInvestigations from "./admin/case-investigation";
+import patients from "./admin/patients";
 
 import createPersistedState from "vuex-persistedstate";
 import ajax from "../auth/ajax";
@@ -136,6 +138,8 @@ export default new Vuex.Store({
     symptoms,
     users,
     cases,
-    dashboard
+    dashboard,
+    caseInvestigations,
+    patients
   }
 });

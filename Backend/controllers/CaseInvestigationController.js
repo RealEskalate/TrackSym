@@ -2,6 +2,7 @@ const { CaseInvestigation } = require("../models/CaseInvestigation.js");
 const mongoose = require("mongoose")
 const _ = require("lodash");
 const { Patient } = require("../models/Patient.js");
+const { SymptomUser } = require("../models/SymptomUser");
 
 // Fetch all case investigations, with filters if any
 exports.getCaseInvestigations = async (req, res) => {
@@ -52,6 +53,11 @@ exports.getCaseInvestigationById = async (req, res) => {
     }
 }
 
+const datesAreOnSameDay = (first, second) =>
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate();
+
 // Update or add a case investigation
 exports.addOrUpdateCaseInvestigation = async (req, res) => {
     const id = req.query.id || null;
@@ -60,17 +66,34 @@ exports.addOrUpdateCaseInvestigation = async (req, res) => {
         if (!investigation) {
             const investigation = new CaseInvestigation(_.pick(req.body, ["patient_id", "assigned_to"]));
             investigation._id = mongoose.Types.ObjectId();
-            // setting HCW id and date
-            investigation.notes ={
+            investigation.current_note = {
                 date : new Date(),
-                note : req.body.notes,
-                health_worker_id : req.body.loggedInUser
+                note : req.body.current_note,
             };
-            
+            investigation.notes = [];            
             await investigation.save();
             return res.status(201).send(investigation);
         }
-        investigation.set(req.body);
+        investigation.notes = req.body.notes || investigation.notes;
+        if (req.body.current_note) {
+            //If the current note currently saved is on a different date, add it to the previous notes
+            if (!datesAreOnSameDay(investigation.current_note.date, new Date(Date.now))) {
+                investigation.notes.push({
+                    health_worker_id: investigation.assigned_to,
+                    date: investigation.current_note.date,
+                    note: investigation.current_note.note
+                })
+            }
+            //Replace current note
+            investigation.current_note = {
+                date: new Date(),
+                note: req.body.current_note,
+            };
+        }
+        investigation.patient_id = req.body.patient_id || investigation.patient_id;
+        investigation.assigned_to = req.body.assigned_to || investigation.assigned_to;
+        investigation.markModified("current_note");
+        investigation.markModified("notes");
         await investigation.save();
         return res.send(investigation)
     } catch (error) {
@@ -120,6 +143,62 @@ exports.get_patients_by_status = async (req, res) => {
     } catch (error) {
         return res.status(500).send(error.toString());
     }
+}
+
+
+exports.get_count_per_status = async (req, res) =>{
+    if (!req.query.assigned_to){
+        return res.status(400).send("Health care worker not sent")
+    }
+    let assigned_to = req.query.assigned_to;
+
+    const selectedPatients = await CaseInvestigation.find({ assigned_to: assigned_to })
+    const patientIds = [];
+    const userIds = [];
+
+    for (var i = 0; i < selectedPatients.length; i++) {
+        patientIds.push(selectedPatients[i].patient_id);
+    }
+
+
+    const patients = await Patient.find({_id: { $in: patientIds }});
+
+    let result = {
+        total: {
+            count: 0,
+            change: 0
+        }};
+
+    for(var index in patients){
+
+        if (patients[index].user_id){
+            userIds.push(patients[index].user_id)
+        }
+
+        if(!(patients[index].status in result) ){
+            result[ patients[index].status ] = {
+                count: 0, 
+                change: 0
+            };
+        }
+
+        date = patients[index].updated_at;
+        //check if update happened in the last 24 hours
+        if ((new Date()) - date <= (1000 * 3600 * 24)){
+            result[ patients[index].status ].change += 1
+            result.total.change += 1;
+        }
+        result[ patients[index].status ].count += 1
+        result.total.count += 1;
+    }
+
+    result.active_symptoms = (await SymptomUser.aggregate([
+        {$match: {user_id: {$in: userIds}}},
+        {$group: {_id: '$user_id'}},
+        {$count: "count"}
+    ]))[0];
+ 
+    res.send(result);
 }
 
 

@@ -154,7 +154,7 @@ class SymptomView extends StatelessWidget {
                 height: 50,
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(5.0),
+                    borderRadius: BorderRadius.circular(15.0),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black26,

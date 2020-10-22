@@ -3,13 +3,20 @@ const Users = () => import("../views-admin/users/Users");
 const Dashboard = () => import("../views-admin/dashboard/Dashboard.vue");
 
 const CreateAccount = () => import("../views-admin/auth/CreateAccount.vue");
-const ForgotPassword = () => import("../views-admin/auth/ForgotPassword");
-const ChangePassword = () => import("../views-admin/auth/ChangePassword.vue");
 const InviteAdmin = () => import("../views-admin/auth/InviteAdmin.vue");
 const Login = () => import("../views/Auth/Login.vue");
 
 const Symptoms = () => import("../views-admin/symptoms/Symptoms.vue");
-const Cases = () => import("../views-admin/cases/Cases.vue");
+const TestReports = () => import("../views-admin/test-reports/TestReports.vue");
+const RegisterTestReport = () =>
+  import("../views-admin/test-reports/RegisterTestReport");
+
+const CaseInvestigations = () =>
+  import("../views-admin/case-investigation/CaseInvestigations");
+const RegisterCaseInvestigation = () =>
+  import("../views-admin/case-investigation/RegisterCaseInvestigation");
+const EditCaseInvestigation = () =>
+  import("../views-admin/case-investigation/EditCaseInvestigation");
 
 export const admin = [
   {
@@ -29,23 +36,6 @@ export const admin = [
     }
   },
   {
-    name: "ChangePassword",
-    path: "change-password",
-    component: ChangePassword,
-    meta: {
-      requiresAuth: true,
-      roles: ["ephi_user"]
-    }
-  },
-  {
-    name: "ResetPassword",
-    path: "reset-password",
-    component: ForgotPassword,
-    meta: {
-      guest: true
-    }
-  },
-  {
     name: "Symptoms",
     path: "symptoms",
     component: Symptoms,
@@ -55,13 +45,58 @@ export const admin = [
     }
   },
   {
-    name: "Cases",
-    path: "cases",
-    component: Cases,
+    path: "test-reports",
+    component: {
+      template: "<router-view />"
+    },
     meta: {
       requiresAuth: true,
       roles: ["ephi_user"]
-    }
+    },
+    children: [
+      {
+        name: "RegisterTestReport",
+        path: "register",
+        component: RegisterTestReport,
+        meta: { requiresAuth: true, roles: ["ephi_user", "healthcare_worker"] }
+      },
+      {
+        name: "TestReports",
+        path: "/",
+        component: TestReports,
+        meta: { requiresAuth: true, roles: ["ephi_user"] }
+      }
+    ]
+  },
+  {
+    path: "case-investigations",
+    component: {
+      template: "<router-view />"
+    },
+    meta: {
+      requiresAuth: true,
+      roles: ["ephi_user"]
+    },
+    children: [
+      {
+        name: "RegisterCaseInvestigation",
+        path: "register",
+        component: RegisterCaseInvestigation,
+        meta: { requiresAuth: true, roles: ["ephi_user", "healthcare_worker"] }
+      },
+      {
+        name: "EditCaseInvestigation",
+        path: "edit/:id",
+        component: EditCaseInvestigation,
+        meta: { requiresAuth: true, roles: ["ephi_user", "healthcare_worker"] }
+      },
+      {
+        name: "CaseInvestigations",
+        path: "/",
+        component: CaseInvestigations,
+        meta: { requiresAuth: true, roles: ["ephi_user"] }
+      }
+    ]
   },
   {
     name: "InviteAdmin",

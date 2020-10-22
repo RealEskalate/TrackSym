@@ -1,9 +1,8 @@
 <template>
   <div>
-    <h3
-      class="display-1 font-weight-thin mt-12 mb-8"
-      v-text="'Symptoms History'"
-    />
+    <h3 class="display-1 font-weight-thin mt-12 mb-8">
+      {{ $t("profile.symptomHistory") }}
+    </h3>
     <v-sheet shaped outlined class="overflow-hidden">
       <v-progress-linear
         v-if="loaders.symptomHistory"

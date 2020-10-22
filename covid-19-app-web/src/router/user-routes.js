@@ -1,4 +1,5 @@
 const NotFound = () => import("@/views/Errors/404.vue");
+
 const Home = () => import("@/views/Home/Home.vue");
 const Information = () => import("@/views/Information/Information.vue");
 const About = () => import("@/views/About/About.vue");
@@ -9,8 +10,39 @@ const References = () => import("@/views/References/References.vue");
 const PrivacyPolicy = () => import("@/views/PrivacyPolicy/PrivacyPolicy.vue");
 const Login = () => import("@/views/Auth/Login.vue");
 const Register = () => import("@/views/Auth/Register.vue");
+const ForgotPassword = () => import("../views-admin/auth/ForgotPassword");
+
+const ChangePassword = () => import("../views-admin/auth/ChangePassword.vue");
+const Ethiopia = () => import("../views/Home/Ethiopia/Ethiopia");
+
+const Statistics = () => import("../views/Home/Statistics");
+const Symptoms = () => import("../views/HeatMap/Symptoms");
 
 export const userRoutes = [
+  {
+    path: "statistics",
+    name: "Statistics",
+    component: Statistics,
+    meta: {
+      guest: true
+    }
+  },
+  {
+    path: "symptoms",
+    name: "DisplaySymptoms",
+    component: Symptoms,
+    meta: {
+      guest: true
+    }
+  },
+  {
+    path: "ethiopia",
+    name: "Ethiopia",
+    component: Ethiopia,
+    meta: {
+      guest: true
+    }
+  },
   {
     path: "information",
     name: "Learn",
@@ -35,6 +67,22 @@ export const userRoutes = [
     meta: {
       requiresAuth: true,
       roles: ["ephi_user", "basic"]
+    }
+  },
+  {
+    name: "ResetPassword",
+    path: "reset-password",
+    component: ForgotPassword,
+    meta: {
+      guest: true
+    }
+  },
+  {
+    name: "ChangePassword",
+    path: "change-password",
+    component: ChangePassword,
+    meta: {
+      guest: true
     }
   },
   {

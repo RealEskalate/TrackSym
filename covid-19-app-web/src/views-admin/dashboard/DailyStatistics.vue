@@ -15,18 +15,20 @@
                 v-text="numberWithCommas(item.totalNum)"
               />
               <v-list-item-subtitle
-                :class="`${rateConversion(item.increaseRate)[0]}--text`"
+                :class="
+                  `${rateConversion(item.increaseRate, item.title)[0]}--text`
+                "
               >
                 <v-icon
                   small
                   :class="
                     `${
-                      rateConversion(item.increaseRate)[0]
+                      rateConversion(item.increaseRate, item.title)[0]
                     }--text font-weight-bold`
                   "
-                  v-text="rateConversion(item.increaseRate)[1]"
+                  v-text="rateConversion(item.increaseRate, item.title)[1]"
                 />
-                {{ item.increaseRate + "%" }}
+                {{ Math.round(item.increaseRate * 100) / 100 + "%" }}
               </v-list-item-subtitle>
             </v-list-item-action>
           </template>
@@ -49,10 +51,26 @@ export default {
   },
   methods: {
     ...mapActions(["fetchDailyData"]),
-    rateConversion(rate) {
-      if (rate > 0) return ["green", mdiArrowDown];
-      else if (rate < 0) return ["red", mdiArrowUp];
-      else return ["grey", ""];
+    rateConversion(rate, criterion) {
+      if (rate > 0) {
+        if (
+          criterion == "Tests Administered" ||
+          criterion == "COVID-19 Recoveries"
+        ) {
+          return ["green", mdiArrowUp];
+        } else {
+          return ["red", mdiArrowUp];
+        }
+      } else if (rate < 0) {
+        if (
+          criterion == "Tests Adminisered" ||
+          criterion == "COVID-19 Recoveries"
+        ) {
+          return ["red", mdiArrowDown];
+        } else {
+          return ["green", mdiArrowDown];
+        }
+      } else return ["grey", ""];
     }
   },
   computed: {

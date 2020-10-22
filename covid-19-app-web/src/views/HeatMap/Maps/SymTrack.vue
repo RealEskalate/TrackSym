@@ -100,7 +100,7 @@ export default {
   watch: {
     selectedCity(newValue) {
       if (newValue.boundaries) {
-        this.map.fitBounds(newValue.boundaries[0], { maxZoom: 12 });
+        this.map.fitBounds(newValue.boundaries, { maxZoom: 12 });
       } else {
         this.map.flyTo({
           center: [newValue.longitude, newValue.latitude],
