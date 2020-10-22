@@ -44,7 +44,6 @@ describe("Cities controller", () => {
         .request(server)
         .get("/api/cities")
         .query({matches: "Tok"});
-
         expect(response).to.have.status(200);
         expect(response.body).to.be.an("array");
         expect(response.body).to.have.length.above(0);
