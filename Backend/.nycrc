@@ -1,7 +1,0 @@
-{
-    "exclude":[
-        "Backend/services/UpdateTasks.js",
-        "Backend/controllers/UpdatesController.js",
-        "Backend/services/HealthApiParser.js"
-    ]
-}
