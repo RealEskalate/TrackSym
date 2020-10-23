@@ -31,7 +31,7 @@ class WelcomePage extends StatelessWidget {
                       color: Color.fromARGB(45, 0, 0, 0),
                     ),
                   ],
-                  color: Colors.lightBlue,
+                  color: Colors.lightBlueAccent,
                   fontSize: 24.0,
                 )),
             SizedBox(height: size.height * 0.25),
@@ -65,7 +65,7 @@ class WelcomePage extends StatelessWidget {
               minWidth: size.width * 0.8,
               height: size.width * 0.13,
               child: RaisedButton(
-                color: Colors.lightBlue,
+                color: Colors.lightBlueAccent,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40)),
                 onPressed: () {

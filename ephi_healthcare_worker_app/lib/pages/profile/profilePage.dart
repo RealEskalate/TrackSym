@@ -18,23 +18,14 @@ class _ProfilePageState extends State<ProfilePage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           iconTheme: new IconThemeData(
-            color: Colors.lightBlue[900],
+            color: Colors.lightBlueAccent[900],
           ),
           title: Text(
             "Edit Profile",
             style: TextStyle(
-              color: Colors.lightBlue[900],
+              color: Colors.black,
             ),
           ),
-          // actions: <Widget>[
-          //   IconButton(
-          //     icon: Icon(
-          //       Icons.refresh,
-          //       color: Colors.lightBlue[900],
-          //     ),
-          //     onPressed: () {},
-          //   )
-          // ]
         ),
       ),
       body: Container(
@@ -79,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             width: 4,
                             color: Theme.of(context).scaffoldBackgroundColor,
                           ),
-                          color: Colors.lightBlue,
+                          color: Colors.lightBlueAccent,
                         ),
                         child: Icon(
                           Icons.edit,
@@ -117,7 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 RaisedButton(
                   onPressed: () {},
-                  color: Colors.lightBlue,
+                  color: Colors.lightBlueAccent,
                   padding: EdgeInsets.symmetric(horizontal: 50),
                   elevation: 2,
                   shape: RoundedRectangleBorder(

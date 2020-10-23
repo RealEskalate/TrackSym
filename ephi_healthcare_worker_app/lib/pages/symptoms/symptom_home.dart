@@ -84,7 +84,7 @@ class SymptomView extends StatelessWidget {
               CardWidget(
                   sizeHeight: 0.12,
                   sizeWidth: 0.41,
-                  color: Colors.lightBlue[700],
+                  color: Colors.lightBlueAccent[700],
                   value: "1,453",
                   change: "+25",
                   text: "Active Symptoms",
