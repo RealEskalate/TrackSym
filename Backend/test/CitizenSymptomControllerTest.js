@@ -116,11 +116,9 @@ describe("Citizen Symptom API", () => {
 
         expect(response).to.have.status(200);
         expect(response.body).to.be.a("array");
-        last_date = new Date(response.body[response.body.length - 1].date.substring(0,10))
-        today = new Date();
-        last_date.setHours(0, 0, 0, 0);
-        today.setHours(0, 0, 0, 0);
-        // expect(today.getDay()).to.be.equal(last_date.getDay());
+        last_date = response.body[response.body.length - 1].date.substring(0,10)
+        today = new Date().toISOString().substring(0,10);
+        expect(today).to.be.equal(last_date);
         expect(response.body[response.body.length - 1].total).to.be.gte(0);
     });
     it("It should save and return a citizen symptom aggregation with end_date filter added", async () => {
