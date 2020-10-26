@@ -8,8 +8,8 @@ exports.getInterviews = async (req, res) => {
     const filter = {};
     var selection = {};
     // We can add more filters upon request
-    if (req.query.patient) {
-        filter.patient_id = req.query.patient;
+    if (req.query.user) {
+        filter.user_id = req.query.user;
     }
     if (req.query.clinical_review) {
         filter.clinical_review = req.query.clinical_review;
@@ -29,7 +29,7 @@ exports.getInterviews = async (req, res) => {
     try {
         const interviews = await Interview.find(filter, selection, { skip: page - 1, limit: size * 1 });
         const populated = await Interview.populate(interviews, [
-            { model: 'Patient', path: 'patient_id', select: '_id first_name last_name' },
+            { model: 'User', path: 'user_id' },
             { model: 'TestReport', path: 'test_report', select: '_id test_status' },
             { model: 'User', path: 'interview_report.interviewer_id', select: '_id username' }
         ]);
@@ -57,7 +57,7 @@ exports.getInterviewById = async (req, res) => {
     try {
         const interviews = await Interview.find({ _id: mongoose.Types.ObjectId(id) }, selection);
         const populated = await Interview.populate(interviews, [
-            { model: 'Patient', path: 'patient_id', select: '_id first_name last_name' },
+            { model: 'User', path: 'user_id' },
             { model: 'TestReport', path: 'test_report', select: '_id test_status' },
             { model: 'User', path: 'interview_report.interviewer_id', select: '_id username' }
         ]);

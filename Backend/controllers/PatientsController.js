@@ -1,5 +1,7 @@
 const { Patient } = require("../models/Patient.js");
 var mongoose = require("mongoose");
+const { use } = require("chai");
+const User = UserModels.User;
 
 // getting all patients
 exports.get_all_patients = async (req, res) => {
@@ -100,12 +102,45 @@ exports.post_patient_data = async (req, res) => {
     patient._id= mongoose.Types.ObjectId();
 
     try {
-        await patient.save();
-        return res.send(patient);
+        return link_patient_with_user(patient,res)
     } catch (err) {
         return res.status(500).send(err.toString());
     }
 };
+
+// link user with patient...
+link_patient_with_user = async (patient, res) =>{
+    let user = await User.find({$or:[{email:patient.email},{phone_number:patient.phone_number}]});
+    if(!user){
+        user = new User({
+            username:`user-${Date.now()}`,
+            password:`pswod-${Date.now()}`,
+            gender:patient.gender,
+            email:patient.email,
+            created_by:req.body.loggedInUser,
+            patient_info:patient._id,
+            phone_number:patient.phone_number
+        })
+
+        await user.save();
+        patient.user_id = user._id;
+        await patient.save();
+        
+        return res.send(user)
+    } 
+
+    else if(user.patient_info){
+        return res.status(422).send({'message':' a patient exists with the given phone number or email.'})
+    }
+
+    user.patient_info = patient._id;
+    await user.save()
+
+    patient.user_id = user._id;
+    await patient.save();
+
+    return res.send(user)
+}
 
 
 // update a patient
@@ -137,6 +172,15 @@ exports.delete_patient = async (req, res) => {
 
     try {
         const patient = await Patient.findByIdAndRemove(req.params.id);
+
+        // unlink with a user.....
+        if(patient.user_id){
+            let user = await User.findById(patient.user_id);
+            user.patient_info = null;
+            await user.save();
+        }
+
+
         if (!patient) {
             res.status(404).send("Patient doesnt exist!");
         } else {

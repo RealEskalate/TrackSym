@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const contactTracingSchema = new mongoose.Schema({
-    patient_id: {
+    user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Patient",
+        ref: "User",
         required: true,
     },
     first_name: {
