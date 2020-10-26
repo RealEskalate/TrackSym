@@ -18,12 +18,12 @@ class _ProfilePageState extends State<ProfilePage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           iconTheme: new IconThemeData(
-            color: Colors.lightBlueAccent[900],
+            color: Colors.blue,
           ),
           title: Text(
             "Edit Profile",
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.blue,
             ),
           ),
         ),

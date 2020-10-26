@@ -40,12 +40,12 @@ class _HomeState extends State<Home> {
             elevation: 1,
             backgroundColor: Colors.white,
             iconTheme: new IconThemeData(
-              color: Colors.lightBlueAccent[900],
+              color: Colors.blue,
             ),
             title: Text(
               _titles[_currentIndex],
               style: TextStyle(
-                color: Colors.lightBlueAccent[900],
+                color: Colors.blue,
               ),
             ),
             actions: <Widget>[

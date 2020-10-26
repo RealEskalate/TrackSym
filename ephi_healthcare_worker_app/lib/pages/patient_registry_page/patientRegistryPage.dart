@@ -23,12 +23,12 @@ class _PatientRegistryPageState extends State<PatientRegistryPage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           iconTheme: new IconThemeData(
-            color: Colors.lightBlueAccent[900],
+            color: Colors.blue,
           ),
           title: Text(
             "Patient Registration",
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.blue,
             ),
           ),
         ),
