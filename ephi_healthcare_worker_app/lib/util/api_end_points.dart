@@ -1,4 +1,10 @@
 //API end points
+class UserEndPoints {
+  static String getSignInEndpoint() {
+    return "https://a2sv-api-wtupbmwpnq-uc.a.run.app/api/auth/login";
+  }
+}
+
 class CaseEndPoints {
   static String getCases(String healthCareWorkerId) {
     return "https://api.tracksym.app/api/case_investigations?assignee=" +
