@@ -121,10 +121,10 @@ link_patient_with_user = async (patient, req, res) =>{
     }
     let user = await User.findOne(filter);
     if(!user){
-        let unusedUsername = `${patient.first_name}-${patient.last_name}-${Math.random().toString().substring(2, 7)}`;
+        let unusedUsername = `${patient.first_name}-${patient.last_name}-${Date.now().toString().substring(6, 13)}`;
         const foundUser = await User.findOne({username: unusedUsername});
         while (foundUser){
-            unusedUsername = `${patient.first_name}-${patient.last_name}-${Math.random().toString().substring(2, 7)}`;
+            unusedUsername = `${patient.first_name}-${patient.last_name}-${Date.now().toString().substring(6, 13)}`;
             const foundUser = await User.findOne({username: unusedUsername});
         }
         user = new User({
