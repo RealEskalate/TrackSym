@@ -93,40 +93,43 @@ class CasesListState extends State<CasesList> {
                 SizedBox(height: 10),
                 BlocBuilder<CaseBloc, CaseState>(
                   builder: (context, state) {
-                    if (state is CasesNotLoaded) {
-                      return Container(
-                          margin: EdgeInsets.only(top: 100),
-                          child: Align(
-                              alignment: Alignment.center,
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(Icons.people_outline,
-                                        size: 80,
-                                        color: Theme.of(context).primaryColor),
-                                    Text(
-                                        "You haven't been assigned to any case yet!",
-                                        style: TextStyle(
-                                          fontSize: 22,
-                                          color: Theme.of(context).primaryColor,
-                                        ))
-                                  ])));
-                    } else if (state is CasesLoading) {
+                    if (state is CasesLoading) {
                       return Center(child: CircularProgressIndicator());
                     } else if (state is CasesLoaded) {
-                      ListView.builder(
-                        //key: animatedListKey,
-                        primary: false,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        itemCount: state.caseList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return CaseWidget(
-                            patient_case: state.caseList[index],
-                          );
-                        },
-                      );
+                      return state.caseList.length == 0
+                          ? Container(
+                              margin: EdgeInsets.only(top: 100),
+                              child: Align(
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(Icons.people_outline,
+                                            size: 80,
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                        Text(
+                                            "You haven't been assigned to any case yet!",
+                                            style: TextStyle(
+                                              fontSize: 22,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ))
+                                      ])))
+                          : ListView.builder(
+                              //key: animatedListKey,
+                              primary: false,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemCount: state.caseList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return CaseWidget(
+                                  patient_case: state.caseList[index],
+                                );
+                              },
+                            );
                     } else if (state is CasesError) {
                       return Container(
                           margin: EdgeInsets.only(top: 100),

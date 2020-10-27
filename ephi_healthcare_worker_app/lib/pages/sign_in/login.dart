@@ -17,6 +17,7 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool wrongCredintials = false;
   @override
   Widget build(BuildContext context) {
     // Provides us total height and width of our screen
@@ -68,6 +69,12 @@ class LoginPageState extends State<LoginPage> {
             //     }),
             SizedBox(height: size.height * 0.05),
             SizedBox(height: size.height * 0.05),
+            wrongCredintials
+                ? Text(
+                    "Wrong Username or password, please try again!",
+                    style: TextStyle(color: Colors.red),
+                  )
+                : Text(""),
             BlocBuilder<UserBloc, UserState>(builder: (context, state) {
               if (state is UserNotSignedIn) {
                 return ButtonTheme(
@@ -79,7 +86,9 @@ class LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(40)),
                     onPressed: () {
                       BlocProvider.of<UserBloc>(context).add(SignInUser(
-                          emailController.text, passwordController.text));
+                          emailController.text,
+                          passwordController
+                              .text)); //triggering our bloc to start the sign in process
                     },
                     child: Text('SIGN IN',
                         textAlign: TextAlign.center,
@@ -105,6 +114,9 @@ class LoginPageState extends State<LoginPage> {
                 );
               } else if (state is UserSignedIn) {
                 if (state.user != null) {
+                  setState(() {
+                    wrongCredintials = false;
+                  });
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -113,6 +125,10 @@ class LoginPageState extends State<LoginPage> {
                       },
                     ),
                   );
+                } else {
+                  setState(() {
+                    wrongCredintials = true;
+                  });
                 }
               }
             }),

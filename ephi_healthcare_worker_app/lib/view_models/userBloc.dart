@@ -9,6 +9,7 @@ class UserEvent extends Equatable {
   List<Object> get props => [];
 }
 
+//event to trigger the sign in process
 class SignInUser extends UserEvent {
   final userName;
   final password;
