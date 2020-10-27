@@ -9,7 +9,7 @@ import 'package:retry/retry.dart';
 import 'dart:io';
 import 'dart:async';
 
-class SymptomViewModel {
+class SymptomRepo {
   //get the details of a list of symptoms from backend
   getListOfSymptoms(String healthCareWorkerId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
