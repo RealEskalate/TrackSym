@@ -9,7 +9,7 @@ import 'package:retry/retry.dart';
 import 'dart:io';
 import 'dart:async';
 
-class PatientViewModel {
+class PatientRepo {
   //get the details of a list of patients from backend
   getListOfPatients(String healthCareWorkerId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,17 +28,20 @@ class PatientViewModel {
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       ////print(response.body);
-      List<Patient> caseList = [];
-      var caseListResponse = json.decode(response.body);
+      List<Patient> patientsList = [];
+      var patientsListResponse = json.decode(response.body);
       if (response.statusCode == 200) {
-        for (int index = 0; index < caseListResponse['data'].length; index++) {
+        for (int index = 0;
+            index < patientsListResponse['data'].length;
+            index++) {
           //print(articlesListResponse['data'][index]['title']);
-          caseList.add(Patient.fromJson(caseListResponse['data'][index]));
+          patientsList
+              .add(Patient.fromJson(patientsListResponse['data'][index]));
         }
       } else {
         print("Status code fail " + response.statusCode.toString());
       }
-      return caseList;
+      return patientsList;
     }
   }
 
