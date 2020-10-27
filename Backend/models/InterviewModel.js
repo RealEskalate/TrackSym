@@ -215,7 +215,7 @@ const interviewSchema = new mongoose.Schema({
 
 const validSchema = Joi.object({
     loggedInUser: Joi.custom(objectIdValidator).required(),
-    patient_id: Joi.custom(objectIdValidator).required(),
+    user_id: Joi.custom(objectIdValidator).required(),
     clinical_review: Joi.boolean().required(),
     completion_date: Joi.date().required(),
     test_report: Joi.custom(objectIdValidator).required(),

@@ -1,7 +1,6 @@
 const { Patient } = require("../models/Patient.js");
 var mongoose = require("mongoose");
-const { use } = require("chai");
-const User = UserModels.User;
+const { User } = require("../models/UserModel");
 
 // getting all patients
 exports.get_all_patients = async (req, res) => {
@@ -102,19 +101,36 @@ exports.post_patient_data = async (req, res) => {
     patient._id= mongoose.Types.ObjectId();
 
     try {
-        return link_patient_with_user(patient,res)
+        return link_patient_with_user(patient, req, res) 
     } catch (err) {
         return res.status(500).send(err.toString());
     }
 };
 
 // link user with patient...
-link_patient_with_user = async (patient, res) =>{
-    let user = await User.find({$or:[{email:patient.email},{phone_number:patient.phone_number}]});
+link_patient_with_user = async (patient, req, res) =>{
+    let filter;
+    if (patient.email && patient.phone_number){
+        filter = {$or:[{email:patient.email},{phone_number:patient.phone_number}]};
+    } else if (patient.email){
+        filter = {email:patient.email};
+    } else if (patient.phone_number){
+        filter = {phone_number:patient.phone_number}
+    } else {
+        filter = {_id: null} //returns null on User
+    }
+    let user = await User.findOne(filter);
     if(!user){
+        let unusedUsername = `${patient.first_name}-${patient.last_name}-${Math.random().toString().substring(2, 7)}`;
+        const foundUser = await User.findOne({username: unusedUsername});
+        while (foundUser){
+            unusedUsername = `${patient.first_name}-${patient.last_name}-${Math.random().toString().substring(2, 7)}`;
+            const foundUser = await User.findOne({username: unusedUsername});
+        }
         user = new User({
-            username:`user-${Date.now()}`,
-            password:`pswod-${Date.now()}`,
+            _id: mongoose.Types.ObjectId(),
+            username: unusedUsername,
+            password:`pswod-${Math.random()}`,
             gender:patient.gender,
             email:patient.email,
             created_by:req.body.loggedInUser,
@@ -122,11 +138,15 @@ link_patient_with_user = async (patient, res) =>{
             phone_number:patient.phone_number
         })
 
-        await user.save();
-        patient.user_id = user._id;
-        await patient.save();
-        
-        return res.send(user)
+        try {
+            await user.save();
+            patient.user_id = user._id;
+            await patient.save();
+            
+            return res.send(user)
+        } catch (err){
+            return res.status(500).send(err.toString());
+        }
     } 
 
     else if(user.patient_info){
@@ -147,7 +167,7 @@ link_patient_with_user = async (patient, res) =>{
 exports.update_patient = async (req, res) => {
     try {
         let oldData = await Patient.findById(req.params.id);
-        let patient = await Patient.update({ _id: mongoose.Types.ObjectId(req.params.id) },req.body);
+        let patient = await Patient.updateOne({ _id: mongoose.Types.ObjectId(req.params.id) },req.body);
         patient = await Patient.findById(req.params.id);
         // history
 

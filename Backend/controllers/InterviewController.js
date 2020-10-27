@@ -78,7 +78,7 @@ exports.addInterview = async (req, res) => {
         await interview.save();
         return res.status(201).send(interview);
     } catch (error) {
-        return res.status(500).send(error.toString);
+        return res.status(500).send(error.toString());
     }
 }
 
@@ -90,7 +90,7 @@ exports.updateInterview = async (req, res) => {
         return res.status(404).send("Interview is not found");
     }
     try {
-        await Interview.update({ _id: mongoose.Types.ObjectId(req.params.id) }, req.body);
+        await Interview.updateOne({ _id: mongoose.Types.ObjectId(req.params.id) }, req.body);
         const interview = await Interview.findById(id);
         return res.status(200).send(interview);
     } catch (error) {
