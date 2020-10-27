@@ -104,14 +104,16 @@ class LoginPageState extends State<LoginPage> {
                   ),
                 );
               } else if (state is UserSignedIn) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Home();
-                    },
-                  ),
-                );
+                if (state.user != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Home();
+                      },
+                    ),
+                  );
+                }
               }
             }),
             SizedBox(height: size.height * 0.075),
