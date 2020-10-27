@@ -4,6 +4,9 @@ import 'package:ephi_healthcare_worker_app/widgets/hexColorGenerator.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/patientCardWidget.dart';
 import '../../models/case.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../view_models/patientBloc.dart';
+import 'package:flutter/scheduler.dart';
 
 class PatientsHome extends StatefulWidget {
   PatientsHome({this.scrollController});
@@ -23,9 +26,12 @@ class PatientsHomeState extends State<PatientsHome> {
   @override
   void initState() {
     super.initState();
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   BlocProvider.of<PatientBloc>(context).add(FetchPatients(""));
+    // });
   }
 
-  List<Case> PatientsHome = [
+  List<Case> patientsDemoList = [
     Case(
         patientName: "Michael Mulatu",
         patientPhone: "+251987674521",
@@ -136,8 +142,10 @@ class PatientsHomeState extends State<PatientsHome> {
                           color: HexColor("#0a6dc9"),
                         ))),
                 SizedBox(height: 10),
-                PatientsHome.length == 0
-                    ? Container(
+                BlocBuilder<PatientBloc, PatientState>(
+                    builder: (context, state) {
+                  if (state is PatientsNotLoaded) {
+                    Container(
                         margin: EdgeInsets.only(top: 100),
                         child: Align(
                             alignment: Alignment.center,
@@ -153,20 +161,43 @@ class PatientsHomeState extends State<PatientsHome> {
                                         fontSize: 22,
                                         color: Theme.of(context).primaryColor,
                                       ))
-                                ])))
-                    : ListView.builder(
-                        //key: animatedListKey,
-                        primary: false,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        itemCount: PatientsHome.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return PatientCard(
-                            patient_case: PatientsHome[index],
-                          );
-                        },
-                      ),
+                                ])));
+                  } else if (state is PatientsLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is PatientsLoaded) {
+                    return ListView.builder(
+                      //key: animatedListKey,
+                      primary: false,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      itemCount: state.patientsList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return PatientCard(
+                          patient: state.patientsList[index],
+                        );
+                      },
+                    );
+                  } else if (state is PatientError) {
+                    return Container(
+                        margin: EdgeInsets.only(top: 100),
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(Icons.people_outline,
+                                      size: 80,
+                                      color: Theme.of(context).primaryColor),
+                                  Text(
+                                      "Sorry,Couldn't connect to Server. Please pull to refresh the page!",
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        color: Theme.of(context).primaryColor,
+                                      ))
+                                ])));
+                  }
+                }),
                 SizedBox(height: 20.2),
               ],
             )));

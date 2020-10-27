@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import '../../widgets/caseWidget.dart';
 import '../../models/case.dart';
 import '../../widgets/hexColorGenerator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../view_models/caseBloc.dart';
+import 'package:flutter/scheduler.dart';
 
 class CasesList extends StatefulWidget {
   CasesList({this.scrollController});
-
   final ScrollController scrollController;
-
   @override
   CasesListState createState() => CasesListState(this.scrollController);
 }
@@ -23,45 +24,10 @@ class CasesListState extends State<CasesList> {
   @override
   void initState() {
     super.initState();
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   BlocProvider.of<CaseBloc>(context).add(FetchCases(""));
+    // });
   }
-
-  List<Case> casesList = [
-    Case(
-        patientName: "Michael Mulatu",
-        patientPhone: "+251987674521",
-        activeSymptoms: "Dry Cough, Ansomia, Fever",
-        createdAt: "Jan 19,2020",
-        creationTime: "5:30 pm",
-        currentTestResult: "Positive"),
-    Case(
-        patientName: "Daniel Debebe",
-        patientPhone: "+251987674521",
-        activeSymptoms: "Low Fever, Sneezing,  Dry Cough",
-        createdAt: "Jan 20,2020",
-        creationTime: "3:30 pm",
-        currentTestResult: "Negative"),
-    Case(
-        patientName: "Sentayehu Natnael",
-        patientPhone: "+251987674521",
-        activeSymptoms: "High Fever, Ansomia, Sneezing",
-        createdAt: "Jan 21,2020",
-        creationTime: "4:30 pm",
-        currentTestResult: "Positive"),
-    Case(
-        patientName: "Natnael Hailu",
-        patientPhone: "+251987674521",
-        activeSymptoms: "Dry Cough, Shivering, Fever",
-        createdAt: "Jan 22,2020",
-        creationTime: "8:30 pm",
-        currentTestResult: "Negative"),
-    Case(
-        patientName: "Hailu  Merga",
-        patientPhone: "+251987674521",
-        activeSymptoms: "High Fever, Sneezing, Dry Cough",
-        createdAt: "Jan 25,2020",
-        creationTime: "7:30 pm",
-        currentTestResult: "Positive")
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -125,37 +91,63 @@ class CasesListState extends State<CasesList> {
                           color: HexColor("#0a6dc9"),
                         ))),
                 SizedBox(height: 10),
-                casesList.length == 0
-                    ? Container(
-                        margin: EdgeInsets.only(top: 100),
-                        child: Align(
-                            alignment: Alignment.center,
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(Icons.people_outline,
-                                      size: 80,
-                                      color: Theme.of(context).primaryColor),
-                                  Text(
-                                      "You haven't been assigned to any case yet!",
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        color: Theme.of(context).primaryColor,
-                                      ))
-                                ])))
-                    : ListView.builder(
+                BlocBuilder<CaseBloc, CaseState>(
+                  builder: (context, state) {
+                    if (state is CasesNotLoaded) {
+                      return Container(
+                          margin: EdgeInsets.only(top: 100),
+                          child: Align(
+                              alignment: Alignment.center,
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(Icons.people_outline,
+                                        size: 80,
+                                        color: Theme.of(context).primaryColor),
+                                    Text(
+                                        "You haven't been assigned to any case yet!",
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          color: Theme.of(context).primaryColor,
+                                        ))
+                                  ])));
+                    } else if (state is CasesLoading) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (state is CasesLoaded) {
+                      ListView.builder(
                         //key: animatedListKey,
                         primary: false,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
-                        itemCount: casesList.length,
+                        itemCount: state.caseList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return CaseWidget(
-                            patient_case: casesList[index],
+                            patient_case: state.caseList[index],
                           );
                         },
-                      ),
+                      );
+                    } else if (state is CasesError) {
+                      return Container(
+                          margin: EdgeInsets.only(top: 100),
+                          child: Align(
+                              alignment: Alignment.center,
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(Icons.people_outline,
+                                        size: 80,
+                                        color: Theme.of(context).primaryColor),
+                                    Text(
+                                        "Sorry,Couldn't connect to Server. Please pull to refresh the page!",
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          color: Theme.of(context).primaryColor,
+                                        ))
+                                  ])));
+                    }
+                  },
+                ),
               ],
             )));
   }

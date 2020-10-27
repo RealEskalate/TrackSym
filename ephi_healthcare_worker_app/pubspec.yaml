@@ -44,6 +44,7 @@ dev_dependencies:
   retry: ^3.0.1
   shared_preferences: ^0.5.12+2
   flutter_bloc: ^6.0.6
+  equatable: ^1.2.5
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

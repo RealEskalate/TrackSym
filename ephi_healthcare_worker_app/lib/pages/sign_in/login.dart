@@ -5,8 +5,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../home/home.dart';
 import '../sign_up/createAccount.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../view_models/userBloc.dart';
+import '../../view_models/userRepo.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  LoginPageState createState() => new LoginPageState();
+}
+
+class LoginPageState extends State<LoginPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     // Provides us total height and width of our screen
@@ -37,33 +47,64 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: size.height * 0.05),
             RoundedInputField(
               hintText: "Email",
+              controller: this.emailController,
               onChanged: (value) {},
               icon: Icons.email,
             ),
             SizedBox(height: size.height * 0.02),
-            RoundedPasswordField(onChanged: (value) {}),
-            SizedBox(height: size.height * 0.02),
-            AlreadyHaveAnAccountCheck(
-                color: Colors.grey[600],
-                login: true,
-                press: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return CreateAccountPage();
-                    }),
-                  );
-                }),
+            RoundedPasswordField(
+                controller: this.passwordController, onChanged: (value) {}),
+            // SizedBox(height: size.height * 0.02),
+            // AlreadyHaveAnAccountCheck(
+            //     color: Colors.grey[600],
+            //     login: true,
+            //     press: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(builder: (context) {
+            //           return CreateAccountPage();
+            //         }),
+            //       );
+            //     }),
             SizedBox(height: size.height * 0.05),
             SizedBox(height: size.height * 0.05),
-            ButtonTheme(
-              minWidth: size.width * 0.8,
-              height: size.width * 0.13,
-              child: RaisedButton(
-                color: Colors.lightBlueAccent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40)),
-                onPressed: () {
+            BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+              if (state is UserNotSignedIn) {
+                return ButtonTheme(
+                  minWidth: size.width * 0.8,
+                  height: size.width * 0.13,
+                  child: RaisedButton(
+                    color: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40)),
+                    onPressed: () {
+                      BlocProvider.of<UserBloc>(context).add(SignInUser(
+                          emailController.text, passwordController.text));
+                    },
+                    child: Text('SIGN IN',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        )),
+                  ),
+                );
+              } else if (state is SigningIn) {
+                return ButtonTheme(
+                  minWidth: size.width * 0.8,
+                  height: size.width * 0.13,
+                  child: RaisedButton(
+                    color: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40)),
+                    onPressed: () {},
+                    child: Center(
+                        child: CircularProgressIndicator(
+                            backgroundColor: Colors.white)),
+                  ),
+                );
+              } else if (state is UserSignedIn) {
+                if (state.user != null) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -72,15 +113,9 @@ class LoginPage extends StatelessWidget {
                       },
                     ),
                   );
-                },
-                child: Text('SIGN IN',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    )),
-              ),
-            ),
+                }
+              }
+            }),
             SizedBox(height: size.height * 0.075),
             Image.asset(
               'assets/images/a2sv.png',

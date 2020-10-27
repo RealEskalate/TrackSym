@@ -35,32 +35,33 @@ class WelcomePage extends StatelessWidget {
                   fontSize: 24.0,
                 )),
             SizedBox(height: size.height * 0.25),
-            ButtonTheme(
-              minWidth: size.width * 0.8,
-              height: size.width * 0.13,
-              child: RaisedButton(
-                color: Colors.lightGreenAccent[700],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40)),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return CreateAccountPage();
-                      },
-                    ),
-                  );
-                },
-                child: Text('CREATE ACCOUNT',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    )),
-              ),
-            ),
-            SizedBox(height: size.height * 0.02),
+            // ButtonTheme(
+            //   minWidth: size.width * 0.8,
+            //   height: size.width * 0.13,
+            //   child: RaisedButton(
+            //     color: Colors.lightGreenAccent[700],
+            //     shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(40)),
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) {
+            //             return CreateAccountPage();
+            //           },
+            //         ),
+            //       );
+            //     },
+            //     child: Text('CREATE ACCOUNT',
+            //         textAlign: TextAlign.center,
+            //         style: TextStyle(
+            //           color: Colors.white,
+            //           fontSize: 16.0,
+            //         )),
+            //   ),
+            // ),
+            // SizedBox(height: size.height * 0.02),
+
             ButtonTheme(
               minWidth: size.width * 0.8,
               height: size.width * 0.13,
