@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/case.dart';
+import '../models/patientCase.dart';
 import '../pages/details/detail_view.dart';
 
 class CaseWidget extends StatefulWidget {
-  Case patient_case;
+  PatientCase patient_case;
 
   CaseWidget({@required this.patient_case});
 
@@ -16,7 +16,7 @@ class _CaseWidgetState extends State<CaseWidget> {
   _CaseWidgetState({this.patient_case});
 
   //Reply sampleReply;
-  Case patient_case;
+  PatientCase patient_case;
 
   @override
   void initState() {
@@ -53,27 +53,28 @@ class _CaseWidgetState extends State<CaseWidget> {
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(patient_case.currentTestResult,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: patient_case.currentTestResult == "Positive"
-                                ? Colors.red
-                                : Colors.green,
-                          )),
+                      Text("Test Result",
+                          style: TextStyle(fontSize: 16, color: Colors.grey
+                              // color: patient_case.currentTestResult == "Positive"
+                              //     ? Colors.red
+                              //     : Colors.green,
+                              )),
                       SizedBox(height: 5),
-                      Text(patient_case.patientName),
+                      Text(patient_case.patientFirstName +
+                          " " +
+                          patient_case.patientLastName),
                       SizedBox(height: 5),
                     ],
                   ),
                   dense: false,
-                  subtitle: Text(patient_case.activeSymptoms),
+                  //subtitle: Text(patient_case.activeSymptoms),
                   isThreeLine: true,
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(patient_case.createdAt),
                       SizedBox(height: 5),
-                      Text(patient_case.creationTime)
+                      //Text(patient_case.creationTime)
                     ],
                   ),
                 ))));

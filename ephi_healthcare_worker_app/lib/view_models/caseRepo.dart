@@ -9,7 +9,7 @@ import 'package:retry/retry.dart';
 import 'dart:io';
 import 'dart:async';
 
-class CaseViewModel {
+class CaseRepo {
   //get the details of a list of cases from backend
   getCases(String healthCareWorkerId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
