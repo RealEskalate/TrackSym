@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import '../models/case.dart';
+import '../models/patient.dart';
 import '../pages/details/detail_view.dart';
 import '../pages/people/person_detail.dart';
 
 class PatientCard extends StatefulWidget {
-  Case patient_case;
+  Patient patient;
 
-  PatientCard({@required this.patient_case});
+  PatientCard({@required this.patient});
   @override
-  _PatientCardState createState() =>
-      _PatientCardState(patient_case: this.patient_case);
+  _PatientCardState createState() => _PatientCardState(patient: this.patient);
 }
 
 class _PatientCardState extends State<PatientCard> {
-  _PatientCardState({this.patient_case});
+  _PatientCardState({this.patient});
   //Reply sampleReply;
-  Case patient_case;
+  Patient patient;
 
   @override
   void initState() {
@@ -51,15 +50,14 @@ class _PatientCardState extends State<PatientCard> {
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(patient_case.currentTestResult,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: patient_case.currentTestResult == "Positive"
-                                ? Colors.red
-                                : Colors.green,
-                          )),
+                      Text("Test Result",
+                          style: TextStyle(fontSize: 16, color: Colors.grey
+                              // color: patient.currentTestResult == "Positive"
+                              //     ? Colors.red
+                              //     : Colors.green,
+                              )),
                       SizedBox(height: 5),
-                      Text(patient_case.patientName),
+                      Text(patient.firstName + " " + patient.lastName),
                       SizedBox(height: 5),
                     ],
                   ),
