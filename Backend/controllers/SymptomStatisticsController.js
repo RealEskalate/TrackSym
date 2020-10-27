@@ -8,7 +8,6 @@ const { requestWhitelist } = require("express-winston");
 const { StatisticsResource } = require("../models/StatisticsResourceModel.js");
 
 exports.get_most_common = async (req, res) => {
-    let symptomCounts = {};
     let filter = {};
     if (req.query.date) {
         let date = new Date(req.query.date);
@@ -19,50 +18,57 @@ exports.get_most_common = async (req, res) => {
         let district = await DistrictModel.findOne({
             name: req.query.district,
         });
-        let locationUsers = await LocationUser.find({
-            "location.district": district._id,
-        }).distinct('user_id')
-        filter.user_id = { $in: locationUsers };
+        if (district) {
+            let locationUsers = await LocationUser.find({
+                "location.district": district._id,
+            }).distinct("user_id", { user_id: { $ne: null } });
+            filter.user_id = { $in: locationUsers };
+        }
     } else if (req.query.region) {
         let districts = await DistrictModel.find({
             state: req.query.region,
-        }).distinct("_id");
-        let locationUsers = await (
-            await LocationUser.find({ "location.district": { $in: districts } })
-        ).distinct("user_id");
-        filter.user_id = { $in: locationUsers };
+        }).distinct("_id", { "_id": { $ne: null } });
+        if (districts) {
+            let locationUsers = await LocationUser.find({
+                "location.district": { $in: districts },
+            }).distinct("user_id", { user_id: { $ne: null } });
+            filter.user_id = { $in: locationUsers };
+        }
     } else if (req.query.country) {
         let users = await User.find({
             current_country: req.query.country,
-        }).distinct("_id");
+        }).distinct("_id", {"_id": {$ne: null}});
         filter.user_id = { $in: users };
-    }
+    } 
+    //First find appropriate documents by filter
+    //Group based on distinct unique symptom ids
+    //Populate/Lookup symptom values from Symptom Table
+    let aggregated = await SymptomUser.aggregate([
+        {
+            $match: filter,
+        },
+        {
+            $group: {
+                _id: "$symptom_id",
+                count: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $lookup: {
+                from: "symptoms",
+                localField: "_id",
+                foreignField: "_id",
+                as: "symptom",
+            },
+        },
+        {
+            $sort: { count: -1 }
+        },
+    ]);
 
-    let symptomUsers = await SymptomUser.find(filter);
-    for (var i = 0; i < symptomUsers.length; i++) {
-        if (symptomCounts[symptomUsers[i].symptom_id]) {
-            symptomCounts[symptomUsers[i].symptom_id] += 1;
-        } else {
-            symptomCounts[symptomUsers[i].symptom_id] = 1;
-        }
-    }
-    let sorted = Object.keys(symptomCounts).sort(function (a, b) {
-        return symptomCounts[b] - symptomCounts[a];
-    });
-    let commonSymptoms = await Promise.all(
-        sorted.map(async (item) => await Symptom.findById(item))
-    );
-    commonSymptoms = commonSymptoms
-        .filter((symptom) => {
-            return symptom != null;
-        })
-        .map((symptom) => {
-            return {
-                count: symptomCounts[symptom._id],
-                symptom: symptom,
-            };
-        });
-    // translation start
+    // // translation start
     let language = null;
     if (req.query.language) {
         language = await StatisticsResource.findOne({
@@ -73,21 +79,27 @@ exports.get_most_common = async (req, res) => {
             language = language.fields[0];
         }
     }
-    for (var index = 0 in commonSymptoms) {
-        let symptom = commonSymptoms[index].symptom;
-        let key = symptom._id;
-        if (language && language[key]) {
-            symptom.name = language[key].name;
-            symptom.description = language[key].description;
-            symptom.relevance = language[key].relevance;
+    common = []
+    for (var index = 0 in aggregated) {
+        let symptom = aggregated[index].symptom;
+        if (symptom.length == 1 && symptom[0]) {
+            symptom = symptom[0];
+            let key = symptom._id;
+            aggregated[index].symptom = aggregated[index].symptom[0];
+            if (language && language[key]) {
+                aggregated[index].symptom.name = language[key].name;
+                aggregated[index].symptom.description = language[key].description;
+                aggregated[index].symptom.relevance = language[key].relevance;
+            }
+            common.push(aggregated[index]);
         }
     }
-    // translation end
+    // // translation end
 
-    try {
+    try { 
         res.send({
-            total: symptomUsers.length,
-            data: commonSymptoms,
+            total: common.length,
+            data: common,
         });
     } catch (err) {
         res.status(500).send(err.toString());

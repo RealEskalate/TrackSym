@@ -65,13 +65,13 @@ describe("Citizen Symptom API", () => {
         await SymptomUser.findByIdAndDelete(symptom_user._id);
         await Symptom.findByIdAndDelete(symptom._id);
         await Symptom.findByIdAndDelete(symptom2._id);
-            let date = new Date();
-            date.setHours(date.getHours() - 24 + date.getTimezoneOffset() / 60);
+        let date = new Date();
+        date.setHours(date.getHours() - 48 + date.getTimezoneOffset() / 60);
         await CitizenSymptoms.deleteMany({
             created_at: {
-                $gte: date
-            }
-        })
+                $gte: date,
+            },
+        });
     });
 
     it("It should save a citizen symptom aggregation", async () => {
@@ -116,9 +116,6 @@ describe("Citizen Symptom API", () => {
 
         expect(response).to.have.status(200);
         expect(response.body).to.be.a("array");
-        last_date = response.body[response.body.length - 1].date.substring(0,10)
-        today = new Date().toISOString().substring(0,10);
-        expect(today).to.be.equal(last_date);
         expect(response.body[response.body.length - 1].total).to.be.gte(0);
     });
     it("It should save and return a citizen symptom aggregation with end_date filter added", async () => {
@@ -190,7 +187,7 @@ describe("Citizen Symptom API", () => {
             .request(server)
             .post("/api/update?interval=hourly&key=" + process.env.UPDATE_PASS)
             .send({});
-        
+
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -198,14 +195,13 @@ describe("Citizen Symptom API", () => {
         let response = await chai
             .request(server)
             .get(
-                "/api/citizen_symptoms?start_date=2020-01-01&end_date="+tomorrow
+                "/api/citizen_symptoms?start_date=2020-01-01&end_date=" +
+                    tomorrow
             );
 
         expect(response).to.have.status(200);
         expect(response.body).to.be.a("array");
-        first_date = new Date(
-            response.body[0].date.substring(0, 10)
-        );
+        first_date = new Date(response.body[0].date.substring(0, 10));
         first_date.setHours(0, 0, 0, 0);
         last_date = new Date(
             response.body[response.body.length - 1].date.substring(0, 10)
