@@ -5,8 +5,8 @@ var mongoose = require("mongoose");
 exports.get_all = async (req, res) => {
     let filter = {};
 
-    if(req.query.patient_id){
-        filter.patient_id = req.query.patient_id;
+    if(req.query.user_id){
+        filter.user_id = req.query.user_id;
     }
 
     if(req.query.interview_id){
@@ -38,7 +38,7 @@ exports.get_all = async (req, res) => {
     const clinicalDisposition = await ClinicalDisposition.find(
         filter,{},
         { skip: (page - 1) * size, limit: size * 1 }
-    ).populate("patient_id").populate("interview_id");
+    ).populate("user_id").populate("interview_id");
 
     let result = {
         data_count: await ClinicalDisposition.countDocuments(filter),
@@ -59,7 +59,7 @@ exports.post = async (req, res) => {
 
     const object = new ClinicalDisposition({
         _id: mongoose.Types.ObjectId(),
-        patient_id: req.body.patient_id,
+        user_id: req.body.user_id,
         interview_id:req.body.interview_id,
         disposition: req.body.disposition,
         notes: req.body.notes,
@@ -77,7 +77,7 @@ exports.post = async (req, res) => {
 // updating
 exports.update = async (req, res) => {
     try {
-        let clinicalDisposition = await ClinicalDisposition.update({ _id: mongoose.Types.ObjectId(req.params.id) },req.body);
+        let clinicalDisposition = await ClinicalDisposition.updateOne({ _id: mongoose.Types.ObjectId(req.params.id) },req.body);
         clinicalDisposition = await ClinicalDisposition.findById(req.params.id);
         
         return res.status(202).send(clinicalDisposition);

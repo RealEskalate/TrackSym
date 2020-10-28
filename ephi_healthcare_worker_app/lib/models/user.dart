@@ -20,7 +20,7 @@ class User {
       gender: json['gender'] as String,
       ageGroup: json['age_group'] as String,
       currentCountry: json['current_country'] as String,
-      email: json['email'] as String,
+      //email: json['email'] as String,
     );
   }
 }

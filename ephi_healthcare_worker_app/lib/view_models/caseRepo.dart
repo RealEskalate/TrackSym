@@ -1,5 +1,5 @@
 //sample file of our case view provider
-import '../models/patient.dart';
+import '../models/patientCase.dart';
 import 'package:flutter/cupertino.dart';
 import '../util/api_end_points.dart' as API;
 import 'dart:convert';
@@ -9,9 +9,9 @@ import 'package:retry/retry.dart';
 import 'dart:io';
 import 'dart:async';
 
-class PatientViewModel {
-  //get the details of a list of patients from backend
-  getListOfPatients(String healthCareWorkerId) async {
+class CaseRepo {
+  //get the details of a list of cases from backend
+  getCases(String healthCareWorkerId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('Token') != null) {
       var headers = {
@@ -22,18 +22,18 @@ class PatientViewModel {
 
       var response = await retry(
         () => http
-            .get(API.PatientsEndPoints.getPatients(healthCareWorkerId),
+            .get(API.CaseEndPoints.getCases(healthCareWorkerId),
                 headers: headers)
             .timeout(Duration(seconds: 10)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       ////print(response.body);
-      List<Patient> caseList = [];
+      List<PatientCase> caseList = [];
       var caseListResponse = json.decode(response.body);
       if (response.statusCode == 200) {
         for (int index = 0; index < caseListResponse['data'].length; index++) {
           //print(articlesListResponse['data'][index]['title']);
-          caseList.add(Patient.fromJson(caseListResponse['data'][index]));
+          caseList.add(PatientCase.fromJson(caseListResponse['data'][index]));
         }
       } else {
         print("Status code fail " + response.statusCode.toString());
@@ -42,8 +42,8 @@ class PatientViewModel {
     }
   }
 
-  //get the details of a specific specific from backend
-  getPatientDetails(String patientId) async {
+  //get the details of a specific case from backend
+  getCaseDetails(String caseId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('Token') != null) {
       var headers = {
@@ -54,19 +54,18 @@ class PatientViewModel {
 
       var response = await retry(
         () => http
-            .get(API.PatientsEndPoints.getPatientDetails(patientId),
-                headers: headers)
+            .get(API.CaseEndPoints.getCaseDetails(caseId), headers: headers)
             .timeout(Duration(seconds: 10)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       ////print(response.body);
-      Patient patient;
+      PatientCase patientCase;
       if (response.statusCode == 200) {
-        patient = Patient.fromJson(json.decode(response.body));
+        patientCase = PatientCase.fromJson(json.decode(response.body));
       } else {
         //print("Status code fail " + response.statusCode.toString());
       }
-      return patient;
+      return patientCase;
     }
   }
 }

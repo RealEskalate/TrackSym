@@ -6,6 +6,7 @@ const { Symptom } = require("../models/Symptom");
 const { SymptomLog } = require("../models/SymptomLogModel");
 const { requestWhitelist } = require("express-winston");
 const { StatisticsResource } = require("../models/StatisticsResourceModel.js");
+const { CaseInvestigation } = require("../models/CaseInvestigation");
 
 exports.get_most_common = async (req, res) => {
     let filter = {};
@@ -95,14 +96,13 @@ exports.get_most_common = async (req, res) => {
         }
     }
     // // translation end
-
     try { 
         res.send({
             total: common.length,
             data: common,
         });
     } catch (err) {
-        res.status(500).send(err.toString());
+        return res.status(500).send(err.toString());
     }
 };
 
@@ -143,6 +143,72 @@ exports.get_people_with_symptoms = async (req, res) => {
         res.status(500).send(err.toString());
     }
 };
+
+exports.get_symptom_logs_by_healthcare_worker = async (req, res) => {
+    if (!req.params.assigned_to){
+        return res.status(400).send("Healthcare worker ID not sent");
+    }
+
+    let selected_ids = (await CaseInvestigation.find({
+        assigned_to: req.params.assigned_to
+    })).map(investigation => investigation.user_id);
+
+    let filter = {
+        user_id: {$in: selected_ids}
+    };
+
+    if (req.query.status) {
+        filter.status = req.query.status;
+    }
+
+    if (req.query.start_date) {
+        filter["current_symptoms.date"] = {
+            $gte: new Date(req.query.start_date),
+        };
+    } else {
+        let date = new Date();
+        date.setHours(date.getHours() - 24);
+        filter["current_symptoms.date"] = { $gte: date };
+    }
+
+    if (req.query.end_date) {
+        let date = new Date(req.query.end_date);
+        date.setHours(23);
+        Object.assign(filter["current_symptoms.date"], { $lte: date });
+    }
+
+    let page = parseInt(req.query.page) || 1;
+    let size = parseInt(req.query.size) || 15;
+
+    let logs = await SymptomLog.find(
+        filter,
+        {},
+        { skip: (page - 1) * size, limit: size * 1 }
+    )
+        .populate("user_id")
+        .populate({
+            path: "current_symptoms.symptoms",
+            model: "Symptom",
+        })
+        .populate({
+            path: "history.symptoms",
+            model: "Symptom",
+        })
+        .sort({ "current_symptoms.date": -1 });
+
+    let result = {
+        data_count: await SymptomLog.countDocuments(filter),
+        page_size: size,
+        current_page: page,
+        data: logs,
+    };
+
+    try {
+        res.send(result);
+    } catch (err) {
+        res.status(500).send(err.toString());
+    }
+}
 
 exports.get_symptom_logs = async (req, res) => {
     let filter = {

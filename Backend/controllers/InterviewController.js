@@ -8,8 +8,8 @@ exports.getInterviews = async (req, res) => {
     const filter = {};
     var selection = {};
     // We can add more filters upon request
-    if (req.query.patient) {
-        filter.patient_id = req.query.patient;
+    if (req.query.user) {
+        filter.user_id = req.query.user;
     }
     if (req.query.clinical_review) {
         filter.clinical_review = req.query.clinical_review;
@@ -29,7 +29,7 @@ exports.getInterviews = async (req, res) => {
     try {
         const interviews = await Interview.find(filter, selection, { skip: page - 1, limit: size * 1 });
         const populated = await Interview.populate(interviews, [
-            { model: 'Patient', path: 'patient_id', select: '_id first_name last_name' },
+            { model: 'User', path: 'user_id' },
             { model: 'TestReport', path: 'test_report', select: '_id test_status' },
             { model: 'User', path: 'interview_report.interviewer_id', select: '_id username' }
         ]);
@@ -57,7 +57,7 @@ exports.getInterviewById = async (req, res) => {
     try {
         const interviews = await Interview.find({ _id: mongoose.Types.ObjectId(id) }, selection);
         const populated = await Interview.populate(interviews, [
-            { model: 'Patient', path: 'patient_id', select: '_id first_name last_name' },
+            { model: 'User', path: 'user_id' },
             { model: 'TestReport', path: 'test_report', select: '_id test_status' },
             { model: 'User', path: 'interview_report.interviewer_id', select: '_id username' }
         ]);
@@ -78,7 +78,7 @@ exports.addInterview = async (req, res) => {
         await interview.save();
         return res.status(201).send(interview);
     } catch (error) {
-        return res.status(500).send(error.toString);
+        return res.status(500).send(error.toString());
     }
 }
 
@@ -90,7 +90,7 @@ exports.updateInterview = async (req, res) => {
         return res.status(404).send("Interview is not found");
     }
     try {
-        await Interview.update({ _id: mongoose.Types.ObjectId(req.params.id) }, req.body);
+        await Interview.updateOne({ _id: mongoose.Types.ObjectId(req.params.id) }, req.body);
         const interview = await Interview.findById(id);
         return res.status(200).send(interview);
     } catch (error) {

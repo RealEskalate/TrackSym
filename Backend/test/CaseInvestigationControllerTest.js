@@ -18,6 +18,10 @@ chai.use(chaiHttp);
 
 describe("Case Investigation API", () => {
   let healthcare_worker;
+  let user;
+  let user2;
+  let user3;
+  let user4;
   let patient;
   let patient2;
   let patient3;
@@ -50,6 +54,15 @@ describe("Case Investigation API", () => {
       console.log("ERROR " + err.toString());
     }
 
+    var create_user = id => 
+      new User({
+        _id: mongoose.Types.ObjectId(),
+        username: "user-" + mongoose.Types.ObjectId(),
+        password: "Hidden password",
+        patient_info: id
+      })
+    
+
     patient = new Patient({
       _id: mongoose.Types.ObjectId(),
       first_name: "Darth",
@@ -64,8 +77,13 @@ describe("Case Investigation API", () => {
       status: "Death",
       sms_status: true,
     });
+    
+    user = create_user(patient._id)
+
+    patient.user_id = user._id
 
     await patient.save();
+    await user.save()
 
     patient2 = new Patient({
       _id: mongoose.Types.ObjectId(),
@@ -83,11 +101,14 @@ describe("Case Investigation API", () => {
       sms_status: true,
     });
 
+    user2 = create_user(patient2._id)
+    patient2.user_id = user2._id
     await patient2.save();
+    await user2.save()
 
     symptomuser = new SymptomUser({
       _id: mongoose.Types.ObjectId(),
-      user_id: patient2.user_id,
+      user_id: user2._id,
       symptom_id: mongoose.Types.ObjectId()
     });
 
@@ -109,8 +130,11 @@ describe("Case Investigation API", () => {
       sms_status: true,
     });
 
+    user3 = create_user(patient3._id)
+    patient3.user_id = user3._id
     await patient3.save();
-    
+    await user3.save();
+
     patient4 = new Patient({
       _id: mongoose.Types.ObjectId(),
       user_id: mongoose.Types.ObjectId(),
@@ -127,11 +151,14 @@ describe("Case Investigation API", () => {
       sms_status: true,
     });
 
+    user4 = create_user(patient4._id);
+    patient4.user_id = user4._id
     await patient4.save();
+    await user4.save();
 
     symptomuser2 = new SymptomUser({
       _id: mongoose.Types.ObjectId(),
-      user_id: patient4.user_id,
+      user_id: user4._id,
       symptom_id: mongoose.Types.ObjectId()
     });
 
@@ -139,7 +166,7 @@ describe("Case Investigation API", () => {
 
     case_investigation = new CaseInvestigation({
         _id: mongoose.Types.ObjectId(),
-        patient_id: patient._id,
+        user_id: user._id,
         assigned_to: healthcare_worker._id,
         current_note: {
             note: "This is a test note...",
@@ -158,7 +185,7 @@ describe("Case Investigation API", () => {
 
     case_investigation2 = new CaseInvestigation({
       _id: mongoose.Types.ObjectId(),
-      patient_id: patient2._id,
+      user_id: user2._id,
       assigned_to: healthcare_worker._id,
       current_note: {
           note: "This is a test note...",
@@ -177,7 +204,7 @@ describe("Case Investigation API", () => {
     
     case_investigation3 = new CaseInvestigation({
       _id: mongoose.Types.ObjectId(),
-      patient_id: patient3._id,
+      user_id: user3._id,
       assigned_to: healthcare_worker._id,
       current_note: {
           note: "This is a test note...",
@@ -198,6 +225,10 @@ describe("Case Investigation API", () => {
 
 
   afterEach(async () => {
+    await User.findByIdAndDelete(user._id)
+    await User.findByIdAndDelete(user2._id)
+    await User.findByIdAndDelete(user3._id)
+    await User.findByIdAndDelete(user4._id)
     await Patient.findByIdAndDelete(patient._id);
     await Patient.findByIdAndDelete(patient2._id);
     await Patient.findByIdAndDelete(patient3._id);
@@ -217,7 +248,7 @@ describe("Case Investigation API", () => {
         .patch("/api/case_investigations/")
         .set("Authorization", "Bearer " + tokens)
         .send({
-            patient_id: mongoose.Types.ObjectId(),
+            user_id: mongoose.Types.ObjectId(),
             assigned_to: healthcare_worker._id,
             current_note: "This is a test note...",
         });
@@ -232,7 +263,7 @@ describe("Case Investigation API", () => {
         .patch("/api/case_investigations/")
         .set("Authorization", "Bearer " + tokens)
         .send({
-            patient_id: patient._id,
+            user_id: user._id,
             current_note: "This is a test note...",
         });
     expect(response).to.have.status(201);
@@ -246,7 +277,7 @@ describe("Case Investigation API", () => {
       .patch("/api/case_investigations/")
       .set("Authorization", "Bearer " + tokens)
       .send({
-        patient_id: patient._id,
+        user_id: user._id,
         assigned_to: healthcare_worker._id,
       });
     expect(response).to.have.status(500);
@@ -310,7 +341,7 @@ describe("Case Investigation API", () => {
         .patch(`/api/case_investigations?id=${case_investigation._id}`)
         .set("Authorization", "Bearer " + tokens)
         .send({
-            patient_id: patient._id,
+            user_id: user._id,
             assigned_to: healthcare_worker._id,
             current_note: "This is another test note...",
         });

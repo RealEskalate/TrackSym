@@ -16,6 +16,7 @@ chai.use(chaiHttp);
 
 describe("Patient API", () => {
   let healthcare_worker;
+  let user;
   let patient;
   let tokens;
 
@@ -54,15 +55,26 @@ describe("Patient API", () => {
         city: "Addis Ababa",
         status: "Death",
         sms_status: true,
-    })
+    });
+
+    user = new User({
+      _id: mongoose.Types.ObjectId(),
+      username: "IUseYourApp",
+      password: "SameAsMyEmail",
+      patient_info: patient._id
+    });
+
+    patient.user_id = user._id
 
     await patient.save();
+    await user.save()
 
   });
 
   
   afterEach(async () => {
     await User.findByIdAndDelete(healthcare_worker._id);
+    await User.findByIdAndDelete(user._id)
     await Patient.findByIdAndDelete(patient._id);
   });
 
@@ -76,7 +88,7 @@ describe("Patient API", () => {
         first_name: "Darth",
         last_name: "Vader",
         dob: new Date('May 25, 1977'),
-        phone_number: "+25189028392",
+        phone_number: "+25189028398",
         language: "English",
         gender: "MALE",
         woreda: "Arada",
@@ -86,7 +98,8 @@ describe("Patient API", () => {
         sms_status: true,
       });
     expect(response).to.have.status(200);
-    expect(response.body).to.be.a("object");
+    expect(response.body).to.be.an("object");
+    await User.findByIdAndDelete(response.body._id)
   });
 
 
@@ -115,7 +128,7 @@ describe("Patient API", () => {
         first_name: "Darth",
         last_name: "Vader",
         dob: new Date('May 25, 1977'),
-        phone_number: "+25189028392",
+        phone_number: "+25189028392", // same phone number as before
         language: "English",
         woreda: "Arada",
         street_address: "4 killo",
@@ -123,7 +136,7 @@ describe("Patient API", () => {
         status: "Death",
         sms_status: true,
       });
-    expect(response).to.have.status(500);
+    expect(response).to.have.status(422);
   });
 
 
@@ -134,7 +147,7 @@ describe("Patient API", () => {
       .set("Authorization", "Bearer " + tokens)
       .send({
         dob: new Date('May 25, 1977'),
-        phone_number: "+25189028392",
+        phone_number: "+25189028393",
         language: "English",
         gender: "MALE",
         woreda: "Arada",
@@ -143,7 +156,7 @@ describe("Patient API", () => {
         status: "Death",
         sms_status: true,
       });
-    expect(response).to.have.status(500);
+    expect(response).to.have.status(422);
   });
 
 
