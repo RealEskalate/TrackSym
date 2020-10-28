@@ -13,8 +13,7 @@ const patientLogSchema = new mongoose.Schema({
     },
     test_status:{
         type: String,
-        enum: ["New","Positive", "Negative","Not Tested","Recovered","Died"],
-        default: "New",
+        enum: ["TestCount","Confirmed","Recovered","Died"],
         index: true
     },
 
@@ -42,13 +41,12 @@ const patientLogSchemaDemo = new mongoose.Schema({
     },
     test_status:{
         type: String,
-        enum: ["New","Positive", "Negative","Not Tested","Recovered","Died"],
-        default: "New",
+        enum: ["TestCount","Confirmed","Recovered","Died"],
         index: true
     },
 
 });
 
 
-const PatientLogDemo = mongoose.model("PatientLogDemo", patientLogSchemaDemo);
+const PatientLogDemo = mongoose.model("PatientLogDemo2", patientLogSchemaDemo);
 exports.PatientLogDemo = PatientLogDemo;

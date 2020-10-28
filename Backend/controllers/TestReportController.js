@@ -3,6 +3,52 @@ var mongoose = require("mongoose");
 var UserModels = require("../models/UserModel.js");
 const User = UserModels.User;
 const { PatientLog } = require("../models/PatientLog.js");
+const { Patient } = require("../models/Patient.js");
+
+// ### helper methods
+
+// check for daily duplicate log and update the log.
+check_and_update_log = async (report) =>{
+    let date = new Date();
+    let status= {'Negative':'TestCount','Positive':'Confirmed'}
+    date.setHours(0,0,0,0);
+
+    let user = await User.findById(report.user_id);
+    
+    if(user.patient_info){
+        let patient = await Patient.findById(user.patient_info)
+
+        let prev_date = new Date(patient.updated_at)
+        prev_date.setHours(0,0,0,0);
+
+        if(prev_date == date){
+            let log =await PatientLog.findOne({date:prev_date,test_status:patient.status});
+            log.count -= 1
+            await log.save();
+        }
+
+
+        if (report.test_status == 'Positive'){
+            patient.status = 'Confirmed'
+            await patient.save();
+        }
+    }
+
+    if (report.test_status != 'Not Tested'){
+        // update log.
+        let log =await PatientLog.findOne({date:date,test_status: status[report.test_status]});
+
+        if(log){
+            log.count+=1;
+            await log.save();
+        }else{
+            await new PatientLog({ test_status:'Confirmed', date: date}).save();
+        }
+    }
+}
+
+
+
 
 // getting all test reports
 exports.get_all_test_reports = async (req, res) => {
@@ -73,6 +119,7 @@ exports.get_all_test_reports = async (req, res) => {
     }
 };
 
+
 // Post a test report
 exports.post_test_report = async (req, res) => {
 
@@ -85,22 +132,11 @@ exports.post_test_report = async (req, res) => {
         test_status: req.body.test_status
     });
 
-    //------ saving updating logs --- //
-    let date = new Date();
-    date.setHours(0,0,0,0);
     
-    let log =await PatientLog.findOne({date:date,test_status:req.body.test_status});
+    //------ updating logs --- //
+    await check_and_update_log(report)
+    //------ end of updating logs --- //
 
-    if(log){
-        log.count+=1;
-        await log.save();
-    }else{
-        await new PatientLog({
-            test_status:req.body.test_status,
-            date: date
-        }).save();
-    }
-    //------ end of saving updating logs --- //
 
     try {
         await report.save();
@@ -116,21 +152,9 @@ exports.update_test_report = async (req, res) => {
     try {
         const report = await TestReport.findById(req.body.test_id);
 
-        //------ saving updating logs --- //
-        let date = new Date();
-        date.setHours(0,0,0,0);
-        const log = await PatientLog.findOne({date:date,test_status:req.body.test_status});
-        
-        if(log){
-            log.count+=1;
-            log.save();
-        }else{
-            await new PatientLog({
-                test_status:req.body.test_status,
-                date: date
-            }).save();
-        }
-        //------ end of saving updating logs --- //
+        //------ updating logs --- //
+        await check_and_update_log(report)
+        //------ end of updating logs --- //
 
         report.test_status = req.body.test_status
         await report.save();
@@ -146,10 +170,22 @@ exports.update_test_report = async (req, res) => {
 exports.delete_test_report = async (req, res) => {
 
     try {
-        const report = await TestReport.findByIdAndRemove(req.params.id);
+        const report = await TestReport.findById(req.params.id);
         if (!report) {
             res.status(404).send("Report doesnt exist!");
         } else {
+
+            await TestReport.findByIdAndRemove(req.params.id);
+
+            //------ updating logs --- //
+            let tmp = report.test_status
+            report.test_status = 'Not Tested'
+
+            await check_and_update_log(report)
+            
+            report.test_status =tmp
+            //------ end of updating logs --- //
+
             res.status(204).send(report);
         }
     } catch (err) {

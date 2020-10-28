@@ -51,9 +51,9 @@ const patientSchema = new mongoose.Schema({
     },
     status:{
         type: String,
-        enum: ["New","Recovered","Confirmed","Death"],
+        enum: ["Unknown","Recovered","Confirmed","Died"],
         required: true,
-        default: "New"
+        default: "Unknown"
     },
     history:[],
     emergency_contact:{
