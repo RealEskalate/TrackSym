@@ -8,7 +8,7 @@ const { Patient } = require("../models/Patient.js");
 // ### helper methods
 
 // check for daily duplicate log and update the log.
-check_and_update_log = async (report) =>{
+let check_and_update_log = async (report) =>{
     let date = new Date();
     let status= {'Negative':'TestCount','Positive':'Confirmed'}
     date.setHours(0,0,0,0);

@@ -6,7 +6,7 @@ const { PatientLog } = require("../models/PatientLog.js");
 // ### helper methods
 
 // link user with patient...
-link_patient_with_user = async (patient, req, res) =>{
+let link_patient_with_user = async (patient, req, res) =>{
     let filter;
     if (patient.email && patient.phone_number){
         filter = {$or:[{email:patient.email},{phone_number:patient.phone_number}]};
@@ -20,10 +20,10 @@ link_patient_with_user = async (patient, req, res) =>{
     let user = await User.findOne(filter);
     if(!user){
         let unusedUsername = `${patient.first_name}-${patient.last_name}-${Date.now().toString().substring(6, 13)}`;
-        const foundUser = await User.findOne({username: unusedUsername});
+        let foundUser = await User.findOne({username: unusedUsername});
         while (foundUser){
             unusedUsername = `${patient.first_name}-${patient.last_name}-${Date.now().toString().substring(6, 13)}`;
-            const foundUser = await User.findOne({username: unusedUsername});
+            foundUser = await User.findOne({username: unusedUsername});
         }
         user = new User({
             _id: mongoose.Types.ObjectId(),
@@ -62,7 +62,7 @@ link_patient_with_user = async (patient, req, res) =>{
 
 
 // check for daily duplicate log and update the log.
-check_and_update_log = async (oldData, patient) =>{
+let check_and_update_log = async (oldData, patient) =>{
     let date = new Date();
     date.setHours(0,0,0,0);
 
