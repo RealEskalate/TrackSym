@@ -5,7 +5,9 @@ const patientSchema = new mongoose.Schema({
 
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true,
+        index: true
     },
     first_name: {
         type: String,
@@ -19,6 +21,9 @@ const patientSchema = new mongoose.Schema({
         type: Date,
     },
     phone_number: {
+        type: String,
+    },
+    email:{
         type: String,
     },
     language: {

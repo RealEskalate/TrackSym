@@ -5,6 +5,8 @@ const { LocationUser } = require("../models/LocationUserModel");
 const { User } = require("../models/UserModel");
 const {DistrictModel} = require("../models/DistrictModel");
 const { Symptom } = require("../models/Symptom");
+let { Patient } = require("../models/Patient");
+let { CaseInvestigation } = require("../models/CaseInvestigation");
 const jwt = require("jsonwebtoken");
 const SymptomLogRegistration = require("../services/SymptomLogRegistration.js");
 
@@ -163,6 +165,9 @@ describe("Symptom Statistics API", function() {
 
     describe("Log Tests", function(){
         let user;
+        let healthcare_worker;
+        let case_investigation;
+        let patient;
         let symptom;
         let user_location;
         let symptom_user;
@@ -171,15 +176,62 @@ describe("Symptom Statistics API", function() {
         let date = new Date();
         date.setHours(date.getHours() - 24);
         beforeEach(async () => {
+            healthcare_worker = new User({
+                _id: mongoose.Types.ObjectId(),
+                username: `${Date.now().toString()} ephi ${Math.random()}`,
+                password: "$2a$10$efmxm5o1v.inI.eStGGxgO1zHk.L6UoA9LEyYrRPhWkmTQPX8.NKO",
+                gender: "FEMALE",
+                role: "ephi_user",
+                age_group: "21-30",
+              });
+            await healthcare_worker.save();
+
+            patient = new Patient({
+                _id: mongoose.Types.ObjectId(),
+                first_name: "Darth",
+                last_name: "Vader",
+                dob: new Date('May 25, 1977'),
+                phone_number: "+25189028392",
+                language: "English",
+                gender: "MALE",
+                woreda: "Nefas Silk",
+                street_address: "Jemo 2",
+                city: "Addis Ababa",
+                status: "Death",
+                sms_status: true,
+              });
+            
             user = new User({
                 _id: mongoose.Types.ObjectId(),
                 username: `${Date.now().toString()}  ${Math.random()}`,
                 password: "$2a$10$efmxm5o1v.inI.eStGGxgO1zHk.L6UoA9LEyYrRPhWkmTQPX8.NKO",
                 gender: "FEMALE",
                 age_group: "21-30",
-                current_country: "Ethiopia"
+                current_country: "Ethiopia",
+                patient_info: patient._id
             });
+            patient.user_id = user._id;
             await user.save();
+            await patient.save();
+
+            case_investigation = new CaseInvestigation({
+                _id: mongoose.Types.ObjectId(),
+                user_id: user._id,
+                assigned_to: healthcare_worker._id,
+                current_note: {
+                    note: "This is a test note...",
+                    date: new Date(),
+                },
+                notes: [
+                    {
+                        note: "This is a test note...",
+                        date: new Date(),
+                        health_worker_id: healthcare_worker._id,
+                    },
+                ],
+            });
+
+            await case_investigation.save();
 
             symptom = new Symptom({
                 _id: mongoose.Types.ObjectId(),
@@ -230,6 +282,9 @@ describe("Symptom Statistics API", function() {
           await Symptom.findByIdAndDelete(symptom._id);
           await DistrictModel.findByIdAndDelete(district._id);
           await User.findByIdAndDelete(user._id);
+          await User.findByIdAndDelete(healthcare_worker._id);
+          await Patient.findByIdAndDelete(patient._id);
+          await CaseInvestigation.findByIdAndDelete(case_investigation._id)
           await SymptomLog.findByIdAndDelete(symptom_log._id);
         });
     
@@ -253,6 +308,13 @@ describe("Symptom Statistics API", function() {
             expect(response.body.data[0]).to.have.property("status", "SYMPTOM_SUBMITTED");
             expect(response.body.data[0]).to.have.property("current_symptoms");
         }); 
+
+        it("it should return symptom logs for a healthcare worker on /api/symptom_statistics/logs/assigned_to/:assigned_to GET", async () => {
+            let response = await chai
+            .request(server)
+            .get("/api/symptom_statistics/logs/assigned_to/" + healthcare_worker._id)
+            expect(response).to.have.status(200);
+        });
 
         it("it should return symptom logs for a single user on /api/symptom_statistics/logs/user/:user_id GET", async () => {
             let response = await chai

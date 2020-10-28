@@ -79,6 +79,13 @@ const userSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
+        patient_info:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Patient",
+        },
+        phone_number: {
+            type: String,
+        },
     },
     {
         timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
@@ -136,7 +143,8 @@ const demoUserSchema = new mongoose.Schema({
     type: Date,
     default: new Date(new Date() - 60 * 60 * 24 * 7 * 1000),
     required: true,
-  }
+  },
+
 });
 
 const stressUserSchema = new mongoose.Schema({

@@ -19,6 +19,7 @@ chai.use(chaiHttp);
 describe("Clinical Disposition API", () => {
   let healthcare_worker;
   let patient;
+  let user;
   let clinical_disposition;
   let interview;
   let tokens;
@@ -57,14 +58,23 @@ describe("Clinical Disposition API", () => {
         city: "Addis Ababa",
         status: "Death",
         sms_status: true,
+    });
+
+    user = new User({
+      _id: mongoose.Types.ObjectId(),
+      username: "SuperAwesome MEeeEeE",
+      password: "IhopeChromeRemembersIt",
+      patient_id: patient._id
     })
 
+    patient.user_id = user._id
     await patient.save();
+    await user.save();
 
 
     clinical_disposition = new ClinicalDisposition({
         _id: mongoose.Types.ObjectId(),
-        patient_id: patient._id,
+        user_id: user._id,
         interview_id: mongoose.Types.ObjectId(),
         disposition: "Pending",
         notes: "This is a test note..."
@@ -77,6 +87,7 @@ describe("Clinical Disposition API", () => {
   
   afterEach(async () => {
     await Patient.findByIdAndDelete(patient._id);
+    await User.findByIdAndDelete(user._id)
     await User.findByIdAndDelete(healthcare_worker._id);
     await ClinicalDisposition.findByIdAndDelete(clinical_disposition._id);
   });
@@ -88,7 +99,7 @@ describe("Clinical Disposition API", () => {
       .post("/api/clinicalDisposition/")
       .set("Authorization", "Bearer " + tokens)
       .send({
-        patient_id:  patient._id,
+        user_id:  user._id,
         interview_id:  mongoose.Types.ObjectId(),
         disposition: "Pending",
         notes: "This is a test note...",
@@ -104,7 +115,7 @@ describe("Clinical Disposition API", () => {
       .post("/api/clinicalDisposition/")
       .set("Authorization", "Bearer " + tokens)
       .send({
-        patient_id:  patient._id,
+        user_id:  user._id,
         interview_id:  mongoose.Types.ObjectId(),
         disposition: "Complete",
         notes: "This is a test note...",
@@ -133,7 +144,7 @@ describe("Clinical Disposition API", () => {
       .post("/api/clinicalDisposition/")
       .set("Authorization", "Bearer " + tokens)
       .send({
-        patient_id:  patient._id,
+        user_id:  user._id,
         interview_id:  mongoose.Types.ObjectId(),
       });
     expect(response).to.have.status(500);
@@ -156,7 +167,7 @@ describe("Clinical Disposition API", () => {
       .patch(`/api/clinicalDisposition/${clinical_disposition._id}`)
       .set("Authorization", "Bearer " + tokens)
       .send({
-        patient_id:  patient._id,
+        user_id:  user._id,
         interview_id:  mongoose.Types.ObjectId(),
         notes: "This is a test note...",
       });

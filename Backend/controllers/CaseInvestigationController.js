@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const _ = require("lodash");
 const { Patient } = require("../models/Patient.js");
 const { SymptomUser } = require("../models/SymptomUser");
+const { User } = require("../models/UserModel.js");
 
 // Fetch all case investigations, with filters if any
 exports.getCaseInvestigations = async (req, res) => {
@@ -22,7 +23,7 @@ exports.getCaseInvestigations = async (req, res) => {
     try {
         const investigations = await CaseInvestigation.find(filter, {}, { skip: page - 1, limit: size * 1 });
         const populated = await CaseInvestigation.populate(investigations, [
-            { model: 'Patient', path: 'patient_id', select: '_id first_name last_name' },
+            { model: 'User', path: 'user_id', select: '_id username' },
             { model: 'User', path: 'assigned_to', select: '_id username' },
             { model: 'User', path: 'notes.health_worker_id', select: '_id username' },
         ]);
@@ -57,14 +58,14 @@ const datesAreOnSameDay = (first, second) =>
     first.getFullYear() === second.getFullYear() &&
     first.getMonth() === second.getMonth() &&
     first.getDate() === second.getDate();
-
+ 
 // Update or add a case investigation
 exports.addOrUpdateCaseInvestigation = async (req, res) => {
     const id = req.query.id || null;
     try {
         const investigation = await CaseInvestigation.findById(id);
         if (!investigation) {
-            const investigation = new CaseInvestigation(_.pick(req.body, ["patient_id", "assigned_to"]));
+            const investigation = new CaseInvestigation(_.pick(req.body, ["user_id", "assigned_to"]));
             investigation._id = mongoose.Types.ObjectId();
             investigation.current_note = {
                 date : new Date(),
@@ -90,7 +91,7 @@ exports.addOrUpdateCaseInvestigation = async (req, res) => {
                 note: req.body.current_note,
             };
         }
-        investigation.patient_id = req.body.patient_id || investigation.patient_id;
+        investigation.user_id = req.body.user_id || investigation.patient_id;
         investigation.assigned_to = req.body.assigned_to || investigation.assigned_to;
         investigation.markModified("current_note");
         investigation.markModified("notes");
@@ -124,12 +125,14 @@ exports.get_patients_by_status = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 15;
     try {
-        const selectedPatients = await CaseInvestigation.find({ assigned_to: mongoose.Types.ObjectId(assignee) })
-        const patientIds = []
+        const selectedUsers = await CaseInvestigation.find({ assigned_to: mongoose.Types.ObjectId(assignee) })
+        const userIds = []
 
-        for (var i = 0; i < selectedPatients.length; i++) {
-            patientIds.push(selectedPatients[i].patient_id);
+        for (var i = 0; i < selectedUsers.length; i++) {
+            userIds.push(selectedPatients[i].user_id);
         }
+        const patientIds = (await User.find({_id: {$in: userIds}}))
+                                        .map(user => user.patient_id)
         const filter = { status: status, _id: { $in: patientIds } };
         const patients = await Patient.find(filter, {}, { skip: page - 1, limit: size * 1 });
 
@@ -152,14 +155,10 @@ exports.get_count_per_status = async (req, res) =>{
     }
     let assigned_to = req.query.assigned_to;
 
-    const selectedPatients = await CaseInvestigation.find({ assigned_to: assigned_to })
-    const patientIds = [];
-    const userIds = [];
-
-    for (var i = 0; i < selectedPatients.length; i++) {
-        patientIds.push(selectedPatients[i].patient_id);
-    }
-
+    const userIds = (await CaseInvestigation.find({ assigned_to: assigned_to }))
+                        .map(investigation => investigation.user_id)
+    const patientIds = (await User.find({_id: {$in: userIds}}))
+                        .map(user => user.patient_info)
 
     const patients = await Patient.find({_id: { $in: patientIds }});
 
@@ -170,10 +169,6 @@ exports.get_count_per_status = async (req, res) =>{
         }};
 
     for(var index in patients){
-
-        if (patients[index].user_id){
-            userIds.push(patients[index].user_id)
-        }
 
         if(!(patients[index].status in result) ){
             result[ patients[index].status ] = {

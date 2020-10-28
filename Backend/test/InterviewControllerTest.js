@@ -54,7 +54,6 @@ describe("Interview API", () => {
             gender: "FEMALE",
             age_group: "21-30",
         });
-        await user_patient.save();
 
         symptom_1 = new Symptom({
             _id: mongoose.Types.ObjectId(),
@@ -95,7 +94,10 @@ describe("Interview API", () => {
                 phone_number: "091122334455",
             },
         });
+
+        user_patient.patient_info = patient._id;
         await patient.save();
+        await user_patient.save();
 
         test_report = new TestReport({
             _id: mongoose.Types.ObjectId(),
@@ -121,7 +123,7 @@ describe("Interview API", () => {
             .post("/api/interviews")
             .set("Authorization", "Bearer " + tokens_interviewer)
             .send({
-                patient_id: patient._id,
+                user_id: user_patient._id,
                 clinical_review: true,
                 completion_date: new Date(Date.now()),
                 test_report: test_report._id,
@@ -149,7 +151,7 @@ describe("Interview API", () => {
             });
         expect(response).to.have.status(201);
         expect(response.body).to.be.a("object");
-        expect(response.body).to.have.property("patient_id");
+        expect(response.body).to.have.property("user_id");
         interview_id = response.body._id;
     });
     it("It should not save a new interview record", async () => {
@@ -287,7 +289,7 @@ describe("Interview API", () => {
             .post("/api/interviews")
             .set("Authorization", "Bearer " + tokens_interviewer)
             .send({
-                patient_id: patient._id,
+                user_id: user_patient._id,
                 clinical_review: true,
                 completion_date: new Date(Date.now()),
                 test_report: test_report._id,
@@ -328,7 +330,7 @@ describe("Interview API", () => {
             .post("/api/interviews")
             .set("Authorization", "Bearer " + tokens_interviewer)
             .send({
-                patient_id: patient._id,
+                user_id: user_patient._id,
                 clinical_review: true,
                 completion_date: new Date(Date.now()),
                 test_report: test_report._id,
@@ -368,7 +370,7 @@ describe("Interview API", () => {
             .post("/api/interviews")
             .set("Authorization", "Bearer " + tokens_interviewer)
             .send({
-                patient_id: patient._id,
+                user_id: user_patient._id,
                 clinical_review: true,
                 completion_date: new Date(Date.now()),
                 test_report: test_report._id,
@@ -409,7 +411,7 @@ describe("Interview API", () => {
             .post("/api/interviews")
             .set("Authorization", "Bearer " + tokens_interviewer)
             .send({
-                patient_id: patient._id,
+                user_id: user_patient._id,
                 clinical_review: true,
                 completion_date: new Date(Date.now()),
                 test_report: test_report._id,
@@ -450,7 +452,7 @@ describe("Interview API", () => {
             .post("/api/interviews")
             .set("Authorization", "Bearer " + tokens_interviewer)
             .send({
-                patient_id: patient._id,
+                user_id: user_patient._id,
                 clinical_review: true,
                 completion_date: new Date(Date.now()),
                 test_report: test_report._id,
@@ -484,7 +486,7 @@ describe("Interview API", () => {
             .send(save_interview.body);
         expect(response).to.have.status(200);
         expect(response.body).to.be.a("object");
-        expect(response.body).to.have.property("patient_id");
+        expect(response.body).to.have.property("user_id");
         interview_id = save_interview.body._id;
     });
     it("It should not patch a specific interview record", async () => {
@@ -493,7 +495,7 @@ describe("Interview API", () => {
             .post("/api/interviews")
             .set("Authorization", "Bearer " + tokens_interviewer)
             .send({
-                patient_id: patient._id,
+                user_id: user_patient._id,
                 clinical_review: true,
                 completion_date: new Date(Date.now()),
                 test_report: test_report._id,
@@ -538,7 +540,7 @@ describe("Interview API", () => {
             .post("/api/interviews")
             .set("Authorization", "Bearer " + tokens_interviewer)
             .send({
-                patient_id: patient._id,
+                user_id: user_patient._id,
                 clinical_review: true,
                 completion_date: new Date(Date.now()),
                 test_report: test_report._id,
@@ -572,7 +574,7 @@ describe("Interview API", () => {
             .send(save_interview.body);
         expect(response).to.have.status(200);
         expect(response.body).to.be.a("object");
-        expect(response.body).to.have.property("patient_id");
+        expect(response.body).to.have.property("user_id");
         interview_id = save_interview.body._id;
     });
     it("It should not delete a specific interview record", async () => {
@@ -581,7 +583,7 @@ describe("Interview API", () => {
             .post("/api/interviews")
             .set("Authorization", "Bearer " + tokens_interviewer)
             .send({
-                patient_id: patient._id,
+                user_id: user_patient._id,
                 clinical_review: true,
                 completion_date: new Date(Date.now()),
                 test_report: test_report._id,

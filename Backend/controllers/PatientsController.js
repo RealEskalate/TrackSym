@@ -1,5 +1,6 @@
 const { Patient } = require("../models/Patient.js");
 var mongoose = require("mongoose");
+const { User } = require("../models/UserModel");
 
 // getting all patients
 exports.get_all_patients = async (req, res) => {
@@ -100,19 +101,73 @@ exports.post_patient_data = async (req, res) => {
     patient._id= mongoose.Types.ObjectId();
 
     try {
-        await patient.save();
-        return res.send(patient);
+        return link_patient_with_user(patient, req, res) 
     } catch (err) {
         return res.status(500).send(err.toString());
     }
 };
+
+// link user with patient...
+link_patient_with_user = async (patient, req, res) =>{
+    let filter;
+    if (patient.email && patient.phone_number){
+        filter = {$or:[{email:patient.email},{phone_number:patient.phone_number}]};
+    } else if (patient.email){
+        filter = {email:patient.email};
+    } else if (patient.phone_number){
+        filter = {phone_number:patient.phone_number}
+    } else {
+        filter = {_id: null} //returns null on User
+    }
+    let user = await User.findOne(filter);
+    if(!user){
+        let unusedUsername = `${patient.first_name}-${patient.last_name}-${Date.now().toString().substring(6, 13)}`;
+        const foundUser = await User.findOne({username: unusedUsername});
+        while (foundUser){
+            unusedUsername = `${patient.first_name}-${patient.last_name}-${Date.now().toString().substring(6, 13)}`;
+            const foundUser = await User.findOne({username: unusedUsername});
+        }
+        user = new User({
+            _id: mongoose.Types.ObjectId(),
+            username: unusedUsername,
+            password:`pswod-${Math.random()}`,
+            gender:patient.gender,
+            email:patient.email,
+            created_by:req.body.loggedInUser,
+            patient_info:patient._id,
+            phone_number:patient.phone_number
+        })
+
+        try {
+            await user.save();
+            patient.user_id = user._id;
+            await patient.save();
+            
+            return res.send(user)
+        } catch (err){
+            return res.status(500).send(err.toString());
+        }
+    } 
+
+    else if(user.patient_info){
+        return res.status(422).send({'message':' a patient exists with the given phone number or email.'})
+    }
+
+    user.patient_info = patient._id;
+    await user.save()
+
+    patient.user_id = user._id;
+    await patient.save();
+
+    return res.send(user)
+}
 
 
 // update a patient
 exports.update_patient = async (req, res) => {
     try {
         let oldData = await Patient.findById(req.params.id);
-        let patient = await Patient.update({ _id: mongoose.Types.ObjectId(req.params.id) },req.body);
+        let patient = await Patient.updateOne({ _id: mongoose.Types.ObjectId(req.params.id) },req.body);
         patient = await Patient.findById(req.params.id);
         // history
 
@@ -137,6 +192,15 @@ exports.delete_patient = async (req, res) => {
 
     try {
         const patient = await Patient.findByIdAndRemove(req.params.id);
+
+        // unlink with a user.....
+        if(patient.user_id){
+            let user = await User.findById(patient.user_id);
+            user.patient_info = null;
+            await user.save();
+        }
+
+
         if (!patient) {
             res.status(404).send("Patient doesnt exist!");
         } else {
