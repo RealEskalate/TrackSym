@@ -310,7 +310,7 @@ describe("Case Investigation API", () => {
     expect(response).to.have.status(200);
     expect(response.body).to.be.an("Object");
     expect(response.body.total).to.be.eql({ count: 3, change: 3 });
-    expect(response.body.Death).to.be.eql({ count: 1, change: 1 });
+    expect(response.body.Died).to.be.eql({ count: 1, change: 1 });
     expect(response.body.Confirmed).to.be.eql({ count: 1, change: 1 });
     expect(response.body.Recovered).to.be.eql({ count: 1, change: 1 });
     expect(response.body.active_symptoms).to.be.eql({count: 1})
