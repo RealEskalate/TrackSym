@@ -25,7 +25,8 @@ class LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Column(
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 25),
           children: <Widget>[
             SizedBox(height: size.height * 0.07),
             Center(
@@ -68,70 +69,59 @@ class LoginPageState extends State<LoginPage> {
             //       );
             //     }),
             SizedBox(height: size.height * 0.05),
-            SizedBox(height: size.height * 0.05),
+            // SizedBox(height: size.height * 0.05),
             wrongCredintials
-                ? Text(
-                    "Wrong Username or password, please try again!",
-                    style: TextStyle(color: Colors.red),
-                  )
+                ? Container(
+                    height: 20,
+                    child: Text(
+                      "Wrong Username or password, please try again!",
+                      style: TextStyle(color: Colors.red),
+                    ))
                 : Text(""),
-            BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-              if (state is UserNotSignedIn) {
-                return ButtonTheme(
-                  minWidth: size.width * 0.8,
-                  height: size.width * 0.13,
-                  child: RaisedButton(
+
+            ButtonTheme(
+                minWidth: size.width * 0.8,
+                height: size.width * 0.13,
+                child: RaisedButton(
                     color: Colors.lightBlue,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40)),
-                    onPressed: () {
-                      BlocProvider.of<UserBloc>(context).add(SignInUser(
-                          emailController.text,
-                          passwordController
-                              .text)); //triggering our bloc to start the sign in process
-                    },
-                    child: Text('SIGN IN',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        )),
-                  ),
-                );
-              } else if (state is SigningIn) {
-                return ButtonTheme(
-                  minWidth: size.width * 0.8,
-                  height: size.width * 0.13,
-                  child: RaisedButton(
-                    color: Colors.lightBlue,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40)),
-                    onPressed: () {},
-                    child: Center(
-                        child: CircularProgressIndicator(
-                            backgroundColor: Colors.white)),
-                  ),
-                );
-              } else if (state is UserSignedIn) {
-                if (state.user != null) {
-                  setState(() {
-                    wrongCredintials = false;
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return Home();
-                      },
-                    ),
-                  );
-                } else {
-                  setState(() {
-                    wrongCredintials = true;
-                  });
-                }
-              }
-            }),
+                    onPressed: () => BlocProvider.of<UserBloc>(context).add(
+                        SignInUser(
+                            emailController.text,
+                            passwordController
+                                .text)), //triggering our bloc to start the sign in process
+
+                    child: BlocBuilder<UserBloc, UserState>(
+                        builder: (context, state) {
+                      if (state is UserNotSignedIn) {
+                        return Text('SIGN IN',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                            ));
+                      } else if (state is SigningIn) {
+                        return Container(
+                            width: size.width * 0.05,
+                            height: size.width * 0.05,
+                            child: Center(
+                                child: CircularProgressIndicator(
+                                    backgroundColor: Colors.white)));
+                      } else if (state is UserSignedIn) {
+                        if (state.user != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return Home();
+                              },
+                            ),
+                          );
+                        }
+                      }
+                    }))),
+
             SizedBox(height: size.height * 0.075),
             Image.asset(
               'assets/images/a2sv.png',

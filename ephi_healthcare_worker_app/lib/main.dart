@@ -22,21 +22,19 @@ void main() => runApp(MaterialApp(
       // Sets a font as the default globally
       theme: ThemeData(fontFamily: 'Comfortaa'),
       debugShowCheckedModeBanner: false,
-      home: Main(),
+      home: MultiBlocProvider(providers: [
+        BlocProvider(create: (context) => CaseBloc(CaseRepo())),
+        BlocProvider(create: (context) => PatientBloc(PatientRepo())),
+        BlocProvider(create: (context) => UserBloc(UserRepo()))
+      ], child: Main()),
     ));
 
 class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => CaseBloc(CaseRepo())),
-          BlocProvider(create: (context) => PatientBloc(PatientRepo())),
-          BlocProvider(create: (context) => UserBloc(UserRepo()))
-        ],
-        child: Scaffold(
-          backgroundColor: Colors.amber[50],
-          body: WelcomePage(),
-        ));
+    return Scaffold(
+      backgroundColor: Colors.amber[50],
+      body: WelcomePage(),
+    );
   }
 }

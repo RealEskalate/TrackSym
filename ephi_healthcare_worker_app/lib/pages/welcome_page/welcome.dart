@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../view_models/userBloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Login Page
 import '../sign_up/createAccount.dart';
@@ -73,9 +75,10 @@ class WelcomePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) {
-                        return LoginPage();
-                      },
+                      builder: (_) => BlocProvider.value(
+                        value: BlocProvider.of<UserBloc>(context),
+                        child: LoginPage(),
+                      ),
                     ),
                   );
                 },
