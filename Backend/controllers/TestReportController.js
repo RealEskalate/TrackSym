@@ -15,7 +15,7 @@ let check_and_update_log = async (report) =>{
 
     let user = await User.findById(report.user_id);
     
-    if(user.patient_info){
+    if(user && user.patient_info){
         let patient = await Patient.findById(user.patient_info)
 
         let prev_date = new Date(patient.updated_at)
@@ -28,7 +28,7 @@ let check_and_update_log = async (report) =>{
         }
 
 
-        if (report.test_status == 'Positive'){
+        if (report && report.test_status == 'Positive'){
             patient.status = 'Confirmed'
             await patient.save();
         }
@@ -132,14 +132,13 @@ exports.post_test_report = async (req, res) => {
         test_status: req.body.test_status
     });
 
-    
-    //------ updating logs --- //
-    await check_and_update_log(report)
-    //------ end of updating logs --- //
-
-
     try {
         await report.save();
+        
+        //------ updating logs --- //
+        await check_and_update_log(report)
+        //------ end of updating logs --- //
+
         return res.send(report);
     } catch (err) {
         return res.status(500).send(err.toString());
