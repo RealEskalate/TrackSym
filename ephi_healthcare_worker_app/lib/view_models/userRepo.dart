@@ -26,7 +26,8 @@ class UserRepo {
     );
     var responseDecoded = json.decode(response.body);
     User user;
-    if (response.statusCode == 200) {
+    if (response.statusCode != 404) {
+      //print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
       user = User.fromJson(responseDecoded['user']);
       await prefs.setString("token", responseDecoded['token']);
     }

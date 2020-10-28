@@ -54,7 +54,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       yield SigningIn();
       //we fetch our cases using our api provider
       try {
-        User user = userRepo.signInUser(event.userName, event.password);
+        User user = await userRepo.signInUser(event.userName, event.password);
         yield UserSignedIn(user);
       } catch (_) {
         yield UserError();
