@@ -8,6 +8,7 @@ import '../sign_up/createAccount.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../view_models/userBloc.dart';
 import '../../view_models/userRepo.dart';
+import 'package:flutter/scheduler.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -110,14 +111,24 @@ class LoginPageState extends State<LoginPage> {
                                     backgroundColor: Colors.white)));
                       } else if (state is UserSignedIn) {
                         if (state.user != null) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return Home();
-                              },
-                            ),
-                          );
+                          SchedulerBinding.instance.addPostFrameCallback((_) {
+                            // add your code here.
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return Home();
+                                },
+                              ),
+                            );
+                          });
+
+                          return Text('Success',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.0,
+                              ));
                         }
                       }
                     }))),
