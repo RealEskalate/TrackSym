@@ -24,12 +24,12 @@ class UserRepo {
           .timeout(Duration(seconds: 10)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
-    var responseDecoded = json.decode(response.body);
+
     User user;
-    if (response.statusCode != 404) {
-      //print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    if (response.statusCode == 200) {
+      var responseDecoded = json.decode(response.body);
       user = User.fromJson(responseDecoded['user']);
-      await prefs.setString("token", responseDecoded['token']);
+      await prefs.setString("Token", responseDecoded['token']);
     }
     return user;
   }

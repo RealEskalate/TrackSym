@@ -1,7 +1,7 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'caseRepo.dart';
 import '../models/patientCase.dart';
+import 'dart:async';
 
 class CaseEvent extends Equatable {
   @override
@@ -17,51 +17,46 @@ class FetchCases extends CaseEvent {
   List<Object> get props => [healthCareWorkerId];
 }
 
-class ReloadCases extends CaseEvent {}
-
-class CaseState extends Equatable {
+class ReloadCases extends CaseEvent {
+  final healthCareWorkerId;
+  ReloadCases(this.healthCareWorkerId);
   @override
   // TODO: implement props
-  List<Object> get props => [];
+  List<Object> get props => [healthCareWorkerId];
 }
 
-//initial state
-class CasesNotLoaded extends CaseState {}
+class CaseBloc {
+  bool loading = false;
+  List<PatientCase> caseList = [];
+  final _caseStreamController = StreamController<List<PatientCase>>();
+  StreamSink<List<PatientCase>> get _caseSink => _caseStreamController.sink;
+  Stream<List<PatientCase>> get caseStream => _caseStreamController.stream;
 
-//when cases are being loaded
-class CasesLoading extends CaseState {}
+  var _actionStreamController = StreamController<CaseEvent>();
+  StreamSink<CaseEvent> get actionSink => _actionStreamController.sink;
+  Stream<CaseEvent> get _actionStream => _actionStreamController.stream;
 
-//when cases are loaded
-class CasesLoaded extends CaseState {
-  final List<PatientCase> caseList;
-  CasesLoaded(this.caseList);
-  @override
-  // TODO: implement props
-  List<Object> get props => [caseList];
-}
+  CaseRepo caseRepo;
 
-//when errors happen
-class CasesError extends CaseState {}
-
-//our Bloc
-class CaseBloc extends Bloc<CaseEvent, CaseState> {
-  final CaseRepo caseRepo;
-  CaseBloc(this.caseRepo) : super(CasesNotLoaded());
-  @override
-  Stream<CaseState> mapEventToState(CaseEvent event) async* {
-    // TODO: implement mapEventToState
-    if (event is FetchCases) {
-      yield CasesLoading();
-      //we fetch our cases using our api provider
-      try {
-        List<PatientCase> caseList =
-            caseRepo.getCases(event.healthCareWorkerId);
-        yield CasesLoaded(caseList);
-      } catch (_) {
-        yield CasesError();
+  CaseBloc({CaseRepo repo}) {
+    caseRepo = repo;
+    _actionStream.listen((event) async {
+      if (event is FetchCases) {
+        try {
+          caseList = await caseRepo.getCases(event.healthCareWorkerId);
+          _caseSink.add(caseList);
+        } on Exception catch (e) {
+          _caseSink.addError("Couldn't connect to server");
+        }
+      } else if (event is ReloadCases) {
+        caseList = [];
+        _caseSink.add(null);
       }
-    } else if (event is ReloadCases) {
-      yield CasesNotLoaded();
-    }
+    });
+  }
+
+  void dispose() {
+    _caseStreamController.close();
+    _actionStreamController.close();
   }
 }

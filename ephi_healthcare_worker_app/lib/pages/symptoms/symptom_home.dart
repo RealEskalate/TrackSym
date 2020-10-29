@@ -6,6 +6,7 @@ import '../../models/symptom_activity.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/hexColorGenerator.dart';
 import '../people/person_detail.dart';
+import '../../widgets/blurredDrawer.dart';
 
 class SymptomView extends StatelessWidget {
   List<SymptomActivity> _curentActivity = [
@@ -73,139 +74,169 @@ class SymptomView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
-      decoration: BoxDecoration(color: HexColor("#F5F9FF")),
-      child: ListView(
-        padding: EdgeInsets.fromLTRB(0.0, size.height * 0.02, 0.0, 0.0),
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Scaffold(
+        drawerScrimColor: Colors.black.withOpacity(0.2),
+        drawer: BlurredDrawer(),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(size.height * 0.068),
+          child: AppBar(
+              centerTitle: true,
+              elevation: 1,
+              backgroundColor: Colors.white,
+              iconTheme: new IconThemeData(
+                color: Colors.blue,
+              ),
+              title: Text(
+                "Symptom Activities",
+                style: TextStyle(
+                  color: Colors.blue,
+                ),
+              ),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.refresh,
+                    color: Colors.lightBlueAccent[900],
+                  ),
+                  onPressed: () {},
+                )
+              ]),
+        ),
+        body: Container(
+          decoration: BoxDecoration(color: HexColor("#F5F9FF")),
+          child: ListView(
+            padding: EdgeInsets.fromLTRB(0.0, size.height * 0.02, 0.0, 0.0),
             children: <Widget>[
-              CardWidget(
-                  sizeHeight: 0.12,
-                  sizeWidth: 0.41,
-                  color: Colors.lightBlueAccent[700],
-                  value: "1,453",
-                  change: "+25",
-                  text: "Active Symptoms",
-                  title: "this.title",
-                  press: null),
-              CardWidget(
-                  sizeHeight: 0.12,
-                  sizeWidth: 0.41,
-                  color: Colors.greenAccent[700],
-                  value: "1,071",
-                  change: "+12",
-                  text: "Recovered Symptoms",
-                  title: "this.title",
-                  press: null),
-            ],
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: (size.width / 3),
-                  child: Text(
-                    "Date ",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ),
-                Container(
-                  width: (size.width / 3),
-                  child: Text(
-                    "Activity",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                Text(
-                  "Patient",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ListView.builder(
-            scrollDirection: Axis.vertical,
-            primary: false,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: _curentActivity.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                margin: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
-                height: 50,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        offset: Offset(0.0, 0.2),
-                        blurRadius: 2.0,
-                      )
-                    ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  CardWidget(
+                      sizeHeight: 0.12,
+                      sizeWidth: 0.41,
+                      color: Colors.lightBlueAccent[700],
+                      value: "1,453",
+                      change: "+25",
+                      text: "Active Symptoms",
+                      title: "this.title",
+                      press: null),
+                  CardWidget(
+                      sizeHeight: 0.12,
+                      sizeWidth: 0.41,
+                      color: Colors.greenAccent[700],
+                      value: "1,071",
+                      change: "+12",
+                      text: "Recovered Symptoms",
+                      title: "this.title",
+                      press: null),
+                ],
+              ),
+              Container(
+                margin:
+                    EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   children: <Widget>[
                     Container(
                       width: (size.width / 3),
-                      child: Text(_curentActivity[index].acticityDate),
+                      child: Text(
+                        "Date ",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
                     Container(
                       width: (size.width / 3),
-                      child: GestureDetector(
-                        onTap: () {
-                          _showMyDialog(
-                              context, _curentActivity[index].activityType);
-                        },
-                        child: Text(
-                          _curentActivity[index].activityType,
-                          style: TextStyle(
-                            color: _curentActivity[index].activityType ==
-                                    "Recovered"
-                                ? HexColor("#06c219")
-                                : HexColor("#f51a0f"),
-                          ),
+                      child: Text(
+                        "Activity",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => PatientDetailView(),
-                          )),
-                      child: Text(
-                        _curentActivity[index].person,
-                        style: TextStyle(
-                          color: Colors.blue,
-                        ),
+                    Text(
+                      "Patient",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ],
                 ),
-              );
-            },
+              ),
+              ListView.builder(
+                scrollDirection: Axis.vertical,
+                primary: false,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: _curentActivity.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    margin:
+                        EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(0.0, 0.2),
+                            blurRadius: 2.0,
+                          )
+                        ]),
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          width: (size.width / 3),
+                          child: Text(_curentActivity[index].acticityDate),
+                        ),
+                        Container(
+                          width: (size.width / 3),
+                          child: GestureDetector(
+                            onTap: () {
+                              _showMyDialog(
+                                  context, _curentActivity[index].activityType);
+                            },
+                            child: Text(
+                              _curentActivity[index].activityType,
+                              style: TextStyle(
+                                color: _curentActivity[index].activityType ==
+                                        "Recovered"
+                                    ? HexColor("#06c219")
+                                    : HexColor("#f51a0f"),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PatientDetailView(),
+                              )),
+                          child: Text(
+                            _curentActivity[index].person,
+                            style: TextStyle(
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 }

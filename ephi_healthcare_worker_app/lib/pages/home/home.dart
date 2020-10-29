@@ -7,6 +7,8 @@ import '../people/people_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'homePage.dart';
+import '../../view_models/caseBloc.dart';
+import '../../view_models/caseRepo.dart';
 
 // Drawer Widget
 class Home extends StatefulWidget {
@@ -26,6 +28,14 @@ class _HomeState extends State<Home> {
   ];
   final List<String> _titles = ["Home", "Cases", "Symptoms", "Patients"];
 
+  CaseBloc caseBloc = CaseBloc(repo: CaseRepo());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -33,31 +43,39 @@ class _HomeState extends State<Home> {
       drawerScrimColor: Colors.black.withOpacity(0.2),
       // drawerScrimColor: Colors.transparent,
       drawer: BlurredDrawer(),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(size.height * 0.068),
-        child: AppBar(
-            centerTitle: true,
-            elevation: 1,
-            backgroundColor: Colors.white,
-            iconTheme: new IconThemeData(
-              color: Colors.blue,
-            ),
-            title: Text(
-              _titles[_currentIndex],
-              style: TextStyle(
-                color: Colors.blue,
-              ),
-            ),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.refresh,
-                  color: Colors.lightBlueAccent[900],
+      appBar: _currentIndex == 0
+          ? PreferredSize(
+              preferredSize: Size.fromHeight(size.height * 0.068),
+              child: AppBar(
+                centerTitle: true,
+                elevation: 1,
+                backgroundColor: Colors.white,
+                iconTheme: new IconThemeData(
+                  color: Colors.blue,
                 ),
-                onPressed: () {},
-              )
-            ]),
-      ),
+                title: Text(
+                  _titles[_currentIndex],
+                  style: TextStyle(
+                    color: Colors.blue,
+                  ),
+                ),
+                // actions: <Widget>[
+                //   IconButton(
+                //     icon: Icon(
+                //       Icons.refresh,
+                //       color: Colors.lightBlueAccent[900],
+                //     ),
+                //     onPressed: () {
+                //       if (_currentIndex == 1) {
+                //         caseBloc.actionSink
+                //             .add(ReloadCases("5ee9eb84103d470003d558d0"));
+                //       }
+                //     },
+                //   )
+                // ]
+              ),
+            )
+          : null,
       body: _children[_currentIndex],
       bottomNavigationBar: SizedBox(
         height: size.height * 0.068,

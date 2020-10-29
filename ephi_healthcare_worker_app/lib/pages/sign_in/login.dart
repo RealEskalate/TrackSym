@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../home/home.dart';
 import '../sign_up/createAccount.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../models/user.dart';
 import '../../view_models/userBloc.dart';
 import '../../view_models/userRepo.dart';
 import 'package:flutter/scheduler.dart';
@@ -19,6 +19,19 @@ class LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool wrongCredintials = false;
+  UserRepo userRepo;
+  bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      loading = false;
+    });
+    // TODO: implement initState
+    userRepo = UserRepo();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Provides us total height and width of our screen
@@ -73,9 +86,11 @@ class LoginPageState extends State<LoginPage> {
             // SizedBox(height: size.height * 0.05),
             wrongCredintials
                 ? Container(
+                    margin: EdgeInsets.only(bottom: 5),
                     height: 20,
                     child: Text(
                       "Wrong Username or password, please try again!",
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.red),
                     ))
                 : Text(""),
@@ -87,51 +102,48 @@ class LoginPageState extends State<LoginPage> {
                     color: Colors.lightBlue,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40)),
-                    onPressed: () => BlocProvider.of<UserBloc>(context).add(
-                        SignInUser(
-                            emailController.text,
-                            passwordController
-                                .text)), //triggering our bloc to start the sign in process
+                    onPressed: () async {
+                      setState(() {
+                        loading = true;
+                      });
 
-                    child: BlocBuilder<UserBloc, UserState>(
-                        builder: (context, state) {
-                      if (state is UserNotSignedIn) {
-                        return Text('SIGN IN',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.0,
-                            ));
-                      } else if (state is SigningIn) {
-                        return Container(
+                      User user = await userRepo.signInUser(
+                          emailController.text, passwordController.text);
+                      if (user != null) {
+                        setState(() {
+                          wrongCredintials = false;
+                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return Home();
+                            },
+                          ),
+                        );
+                      } else {
+                        setState(() {
+                          wrongCredintials = true;
+                        });
+                      }
+                      setState(() {
+                        loading = false;
+                      });
+                    }, //triggering our bloc to start the sign in process
+
+                    child: loading
+                        ? Container(
                             width: size.width * 0.05,
                             height: size.width * 0.05,
                             child: Center(
                                 child: CircularProgressIndicator(
-                                    backgroundColor: Colors.white)));
-                      } else if (state is UserSignedIn) {
-                        if (state.user != null) {
-                          SchedulerBinding.instance.addPostFrameCallback((_) {
-                            // add your code here.
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return Home();
-                                },
-                              ),
-                            );
-                          });
-
-                          return Text('Success',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.0,
-                              ));
-                        }
-                      }
-                    }))),
+                                    backgroundColor: Colors.white)))
+                        : Text('Sign In',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                            )))),
 
             SizedBox(height: size.height * 0.075),
             Image.asset(

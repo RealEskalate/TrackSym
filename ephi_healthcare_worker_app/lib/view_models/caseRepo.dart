@@ -29,8 +29,8 @@ class CaseRepo {
       );
       ////print(response.body);
       List<PatientCase> caseList = [];
-      var caseListResponse = json.decode(response.body);
       if (response.statusCode == 200) {
+        var caseListResponse = json.decode(response.body);
         for (int index = 0; index < caseListResponse['data'].length; index++) {
           //print(articlesListResponse['data'][index]['title']);
           caseList.add(PatientCase.fromJson(caseListResponse['data'][index]));
