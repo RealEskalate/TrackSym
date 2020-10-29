@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import '../pages/sign_in/login.dart';
 import 'hexColorGenerator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -120,7 +121,7 @@ Widget _createDrawerItem(
         )
       ],
     ),
-    onTap: () {
+    onTap: () async {
       switch (text) {
         case "Settings":
           break;
@@ -141,6 +142,8 @@ Widget _createDrawerItem(
           );
           break;
         case "Logout":
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.clear();
           Navigator.push(
             context,
             MaterialPageRoute(

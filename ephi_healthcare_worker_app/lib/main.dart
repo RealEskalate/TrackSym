@@ -7,34 +7,77 @@
 // Main Themes for Both Anroid and IOS Devices
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'view_models/caseBloc.dart';
-import 'view_models/patientBloc.dart';
-import 'view_models/userBloc.dart';
-import 'view_models/caseRepo.dart';
-import 'view_models/patientRepo.dart';
-import 'view_models/userRepo.dart';
 
 // Welcome Page
 import 'pages/welcome_page/welcome.dart';
+import 'pages/home/home.dart';
+import 'pages/sign_in/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
-void main() => runApp(MaterialApp(
-      // Sets a font as the default globally
-      theme: ThemeData(fontFamily: 'Comfortaa'),
-      debugShowCheckedModeBanner: false,
-      home: MultiBlocProvider(providers: [
-        BlocProvider(create: (context) => CaseBloc(CaseRepo())),
-        BlocProvider(create: (context) => PatientBloc(PatientRepo())),
-        BlocProvider(create: (context) => UserBloc(UserRepo()))
-      ], child: Main()),
-    ));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  runApp(MaterialApp(
+    // Sets a font as the default globally
+    theme: ThemeData(fontFamily: 'Comfortaa'),
+    debugShowCheckedModeBanner: false,
+    home: prefs.getString("Token") != null
+        ? Main(signedIn: true)
+        : Main(signedIn: false),
+  ));
+}
 
 class Main extends StatelessWidget {
+  bool signedIn;
+  Main({this.signedIn});
+  //Initializing FireFlutter
+  //final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Nebeb',
+        debugShowCheckedModeBanner: false,
+        home: MyAppHomePage(
+          signedIn: this.signedIn,
+        ));
+  }
+}
+
+class MyAppHomePage extends StatefulWidget {
+  bool signedIn;
+  MyAppHomePage({this.signedIn});
+  @override
+  MyAppHomePageState createState() =>
+      MyAppHomePageState(signedIn: this.signedIn);
+}
+
+class MyAppHomePageState extends State<MyAppHomePage>
+    with WidgetsBindingObserver {
+  bool goingToMain = true;
+  bool signedIn;
+  MyAppHomePageState({this.signedIn});
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Timer(
+        Duration(seconds: 5),
+        () => setState(() {
+              goingToMain = false;
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.amber[50],
-      body: WelcomePage(),
+      body: goingToMain
+          ? WelcomePage()
+          : signedIn
+              ? Home()
+              : LoginPage(),
     );
   }
 }
