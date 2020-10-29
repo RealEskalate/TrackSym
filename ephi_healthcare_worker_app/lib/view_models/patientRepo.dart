@@ -27,10 +27,9 @@ class PatientRepo {
             .timeout(Duration(seconds: 10)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      ////print(response.body);
       List<Patient> patientsList = [];
-      var patientsListResponse = json.decode(response.body);
       if (response.statusCode == 200) {
+        var patientsListResponse = json.decode(response.body);
         for (int index = 0;
             index < patientsListResponse['data'].length;
             index++) {
