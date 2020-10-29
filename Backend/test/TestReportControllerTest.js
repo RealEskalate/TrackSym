@@ -126,7 +126,7 @@ describe("Test Report API", () => {
       .set("Authorization", "Bearer " + tokens)
       .send({
         test_id: test_report._id,
-        test_status: "Recovered"
+        test_status: "Positive"
       });
 
     expect(response).to.have.status(202);

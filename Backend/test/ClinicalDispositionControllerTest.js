@@ -56,7 +56,7 @@ describe("Clinical Disposition API", () => {
         woreda: "Nefas Silk",
         street_address: "Jemo 2",
         city: "Addis Ababa",
-        status: "Death",
+        status: "Died",
         sms_status: true,
     });
 

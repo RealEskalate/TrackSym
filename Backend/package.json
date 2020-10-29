@@ -10,8 +10,8 @@
     "test": "nyc mocha --timeout 0 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
-  "nyc":{
-    "exclude":[
+  "nyc": {
+    "exclude": [
       "services/**",
       "controllers/UpdatesController.js"
     ]

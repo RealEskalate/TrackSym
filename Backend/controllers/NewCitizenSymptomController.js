@@ -111,23 +111,20 @@ exports.ephi_test_stats = async (req, res) => {
         // Populating 0s for the web graph to render
         if (!(date in result)) {
             result[date] = {
-                positive: 0,
-                negative: 0,
+                confirmed: 0,
                 death: 0,
                 recovered: 0,
                 administered: 0
             };
         }
-        if (log.test_status == "Positive") {
-            result[date].positive += log.count;
+        if (log.test_status == "Confirmed") {
+            result[date].confirmed += log.count;
             result[date].administered += log.count;
-        } else if (log.test_status == "Negative") {
-            result[date].negative += log.count;
-            result[date].administered += log.count;
-        } else if (log.test_status == "Recovered") {
+        }  else if (log.test_status == "Recovered") {
             result[date].recovered += log.count;
         } else if (log.test_status == "Died") {
             result[date].death += log.count;
+        } else if (log.test_status == "TestCount") {
             result[date].administered += log.count;
         }
     }
@@ -138,8 +135,7 @@ exports.ephi_test_stats = async (req, res) => {
         const dateKey = "" + nextDate.toISOString().slice(0, 10);
         if (!(dateKey in result)) {
             result[dateKey] = {
-                positive: 0,
-                negative: 0,
+                confirmed: 0,
                 death: 0,
                 recovered: 0,
                 administered: 0

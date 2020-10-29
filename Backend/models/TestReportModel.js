@@ -15,15 +15,15 @@ const testReportSchema = new mongoose.Schema({
     },
     test_status:{
         type: String,
-        enum: ["New","Positive", "Negative","Not Tested","Recovered","Died"],
-        required: true,
-        default: "New"
+        enum: ["Positive", "Negative","Not Tested"],
+        default: "Not Tested"
     },
 
 },
 {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 });
+
 
 
 const TestReport = mongoose.model("TestReport", testReportSchema);
@@ -45,9 +45,8 @@ const testReportSchemaDemo = new mongoose.Schema({
     },
     test_status:{
         type: String,
-        enum: ["New","Positive", "Negative","Not Tested","Recovered","Died"],
-        required: true,
-        default: "New"
+        enum: ["Positive", "Negative","Not Tested"],
+        default: "Not Tested"
     },
 
 },
@@ -56,5 +55,5 @@ const testReportSchemaDemo = new mongoose.Schema({
 });
 
 
-const TestReportDemo = mongoose.model("TestReportDemo", testReportSchemaDemo);
+const TestReportDemo = mongoose.model("TestReportDemo2", testReportSchemaDemo);
 exports.TestReportDemo = TestReportDemo;
