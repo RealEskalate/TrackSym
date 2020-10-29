@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import '../../widgets/caseWidget.dart';
 import '../../models/case.dart';
 import '../../widgets/hexColorGenerator.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../view_models/caseBloc.dart';
+import '../../view_models/caseRepo.dart';
 import 'package:flutter/scheduler.dart';
+import '../../widgets/blurredDrawer.dart';
 
 class CasesList extends StatefulWidget {
   CasesList({this.scrollController});
@@ -20,23 +21,66 @@ class CasesListState extends State<CasesList> {
 
   //User user;
   final ScrollController scrollController;
+  CaseBloc caseBloc = CaseBloc(repo: CaseRepo());
+  bool loading = false;
 
   @override
   void initState() {
     super.initState();
+    caseBloc.actionSink.add(FetchCases("5ee9eb84103d470003d558d0"));
     // SchedulerBinding.instance.addPostFrameCallback((_) {
     //   BlocProvider.of<CaseBloc>(context).add(FetchCases(""));
     // });
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    caseBloc.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return WillPopScope(
         onWillPop: () {
           Navigator.pop(context);
         },
         child: SafeArea(
             child: Scaffold(
+                drawerScrimColor: Colors.black.withOpacity(0.2),
+                drawer: BlurredDrawer(),
+                appBar: PreferredSize(
+                  preferredSize: Size.fromHeight(size.height * 0.068),
+                  child: AppBar(
+                      centerTitle: true,
+                      elevation: 1,
+                      backgroundColor: Colors.white,
+                      iconTheme: new IconThemeData(
+                        color: Colors.blue,
+                      ),
+                      title: Text(
+                        "Cases",
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
+                      ),
+                      actions: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Colors.lightBlueAccent[900],
+                          ),
+                          onPressed: () {
+                            caseBloc.actionSink
+                                .add(ReloadCases("5ee9eb84103d470003d558d0"));
+                            caseBloc.actionSink
+                                .add(FetchCases("5ee9eb84103d470003d558d0"));
+                          },
+                        )
+                      ]),
+                ),
                 body: Container(
                     decoration: BoxDecoration(color: HexColor("#F5F9FF")),
                     margin: EdgeInsets.symmetric(horizontal: 5),
@@ -47,58 +91,26 @@ class CasesListState extends State<CasesList> {
                     )))));
   }
 
-  Future<void> refresh() async {}
+  Future<void> refresh() async {
+    caseBloc.actionSink.add(ReloadCases("5ee9eb84103d470003d558d0"));
+    caseBloc.actionSink.add(FetchCases("5ee9eb84103d470003d558d0"));
+  }
 
   mainList(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Expanded(
         child: RefreshIndicator(
             onRefresh: refresh,
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(0.0, size.height * 0.02, 0.0, 0.0),
-              children: <Widget>[
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      CardWidget(
-                          sizeHeight: 0.10,
-                          sizeWidth: 0.35,
-                          color: Colors.lightBlueAccent[700],
-                          value: "1,453",
-                          change: "+25",
-                          text: "Total Cases",
-                          title: "this.title",
-                          press: null),
-                      CardWidget(
-                          sizeHeight: 0.10,
-                          sizeWidth: 0.35,
-                          color: Colors.greenAccent[700],
-                          value: "1,071",
-                          change: "+12",
-                          text: "Active Cases",
-                          title: "this.title",
-                          press: null),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 15),
-                Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text("Your cases",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: HexColor("#0a6dc9"),
-                        ))),
-                SizedBox(height: 10),
-                BlocBuilder<CaseBloc, CaseState>(
-                  builder: (context, state) {
-                    if (state is CasesLoading) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (state is CasesLoaded) {
-                      return state.caseList.length == 0
-                          ? Container(
-                              margin: EdgeInsets.only(top: 100),
+            child: StreamBuilder(
+              stream: caseBloc.caseStream,
+              builder: (context, snapshot) {
+                if (snapshot.data == null) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasData) {
+                  return snapshot.data.length == 0
+                      ? Center(
+                          child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 20),
                               child: Align(
                                   alignment: Alignment.center,
                                   child: Column(
@@ -111,47 +123,97 @@ class CasesListState extends State<CasesList> {
                                                 Theme.of(context).primaryColor),
                                         Text(
                                             "You haven't been assigned to any case yet!",
+                                            textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 22,
                                               color: Theme.of(context)
                                                   .primaryColor,
                                             ))
-                                      ])))
-                          : ListView.builder(
-                              //key: animatedListKey,
-                              primary: false,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemCount: state.caseList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return CaseWidget(
-                                  patient_case: state.caseList[index],
-                                );
-                              },
-                            );
-                    } else if (state is CasesError) {
-                      return Container(
-                          margin: EdgeInsets.only(top: 100),
-                          child: Align(
-                              alignment: Alignment.center,
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                      ]))))
+                      : ListView(
+                          padding: EdgeInsets.fromLTRB(
+                              0.0, size.height * 0.02, 0.0, 0.0),
+                          children: <Widget>[
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
-                                    Icon(Icons.people_outline,
-                                        size: 80,
-                                        color: Theme.of(context).primaryColor),
-                                    Text(
-                                        "Sorry,Couldn't connect to Server. Please pull to refresh the page!",
-                                        style: TextStyle(
-                                          fontSize: 22,
-                                          color: Theme.of(context).primaryColor,
-                                        ))
-                                  ])));
-                    }
-                  },
-                ),
-              ],
+                                    CardWidget(
+                                        sizeHeight: 0.10,
+                                        sizeWidth: 0.35,
+                                        color: Colors.lightBlueAccent[700],
+                                        value: "1,453",
+                                        change: "+25",
+                                        text: "Total Cases",
+                                        title: "this.title",
+                                        press: null),
+                                    CardWidget(
+                                        sizeHeight: 0.10,
+                                        sizeWidth: 0.35,
+                                        color: Colors.greenAccent[700],
+                                        value: "1,071",
+                                        change: "+12",
+                                        text: "Active Cases",
+                                        title: "this.title",
+                                        press: null),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 20),
+                                  child: Text("Your cases",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: HexColor("#0a6dc9"),
+                                      ))),
+                              SizedBox(height: 10),
+                              ListView.builder(
+                                //key: animatedListKey,
+                                primary: false,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                itemCount: snapshot.data.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return CaseWidget(
+                                    patient_case: snapshot.data[index],
+                                  );
+                                },
+                              )
+                            ]);
+                } else if (snapshot.hasError) {
+                  return Container(
+                      margin: EdgeInsets.only(top: 100),
+                      child: Align(
+                          alignment: Alignment.center,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(Icons.error, size: 80, color: Colors.red),
+                                Text(
+                                    "Sorry, couldn't connect to Server. Please refresh the page!",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.red,
+                                    ))
+                              ])));
+                }
+                return Container(
+                    margin: EdgeInsets.only(top: 100),
+                    child: Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(Icons.error, size: 80, color: Colors.red),
+                              Text(
+                                "",
+                              )
+                            ])));
+              },
             )));
   }
 }
