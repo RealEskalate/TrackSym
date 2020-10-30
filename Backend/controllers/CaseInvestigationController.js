@@ -30,7 +30,7 @@ let demo_or_real_db = (query) => {
 
 // Fetch all case investigations, with filters if any
 exports.getCaseInvestigations = async (req, res) => {
-    var { CaseInvestigation, Name_ } = demo_or_real_db(req.query);
+    var { CaseInvestigation, Name_,Name } = demo_or_real_db(req.query);
     const filter = {};
     if (req.query.patient) {
         filter.patient_id = req.query.patient;
@@ -47,10 +47,12 @@ exports.getCaseInvestigations = async (req, res) => {
     try {
         const investigations = await CaseInvestigation.find(filter, {}, { skip: page - 1, limit: size * 1 });
         const populated = await CaseInvestigation.populate(investigations, [
-            { model: Name_ + 'User', path: 'user_id', select: '_id username' }, // Name added for Demo DB
+            { model: Name_ + 'User', path: 'user_id', select: '_id username', 
+                populate: { model: 'Patient' + Name, path: "patient_info", select:"_id first_name last_name" } },
             { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
             { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
         ]);
+        
         const result = {
             data_count: await CaseInvestigation.countDocuments(filter),
             page_size: size,
@@ -70,8 +72,10 @@ exports.getCaseInvestigationById = async (req, res) => {
     try {
         const investigations = await CaseInvestigation.find({ _id: id });
         const result = await CaseInvestigation.populate(investigations, [
-            { model: 'Patient' + Name, path: 'patient_id', select: '_id first_name last_name' }, // Name added in case of demo db
-            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' }
+            { model: Name_ + 'User', path: 'user_id', select: '_id username', 
+                populate: { model: 'Patient' + Name, path: "patient_info", select:"_id first_name last_name" } },
+            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
+            { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
         ]);
         return res.send(result);
     } catch (err) {
