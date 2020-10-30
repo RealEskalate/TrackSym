@@ -210,6 +210,13 @@ exports.get_user_by_credentials = async (req, res) => {
 };
 // Post a Use
 exports.post_user = async (req, res) => {
+  if (req.query.demo && req.query.demo == "true") {
+    var User = UserModels.DemoUser;
+  } else if (req.query.stress && req.query.stress === "true") {
+    var User = UserModels.StressUser;
+  } else {
+    var User = UserModels.User;
+  }
   const user = new User({
     _id: mongoose.Types.ObjectId(),
     username: req.body.username,

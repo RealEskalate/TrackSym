@@ -1,14 +1,32 @@
-const { TestReport, TestReportDemo } = require("../models/TestReportModel.js");
+const TestReportModels = require("../models/TestReportModel.js");
 var mongoose = require("mongoose");
 var UserModels = require("../models/UserModel.js");
 const User = UserModels.User;
-const { PatientLog } = require("../models/PatientLog.js");
-const { Patient } = require("../models/Patient.js");
+const PatientLogModels = require("../models/PatientLog.js");
+const PatientModels = require("../models/Patient.js");
 
 // ### helper methods
-
+// check if demo=true in request
+let demo_or_real_db = (query) => {
+    if (query.demo && query.demo == "true"){
+        return {
+            Patient: PatientModels.PatientDemo,
+            PatientLog: PatientLogModels.PatientLogDemo,
+            User: UserModels.DemoUser,
+            TestReport: TestReportModels.TestReportDemo
+        }
+    } else {
+        return {
+            Patient: PatientModels.Patient,
+            PatientLog: PatientLogModels.PatientLog,
+            User: UserModels.User,
+            TestReport: TestReportModels.TestReport
+        }
+    }
+}
 // check for daily duplicate log and update the log.
-let check_and_update_log = async (report) =>{
+let check_and_update_log = async (report, req) =>{
+    var { User, Patient, PatientLog } = demo_or_real_db(req.query);
     let date = new Date();
     let status= {'Negative':'TestCount','Positive':'Confirmed'}
     date.setHours(0,0,0,0);
@@ -52,6 +70,7 @@ let check_and_update_log = async (report) =>{
 
 // getting all test reports
 exports.get_all_test_reports = async (req, res) => {
+    var { User, TestReport } = demo_or_real_db(req.query)
     let filter = {};
 
     if(req.query.user_id){
@@ -99,14 +118,13 @@ exports.get_all_test_reports = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let size = parseInt(req.query.size) || 15;
 
-    let TestReportModel = (req.query.demo) ? TestReportDemo : TestReport;
-    const testReports = await TestReportModel.find(
+    const testReports = await TestReport.find(
         filter,{},
         { skip: (page - 1) * size, limit: size * 1 }
     ).populate("user_id").populate("healthcare_worker_id");
 
     let result = {
-        data_count: await TestReportModel.countDocuments(filter),
+        data_count: await TestReport.countDocuments(filter),
         page_size: size,
         current_page: page,
         data: testReports,
@@ -122,7 +140,7 @@ exports.get_all_test_reports = async (req, res) => {
 
 // Post a test report
 exports.post_test_report = async (req, res) => {
-
+    var { TestReport } = demo_or_real_db(req.query);
     let reporter_id=req.body.loggedInUser
 
     const report = new TestReport({
@@ -136,7 +154,7 @@ exports.post_test_report = async (req, res) => {
         await report.save();
         
         //------ updating logs --- //
-        await check_and_update_log(report)
+        await check_and_update_log(report, req)
         //------ end of updating logs --- //
 
         return res.send(report);
@@ -148,11 +166,12 @@ exports.post_test_report = async (req, res) => {
 
 // update a test report
 exports.update_test_report = async (req, res) => {
+    var { TestReport } = demo_or_real_db(req.query);
     try {
         const report = await TestReport.findById(req.body.test_id);
 
         //------ updating logs --- //
-        await check_and_update_log(report)
+        await check_and_update_log(report, req)
         //------ end of updating logs --- //
 
         report.test_status = req.body.test_status
@@ -167,7 +186,7 @@ exports.update_test_report = async (req, res) => {
 
 // Deleting a test report
 exports.delete_test_report = async (req, res) => {
-
+    var { TestReport } = demo_or_real_db(req.query);
     try {
         const report = await TestReport.findById(req.params.id);
         if (!report) {
@@ -180,7 +199,7 @@ exports.delete_test_report = async (req, res) => {
             let tmp = report.test_status
             report.test_status = 'Not Tested'
 
-            await check_and_update_log(report)
+            await check_and_update_log(report, req)
             
             report.test_status =tmp
             //------ end of updating logs --- //

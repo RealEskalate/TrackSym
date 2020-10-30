@@ -48,5 +48,5 @@ const patientLogSchemaDemo = new mongoose.Schema({
 });
 
 
-const PatientLogDemo = mongoose.model("PatientLogDemo2", patientLogSchemaDemo);
+const PatientLogDemo = mongoose.model("PatientLogDemo", patientLogSchemaDemo);
 exports.PatientLogDemo = PatientLogDemo;
