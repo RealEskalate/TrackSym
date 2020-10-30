@@ -73,7 +73,7 @@ exports.getCaseInvestigationById = async (req, res) => {
         const investigations = await CaseInvestigation.find({ _id: id });
         const result = await CaseInvestigation.populate(investigations, [
             { model: Name_ + 'User', path: 'user_id', select: '_id username', 
-                populate: { model: 'Patient' + Name, path: "patient_info", select:"_id first_name last_name" } },
+                populate: { model: 'Patient' + Name, path: "patient_info" } },
             { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
             { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
         ]);
