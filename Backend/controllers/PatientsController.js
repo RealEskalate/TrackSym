@@ -59,13 +59,10 @@ let link_patient_with_user = async (patient, req, res) =>{
         })
 
         try {
-
-            await patient.save();
-            
-            await user.save();
             
             patient.user_id = user._id;
             await patient.save();
+            await user.save();
             
             return res.send(user)
         } catch (err){
