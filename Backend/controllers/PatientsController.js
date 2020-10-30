@@ -32,6 +32,10 @@ let link_patient_with_user = async (patient, req, res) =>{
         filter = {email:patient.email};
     } else if (patient.phone_number){
         filter = {phone_number:patient.phone_number}
+    } else if (req.body.user_id){
+        filter = {_id:req.body.user_id}
+    } else if (req.body.username){
+        filter = {username:req.body.username}
     } else {
         filter = {_id: null} //returns null on User
     }
@@ -55,9 +59,10 @@ let link_patient_with_user = async (patient, req, res) =>{
         })
 
         try {
-            await user.save();
+            
             patient.user_id = user._id;
             await patient.save();
+            await user.save();
             
             return res.send(user)
         } catch (err){
@@ -69,11 +74,11 @@ let link_patient_with_user = async (patient, req, res) =>{
         return res.status(422).send({'message':' a patient exists with the given phone number or email.'})
     }
 
-    user.patient_info = patient._id;
-    await user.save()
-
     patient.user_id = user._id;
     await patient.save();
+
+    user.patient_info = patient._id;
+    await user.save()
 
     return res.send(user)
 }
