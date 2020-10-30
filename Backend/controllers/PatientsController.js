@@ -258,7 +258,7 @@ exports.update_patient = async (req, res) => {
 
 // Deleting a patient
 exports.delete_patient = async (req, res) => {
-    var { Patient } = demo_or_real_db(req.query);
+    var { Patient, User } = demo_or_real_db(req.query);
     try {
         const patient = await Patient.findById(req.params.id);
         await Patient.findByIdAndRemove(req.params.id);
