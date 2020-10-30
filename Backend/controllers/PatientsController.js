@@ -1,12 +1,30 @@
-const { Patient } = require("../models/Patient.js");
+const PatientModels = require("../models/Patient.js");
 var mongoose = require("mongoose");
-const { User } = require("../models/UserModel");
-const { PatientLog } = require("../models/PatientLog.js");
+const UserModels = require("../models/UserModel");
+const PatientLogModels = require("../models/PatientLog.js");
 
 // ### helper methods
 
+// check if demo=true in request
+let demo_or_real_db = (query) => {
+    if (query.demo && query.demo == "true"){
+        return {
+            Patient: PatientModels.PatientDemo,
+            PatientLog: PatientLogModels.PatientLogDemo,
+            User: UserModels.DemoUser
+        }
+    } else {
+        return {
+            Patient: PatientModels.Patient,
+            PatientLog: PatientLogModels.PatientLog,
+            User: UserModels.User
+        }
+    }
+}
+
 // link user with patient...
 let link_patient_with_user = async (patient, req, res) =>{
+    var {User} = demo_or_real_db(req.query);
     let filter;
     if (patient.email && patient.phone_number){
         filter = {$or:[{email:patient.email},{phone_number:patient.phone_number}]};
@@ -62,7 +80,8 @@ let link_patient_with_user = async (patient, req, res) =>{
 
 
 // check for daily duplicate log and update the log.
-let check_and_update_log = async (oldData, patient) =>{
+let check_and_update_log = async (oldData, patient, req) =>{
+    var { PatientLog } = demo_or_real_db(req.query);
     let date = new Date();
     date.setHours(0,0,0,0);
 
@@ -95,6 +114,7 @@ let check_and_update_log = async (oldData, patient) =>{
 
 // getting all patients
 exports.get_all_patients = async (req, res) => {
+    var { Patient } = demo_or_real_db(req.query);
     let filter = {};
 
     if(req.query.user_id){
@@ -176,6 +196,7 @@ exports.get_all_patients = async (req, res) => {
 
 // get single patient
 exports.get_patient_by_id = async(req,res) => {
+    var { Patient } = demo_or_real_db(req.query);
     const patient = await Patient.findById(req.params.id);
 
     try {
@@ -187,11 +208,12 @@ exports.get_patient_by_id = async(req,res) => {
 
 // Post a patient
 exports.post_patient_data = async (req, res) => {
+    var { Patient } = demo_or_real_db(req.query);
     const patient = new Patient(req.body);
     patient._id= mongoose.Types.ObjectId();
 
     //----- updating patient log ----//
-    await check_and_update_log(null,patient)
+    await check_and_update_log(null, patient, req)
     //----- end updating patient log ----//
 
     try {
@@ -205,6 +227,7 @@ exports.post_patient_data = async (req, res) => {
 
 // update a patient
 exports.update_patient = async (req, res) => {
+    var { Patient } = demo_or_real_db(req.query);
     try {
         let oldData = await Patient.findById(req.params.id);
         let patient = await Patient.updateOne({ _id: mongoose.Types.ObjectId(req.params.id) },req.body);
@@ -212,7 +235,7 @@ exports.update_patient = async (req, res) => {
 
 
         //---- patient log ------ //
-        await  check_and_update_log(oldData,patient);
+        await  check_and_update_log(oldData, patient, req);
         //----- end updating patient log ----//
 
         
@@ -235,7 +258,7 @@ exports.update_patient = async (req, res) => {
 
 // Deleting a patient
 exports.delete_patient = async (req, res) => {
-
+    var { Patient } = demo_or_real_db(req.query);
     try {
         const patient = await Patient.findById(req.params.id);
         await Patient.findByIdAndRemove(req.params.id);
@@ -244,7 +267,7 @@ exports.delete_patient = async (req, res) => {
         let tmp = patient.status
         patient.status = 'Unknown'
 
-        await  check_and_update_log(patient,null);
+        await  check_and_update_log(patient, null, req);
         
         patient.status = tmp
         // ---------- //

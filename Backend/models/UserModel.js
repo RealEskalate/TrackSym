@@ -92,60 +92,87 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const demoUserSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
-  username: {
-    type: String,
-    minlength: 3,
-    maxlength: 50,
-    required: true,
-    unique: true,
-    index: true
-    // index: {
-    // unique: true,
-    // dropDups: true,
-    // },
+const demoUserSchema = new mongoose.Schema(
+  {
+      _id: mongoose.Schema.Types.ObjectId,
+      username: {
+          type: String,
+          minlength: 3,
+          maxlength: 50,
+          required: true,
+          unique: true,
+          index: true,
+      },
+      password: {
+          type: String,
+          minlength: 6,
+          required: true,
+      },
+      gender: {
+          type: String,
+          enum: ["MALE", "FEMALE", "UNDISCLOSED"],
+          default: "MALE",
+          required: true,
+      },
+      age_group: {
+          type: String,
+          enum: [
+              "0-10",
+              "11-20",
+              "21-30",
+              "31-40",
+              "41-50",
+              "51-60",
+              "61-70",
+              "71-80",
+              "81-90",
+              ">90",
+              "UNDISCLOSED",
+          ],
+          default: "21-30",
+          required: true,
+      },
+      current_country: {
+          type: String,
+          required: false,
+      },
+      latest_location_user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Demo LocationUser",
+      },
+      expiresAt: {
+          type: Date,
+      },
+      last_symptom_update: {
+          type: Date,
+          default: new Date(new Date() - 60 * 60 * 24 * 7 * 1000),
+          required: true,
+      },
+      role: {
+          type: String,
+          enum: ["basic", "ephi_user", "sysadmin", "healthcare_worker"],
+          required: true,
+          default: "basic",
+      },
+      email: {
+          type: String,
+      },
+      created_by: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Demo User",
+      },
+      patient_info:{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Demo Patient",
+      },
+      phone_number: {
+          type: String,
+      },
   },
-  password: {
-    type: String,
-    minlength: 6,
-    required: true,
-  },
-  gender: {
-    type: String,
-    enum: ["MALE", "FEMALE", "UNDISCLOSED"],
-    default: "MALE",
-    required: true,
-  },
-  age_group: {
-    type: String,
-    enum: ["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", ">90"],
-    default: "21-30",
-    required: true,
-  },
-  current_country: {
-    type: String,
-    required: false
-  },
-  // latest_location: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "Demo Location",
-  //   index:true
-  // },
-  latest_location_user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Demo LocationUser"
-  },
-  expiresAt: {
-    type: Date,
-  },
-  last_symptom_update: {
-    type: Date,
-    default: new Date(new Date() - 60 * 60 * 24 * 7 * 1000),
-    required: true,
-  },
-
-});
+  {
+      timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
+  }
+);
 
 const stressUserSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,

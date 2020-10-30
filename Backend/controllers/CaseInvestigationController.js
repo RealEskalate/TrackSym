@@ -1,12 +1,36 @@
-const { CaseInvestigation } = require("../models/CaseInvestigation.js");
+const CaseInvestigationModels = require("../models/CaseInvestigation.js");
 const mongoose = require("mongoose")
 const _ = require("lodash");
-const { Patient } = require("../models/Patient.js");
-const { SymptomUser } = require("../models/SymptomUser");
-const { User } = require("../models/UserModel.js");
+const PatientModels = require("../models/Patient.js");
+const SymptomUserModels = require("../models/SymptomUser");
+const UserModels = require("../models/UserModel.js");
+
+// check if demo=true in request
+let demo_or_real_db = (query) => {
+    if (query.demo && query.demo == "true"){
+        return {
+            Patient: PatientModels.PatientDemo,
+            SymptomUser: SymptomUserModels.DemoSymptomUser,
+            User: UserModels.DemoUser,
+            CaseInvestigation: CaseInvestigationModels.CaseInvestigationDemo,
+            Name: "Demo", // for populate queries
+            Name_: "Demo " // with space 
+        }
+    } else {
+        return {
+            Patient: PatientModels.Patient,
+            SymptomUser: SymptomUserModels.SymptomUser,
+            User: UserModels.User,
+            CaseInvestigation: CaseInvestigationModels.CaseInvestigation,
+            Name: "",
+            Name_: ""
+        }
+    }
+}
 
 // Fetch all case investigations, with filters if any
 exports.getCaseInvestigations = async (req, res) => {
+    var { CaseInvestigation, Name_ } = demo_or_real_db(req.query);
     const filter = {};
     if (req.query.patient) {
         filter.patient_id = req.query.patient;
@@ -23,9 +47,9 @@ exports.getCaseInvestigations = async (req, res) => {
     try {
         const investigations = await CaseInvestigation.find(filter, {}, { skip: page - 1, limit: size * 1 });
         const populated = await CaseInvestigation.populate(investigations, [
-            { model: 'User', path: 'user_id', select: '_id username' },
-            { model: 'User', path: 'assigned_to', select: '_id username' },
-            { model: 'User', path: 'notes.health_worker_id', select: '_id username' },
+            { model: Name_ + 'User', path: 'user_id', select: '_id username' }, // Name added for Demo DB
+            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
+            { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
         ]);
         const result = {
             data_count: await CaseInvestigation.countDocuments(filter),
@@ -41,12 +65,13 @@ exports.getCaseInvestigations = async (req, res) => {
 
 // Fetch a case investigation by id
 exports.getCaseInvestigationById = async (req, res) => {
+    var { CaseInvestigation, Name_, Name } = demo_or_real_db(req.query);
     const { id } = req.params;
     try {
         const investigations = await CaseInvestigation.find({ _id: id });
         const result = await CaseInvestigation.populate(investigations, [
-            { model: 'Patient', path: 'patient_id', select: '_id first_name last_name' },
-            { model: 'User', path: 'assigned_to', select: '_id username' }
+            { model: 'Patient' + Name, path: 'patient_id', select: '_id first_name last_name' }, // Name added in case of demo db
+            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' }
         ]);
         return res.send(result);
     } catch (err) {
@@ -61,6 +86,7 @@ const datesAreOnSameDay = (first, second) =>
  
 // Update or add a case investigation
 exports.addOrUpdateCaseInvestigation = async (req, res) => {
+    var { CaseInvestigation } = demo_or_real_db(req.query);
     const id = req.query.id || null;
     try {
         const investigation = await CaseInvestigation.findById(id);
@@ -104,6 +130,7 @@ exports.addOrUpdateCaseInvestigation = async (req, res) => {
 
 // Delete case investigation
 exports.deleteCaseInvestigation = async (req, res) => {
+    var { CaseInvestigation } = demo_or_real_db(req.query);
     const { id } = req.params;
     try {
         const investigation = await CaseInvestigation.findById(id);
@@ -118,6 +145,7 @@ exports.deleteCaseInvestigation = async (req, res) => {
 }
 
 exports.get_patients_by_status = async (req, res) => {
+    var { CaseInvestigation, User, Patient } = demo_or_real_db(req.query);
 
     const { assignee } = req.query;
     const { status } = req.query;
@@ -150,6 +178,7 @@ exports.get_patients_by_status = async (req, res) => {
 
 
 exports.get_count_per_status = async (req, res) =>{
+    var { CaseInvestigation, User, Patient, SymptomUser } = demo_or_real_db(req.query);
     if (!req.query.assigned_to){
         return res.status(400).send("Health care worker not sent")
     }
@@ -198,6 +227,7 @@ exports.get_count_per_status = async (req, res) =>{
 
 
 exports.getAssigedHealthWorkersByPatientId = async (req, res) => {
+    var { CaseInvestigation, Name_ } = demo_or_real_db(req.query);
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 15;
 
@@ -207,8 +237,8 @@ exports.getAssigedHealthWorkersByPatientId = async (req, res) => {
             .select("notes assigned_to -_id")
             .sort({ "updated_at": -1 });
         const populated = await CaseInvestigation.populate(investigations, [
-            { model: 'User', path: 'assigned_to', select: '_id username' },
-            { model: 'User', path: 'notes.health_worker_id', select: '_id username' },
+            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
+            { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
         ]);
         const result = {
             data_count: await CaseInvestigation.countDocuments({ patient_id: req.params.id }),
