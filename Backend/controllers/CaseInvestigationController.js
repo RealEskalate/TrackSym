@@ -195,8 +195,24 @@ exports.get_count_per_status = async (req, res) =>{
         total: {
             count: 0,
             change: 0
-        }};
-
+        },
+        Unknown: {
+            change: 0,
+            count: 0
+        },
+        Recovered: {
+            count: 0,
+            change: 0
+        },
+        Confirmed: {
+            count: 0,
+            change: 0
+        },
+        Died: {
+            count: 0,
+            change: 0,
+        }
+    };
     for(var index in patients){
 
         if(!(patients[index].status in result) ){
@@ -221,7 +237,9 @@ exports.get_count_per_status = async (req, res) =>{
         {$group: {_id: '$user_id'}},
         {$count: "count"}
     ]))[0];
- 
+    if (!result.active_symptoms){
+        result.active_symptoms = { count: 0 }
+    }
     res.send(result);
 }
 
