@@ -3,7 +3,7 @@ process.env.NODE_ENV = "test";
 let chai = require("chai");
 let chaiHttp = require("chai-http");
 let server = require("../index");
-let { User } = require("../models/UserModel");
+let { User, DemoUser } = require("../models/UserModel");
 let mongoose = require("mongoose");
 
 const jwt = require("jsonwebtoken");
@@ -14,8 +14,10 @@ chai.use(chaiHttp);
 describe("User API", () => {
   let user;
   let user2;
+  let user3;
   let tokens;
   let tokens2;
+  let tokens3;
   let emailToken;
   let emailToken2;
   beforeEach(async () => {
@@ -56,7 +58,24 @@ describe("User API", () => {
       console.log("err " + err.toString());
     }
     await user2.save();
-    
+    user3 = new DemoUser({
+        _id: mongoose.Types.ObjectId(),
+        username: `${Date.now().toString()} ${Math.random()}`,
+        password:
+            "$2a$10$efmxm5o1v.inI.eStGGxgO1zHk.L6UoA9LEyYrRPhWkmTQPX8.NKO",
+        gender: "FEMALE",
+        age_group: "21-30",
+        role: "basic",
+    });
+
+    try {
+        jwt.sign({ user:user3 }, process.env.APP_SECRET_KEY, (err, token) => {
+            tokens3 = token;
+        });
+    } catch (err) {
+        console.log("err " + err.toString());
+    }
+    await user3.save();
     let emailTokenCredentials = { 
       email: "workEmail@xbox.live.com", 
       creator_id: user2._id 
@@ -80,6 +99,7 @@ describe("User API", () => {
 
   afterEach(async () => {
     await User.findByIdAndDelete(user._id);
+    await User.findByIdAndDelete(user3._id);
   });
 
 
@@ -108,7 +128,7 @@ describe("User API", () => {
     let response = await chai
       .request(server)
       .get("/api/users")
-      .set("Authorization", "Bearer " + tokens)
+      .set("Authorization", "Bearer " + tokens3)
       .query({username: user.username, demo: true});
     expect(response).to.have.status(200);
     expect(response.body).to.be.an("object");
