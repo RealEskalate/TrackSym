@@ -114,7 +114,7 @@ exports.post_location_user = async (req, res) => {
     user.latest_location_user = check._id;
     await user.save();
 
-    await SymptomLogRegistration.setLogLocation(check);
+    await SymptomLogRegistration.setLogLocation(req.query, check);
 
     return res.send(check);
   } catch (err) {

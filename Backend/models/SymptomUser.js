@@ -51,7 +51,10 @@ const stress_symptom_user_schema = new mongoose.Schema({
 
 const SymptomUserModel = mongoose.model("SymptomUser", symptom_user_schema);
 const DemoSymptomUserModel = mongoose.model("Demo SymptomUser", demo_symptom_user_schema);
-const StressSymptomUserModel = mongoose.model("Stress SymptomUser", demo_symptom_user_schema);
+const StressSymptomUserModel = mongoose.model(
+    "Stress SymptomUser",
+    stress_symptom_user_schema
+);
 
 module.exports = {
     SymptomUser: SymptomUserModel,

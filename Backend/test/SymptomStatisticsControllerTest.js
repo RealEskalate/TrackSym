@@ -270,9 +270,8 @@ describe("Symptom Statistics API", function() {
                 TTL: 10000,
             });
             await user_location.save();  
-            symptom_log = await SymptomLogRegistration.registerLog(user._id, [symptom._id], date, "MOBILE");
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            await SymptomLogRegistration.setLogLocation(user_location);
+            symptom_log = await SymptomLogRegistration.registerLog({}, user._id, [symptom._id], date, "MOBILE");
+            await SymptomLogRegistration.setLogLocation({}, user_location);
             
         });
     
