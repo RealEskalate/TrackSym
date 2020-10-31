@@ -7,25 +7,6 @@ const ProbabilityCalculator = require("../services/ProbabilityCalculator");
 const { StatisticsResource } = require("../models/StatisticsResourceModel.js");
 const SymptomLogRegistration = require("../services/SymptomLogRegistration.js");
 
-
-// Display list of all symptoms. - [DEPRECATED: The information is too sensitive to share with API consumers]
-exports.get_all_symptomusers = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var SymptomUser = DemoSymptomUser;
-  } else if (req.query.stress && req.query.stress == "true") {
-    var SymptomUser = SymptomUserModel.StressSymptomUser;
-  } else {
-    var SymptomUser = SymptomUserModel.SymptomUser;
-  }
-  const symptomusers = await SymptomUser.find();
-
-  try {
-    res.send(symptomusers);
-  } catch (err) {
-    res.status(500).send(err.toString());
-  }
-};
-
 // Post a symptomuser
 exports.post_symptomuser = async (req, res) => {
   if (req.query.demo && req.query.demo == "true") {
@@ -44,8 +25,8 @@ exports.post_symptomuser = async (req, res) => {
   // Check if user and symptom exists
   const symptoms = [req.body.symptom_id]
   const user = await User.findById(req.body.loggedInUser);
-  if (!user || !symptoms) {
-    return res.status(400).send("Invalid request");
+  if (!user || !symptoms || !req.body.symptom_id)  {
+    return res.status(422).send("Invalid request");
   }
   user.last_symptom_update = new Date(Date.now());
   await user.save();
@@ -116,39 +97,26 @@ exports.post_symptomuser = async (req, res) => {
         }
     });
 
-  for (let index in symptoms) {
-    let id = symptoms[index];
-    let symptomuser = new SymptomUser({
-      symptom_id: id,
-      user_id: req.body.loggedInUser,
-    });
+    for (let index in symptoms) {
+      let id = symptoms[index];
+      let symptomuser = new SymptomUser({
+        symptom_id: id,
+        user_id: req.body.loggedInUser,
+      });
 
-    // Check if user and symptom exists
-    const symptomExists = await Symptom.findById(id);
-    if (!symptomExists || existingEntries.includes(id)) {
-      continue;
-    } 
-    try {
-      inserted.push(symptomuser.symptom_id.toString())
-      await symptomuser.save();
-    } catch (error) {
-      console.log(error.toString());
-    }
-  }   
-    // await symptomuser.save();
-    // let symptom = await Symptom.findById(symptomuser.symptom_id);
-    // let result = {
-    //   _id: symptomuser._id,
-    //   symptom_id: symptomuser.symptom_id,
-    //   user_id: symptomuser.user_id,
-    //   timestamp: symptomuser.timestamp,
-    //   _v: symptomuser.__v,
-    //   Symptom: symptom,
-    // };
-    // res.send(result);
-
-    await SymptomLogRegistration.registerLog(user._id, symptoms, currentDate, req.body.source);
-
+      // Check if user and symptom exists
+      const symptomExists = await Symptom.findById(id);
+      if (!symptomExists || existingEntries.includes(id)) {
+        continue;
+      } 
+      try {
+        inserted.push(symptomuser.symptom_id.toString())
+        await symptomuser.save();
+      } catch (error) {
+        console.log(error.toString());
+      }
+    }    
+    await SymptomLogRegistration.registerLog(req.query, user._id, symptoms, currentDate, req.body.source);
     return res.status(201).send("Symptoms registered successfully");
   } catch (err) {
     res.status(500).send(err.toString());
@@ -172,8 +140,8 @@ exports.post_multiple_symptoms = async (req, res) => {
   }
   const user = await User.findById(req.body.loggedInUser);
   const symptoms = req.body.symptoms;
-  if (!user || !symptoms) {
-    return res.status(400).send("Invalid request");
+  if (!user || !symptoms || symptoms.length==0) {
+    return res.status(422).send("Invalid request");
   }
   
   user.last_symptom_update = new Date(Date.now());
@@ -266,7 +234,7 @@ exports.post_multiple_symptoms = async (req, res) => {
     }
   }
 
-  await SymptomLogRegistration.registerLog(user._id, symptoms, currentDate, req.body.source);
+  await SymptomLogRegistration.registerLog(req.query, user._id, symptoms, currentDate, req.body.source);
 
   return res.status(201).send("Symptoms registered successfully");
 };
@@ -275,23 +243,17 @@ exports.post_multiple_symptoms = async (req, res) => {
 exports.get_symptomuser_by_symptom_id = async (req, res) => {
   if (req.query.demo && req.query.demo == "true") {
     var SymptomUser = SymptomUserModel.DemoSymptomUser;
-    var User = UserModels.DemoUser;
-    var SymptomUserHistory = SymptomUserHistoryModel.DemoSymptomUserHistory;
   } else if (req.query.stress && req.query.stress == "true") {
     var SymptomUser = SymptomUserModel.StressSymptomUser;
-    var User = UserModels.StressUser;
-    var SymptomUserHistory = SymptomUserHistoryModel.StressSymptomUserHistory;
   } else {
     var SymptomUser = SymptomUserModel.SymptomUser;
-    var User = UserModels.User;
-    var SymptomUserHistory = SymptomUserHistoryModel.SymptomUserHistory;
   }
   try {
     const symptomuser = await SymptomUser.find({
       symptom_id: req.params.symptom_id,
     });
-    if (!symptomuser) {
-      res.status(400).send("Symptom User Pair not found");
+    if (!symptomuser || symptomuser.length==0) {
+      return res.status(422).send("Symptom User Pair not found");
     }
     let result = [];
     for (let i = 0; i < symptomuser.length; i++) {
@@ -316,22 +278,19 @@ exports.get_symptomuser_by_user_id = async (req, res) => {
   if (req.query.demo && req.query.demo == "true") {
     var SymptomUser = SymptomUserModel.DemoSymptomUser;
     var User = UserModels.DemoUser;
-    var SymptomUserHistory = SymptomUserHistoryModel.DemoSymptomUserHistory;
   } else if (req.query.stress && req.query.stress == "true") {
     var SymptomUser = SymptomUserModel.StressSymptomUser;
     var User = UserModels.StressUser;
-    var SymptomUserHistory = SymptomUserHistoryModel.StressSymptomUserHistory;
   } else {
     var SymptomUser = SymptomUserModel.SymptomUser;
     var User = UserModels.User;
-    var SymptomUserHistory = SymptomUserHistoryModel.SymptomUserHistory;
   }
   try {
     const symptomuser = await SymptomUser.find({
       user_id: req.params.user_id,
     }).populate("user_id");
-    if (!symptomuser) {
-      res.status(400).send("Symptom User Pair not found");
+    if (!symptomuser || symptomuser.length==0) {
+      return res.status(422).send("Symptom User Pair not found");
     }
     let result = [];
     let language = null;
@@ -379,13 +338,11 @@ exports.get_symptomuser_by_user_id = async (req, res) => {
         symptoms_name,
         req.query.iso ? req.query.iso : country
       );
-      res.status(200).send({ probability: probability, symptom_info: result });
-    } else {
-      // sending normal one
-      res.status(200).send(result);
+      return res.status(200).send({ probability: probability, symptom_info: result });
     }
+    // sending normal one
+    return res.status(200).send(result);
   } catch (err) {
-    console.log(err.toString());
     res.status(500).send(err.toString());
   }
 };
@@ -394,19 +351,16 @@ exports.get_symptomuser_by_user_id = async (req, res) => {
 exports.update_symptomuser = async (req, res) => {
   if (req.query.demo && req.query.demo == "true") {
     var SymptomUser = SymptomUserModel.DemoSymptomUser;
-    var User = UserModels.DemoUser;
-    var SymptomUserHistory = SymptomUserHistoryModel.DemoSymptomUserHistory;
   } else if (req.query.stress && req.query.stress == "true") {
     var SymptomUser = SymptomUserModel.StressSymptomUser;
-    var User = UserModels.StressUser;
-    var SymptomUserHistory = SymptomUserHistoryModel.StressSymptomUserHistory;
   } else {
     var SymptomUser = SymptomUserModel.SymptomUser;
-    var User = UserModels.User;
-    var SymptomUserHistory = SymptomUserHistoryModel.SymptomUserHistory;
   }
   try {
     const symptomuserCheck = await SymptomUser.findById(req.body._id);
+    if (!symptomuserCheck) {
+      return res.status(422).send("Symptom not found");
+    }
     if (symptomuserCheck.user_id.toString() !== req.body.loggedInUser) {
       return res
         .status(403)
@@ -419,9 +373,6 @@ exports.update_symptomuser = async (req, res) => {
       req.body._id,
       req.body
     );
-    if (!symptomuser) {
-      res.status(400).send("Symptom not found");
-    }
     let symptom = await Symptom.findById(symptomuser.symptom_id);
     let result = {
       _id: symptomuser._id,
@@ -441,19 +392,16 @@ exports.update_symptomuser = async (req, res) => {
 exports.delete_symptomuser = async (req, res) => {
   if (req.query.demo && req.query.demo == "true") {
     var SymptomUser = SymptomUserModel.DemoSymptomUser;
-    var User = UserModels.DemoUser;
-    var SymptomUserHistory = SymptomUserHistoryModel.DemoSymptomUserHistory;
   } else if (req.query.stress && req.query.stress == "true") {
     var SymptomUser = SymptomUserModel.StressSymptomUser;
-    var User = UserModels.StressUser;
-    var SymptomUserHistory = SymptomUserHistoryModel.StressSymptomUserHistory;
   } else {
     var SymptomUser = SymptomUserModel.SymptomUser;
-    var User = UserModels.User;
-    var SymptomUserHistory = SymptomUserHistoryModel.SymptomUserHistory;
   }
   try {
     const symptomuserCheck = await SymptomUser.findById(req.body._id);
+    if (!symptomuserCheck) {
+        return res.status(422).send("Symptom User Pair not found");
+    }
     if (symptomuserCheck.user_id.toString() !== req.body.loggedInUser) {
       return res
         .status(403)
@@ -463,9 +411,6 @@ exports.delete_symptomuser = async (req, res) => {
         );
     }
     const symptomuser = await SymptomUser.findByIdAndDelete(req.body._id);
-    if (!symptomuser) {
-      return res.status(404).send("Symptom User Pair not found");
-    }
     let symptom = await Symptom.findById(symptomuser.symptom_id);
     let result = {
       _id: symptomuser._id,
@@ -480,3 +425,23 @@ exports.delete_symptomuser = async (req, res) => {
     res.status(500).send(err.toString());
   }
 };
+
+// DEPRACATED ENDPOINTS
+
+// Display list of all symptoms. - [DEPRECATED: The information is too sensitive to share with API consumers]
+// exports.get_all_symptomusers = async (req, res) => {
+//   if (req.query.demo && req.query.demo == "true") {
+//     var SymptomUser = DemoSymptomUser;
+//   } else if (req.query.stress && req.query.stress == "true") {
+//     var SymptomUser = SymptomUserModel.StressSymptomUser;
+//   } else {
+//     var SymptomUser = SymptomUserModel.SymptomUser;
+//   }
+//   const symptomusers = await SymptomUser.find();
+
+//   try {
+//     res.send(symptomusers);
+//   } catch (err) {
+//     res.status(500).send(err.toString());
+//   }
+// };

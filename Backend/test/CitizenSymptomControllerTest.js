@@ -66,7 +66,7 @@ describe("Citizen Symptom API", () => {
         await Symptom.findByIdAndDelete(symptom._id);
         await Symptom.findByIdAndDelete(symptom2._id);
         let date = new Date();
-        date.setHours(date.getHours() - 48 + date.getTimezoneOffset() / 60);
+        date.setHours(date.getHours() - 24 + date.getTimezoneOffset() / 60);
         await CitizenSymptoms.deleteMany({
             created_at: {
                 $gte: date,
@@ -90,7 +90,7 @@ describe("Citizen Symptom API", () => {
             .post("/api/update?interval=hourly&key=" + process.env.UPDATE_PASS)
             .send({});
         let response = await chai.request(server).get("/api/citizen_symptoms");
-
+        
         expect(response).to.have.status(200);
         expect(response.body).to.be.a("array");
         expect(response.body[response.body.length - 1].total).to.be.gte(0);

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-var { User } = require("../models/UserModel.js");
+var UserModel = require("../models/UserModel.js");
 const roles = require('../roles.js');
 // Bearer access_token key.
 exports.verifyToken = async (req, res, next) => {
@@ -19,6 +19,15 @@ exports.verifyToken = async (req, res, next) => {
         id = authData.user._id;
       }
     });
+    let User;
+    if (req.query.demo && req.query.demo == 'true') {
+      User = UserModel.DemoUser;
+    } else if (req.query.stress && req.query.stress == 'true') {
+      User = UserModel.StressUser;
+    } else {
+      User = UserModel.User;
+    }
+
     let user = await User.findById({ _id: id });
     if (!user) {
       return res.status(401).send("User does not exist!");
@@ -33,6 +42,14 @@ exports.verifyToken = async (req, res, next) => {
 exports.grant_access = function (action, resource) {
   return async (req, res, next) => {
     try {
+      let User ;
+      if (req.query.demo && req.query.demo == 'true') {
+        User = UserModel.DemoUser;
+      } else if (req.query.stress && req.query.stress == 'true') {
+        User = UserModel.StressUser;
+      } else {
+        User = UserModel.User;
+      }
       let user = await User.findById(req.body.loggedInUser);
       const permission = roles.can(user.role)[action](resource);
       if (!permission.granted) {
