@@ -37,7 +37,6 @@ exports.get_all_users = async (req, res) => {
   if(req.query.start_date){
     filter.created_at = {$gte : new Date(req.query.start_date)}
   }
-
   if(req.query.end_date){
     let date = new Date(req.query.end_date)
     date.setHours(23)
@@ -291,8 +290,6 @@ exports.delete_user = async (req, res) => {
     }
     res.status(201).send(user);
   } catch (err) {
-    console.log(err.toString());
-
     res.status(500).send(err.toString());
   }
 };
@@ -304,16 +301,16 @@ exports.delete_user = async (req, res) => {
 exports.send_invitation_link = async (req, res) => {
   let email = req.body.email;
   try {
+    if (email == undefined){
+      return res
+        .status(422)
+        .send("The email is required.");
+    }
     const check = await User.findOne({ email: email });
     if (check) {
       return res
         .status(422)
         .send("The email already exists.");
-    }
-    else if (email==undefined){
-      return res
-        .status(422)
-        .send("The email is required.");
     }
     let creator_id=req.body.loggedInUser
 
@@ -339,20 +336,20 @@ exports.send_invitation_link = async (req, res) => {
 exports.send_multiple_invitation_link = async (req, res) => {
   let emails = req.body.emails;
   try {
-    let existingEmails= await User.find({ email: { $in: emails }});
-    
-    existingEmails = existingEmails.map(user => user.email);
-    if (existingEmails.length > 0) {
-      return res
-        .status(422)
-        .send( { "error": "This emails already exist.", "emails" :existingEmails });
-    }
-    
     if (emails==undefined){
       return res
         .status(422)
         .send("The email list is required.");
     }
+
+    let existingEmails= await User.find({ email: { $in: emails }});
+    existingEmails = existingEmails.map(user => user.email);
+    if (existingEmails.length > 0) {
+      return res
+        .status(422)
+        .send( { "error": "These emails already exist.", "emails" :existingEmails });
+    }
+    
 
     let usersData = [];
     let creator_id=req.body.loggedInUser
@@ -439,18 +436,17 @@ exports.create_invited_user = async (req, res) => {
 exports.send_reset_link = async (req, res) => {
   let email = req.body.email;
   try {
+    if (email == undefined){
+      return res
+        .status(422)
+        .send("The email is required.");
+    }
     const check = await User.findOne({ email: email });
     if (!check) {
       return res
         .status(401)
         .send("The email address doesn't exist.");
-    }
-    else if (email==undefined){
-      return res
-        .status(422)
-        .send("The email is required.");
-    }
-
+    };
     let signed_email = jwt.sign({email},process.env.APP_SECRET_KEY,{expiresIn:'6h'})
     let invitationLink = `${process.env.APP_WEB_RESET_ACC_LINK}${signed_email}`;
 
@@ -477,8 +473,11 @@ exports.send_reset_link = async (req, res) => {
 
 exports.save_new_password= async (req, res) => {
   let signature = req.body.signature
-  let email =null;
+  let email = null;
 
+  if (!req.body.password || req.body.password.length < 5) {
+    return res.status(422).send("Invalid password.");
+  }
 
   jwt.verify(signature, process.env.APP_SECRET_KEY, (err, decodedEmail) => {
       if (err) {
@@ -488,28 +487,21 @@ exports.save_new_password= async (req, res) => {
       }
   });
 
-  const check = await User.findOne({ email: email });
-  if (!check) {
+  const user = await User.findOne({ email: email });
+  if (!user) {
     return res
       .status(401)
       .send("The email address doesn't exist.");
   }
 
   try {
-    let user =check;
-
-    if (!req.body.password || req.body.password.length < 5) {
-        return res.status(422).send("Invalid password.");
-    }
-    
     let password = Bcrypt.hashSync(req.body.password, 10);
-
     user.password=password
     await user.save()
     
     res.send(user)
   } catch (err) {
-    res.send(err.toString());
+    res.status(500).send(err.toString());
   }
   
 };
