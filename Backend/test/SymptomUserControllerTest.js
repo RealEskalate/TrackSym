@@ -87,8 +87,8 @@ describe("Symptom Users API", () => {
   afterEach(async () => {
     await User.findByIdAndDelete(user._id);
     await User.findByIdAndDelete(user_2._id);
-    await SymptomUser.findByIdAndDelete(symptom_user._id);
-    await SymptomUser.findByIdAndDelete(symptom_user2._id);
+    await SymptomUser.deleteMany({ user_id: user._id });
+    await SymptomUser.deleteMany({ user_id: user_2._id });
     await Symptom.findByIdAndDelete(symptom._id);
     await Symptom.findByIdAndDelete(symptom_2._id);
   });
@@ -338,8 +338,8 @@ describe("Demo Symptom Users API", () => {
   afterEach(async () => {
       await DemoUser.findByIdAndDelete(user._id);
       await DemoUser.findByIdAndDelete(user_2._id);
-      await DemoSymptomUser.findByIdAndDelete(symptom_user._id);
-      await DemoSymptomUser.findByIdAndDelete(symptom_user2._id);
+      await DemoSymptomUser.deleteMany({ user_id: user._id });
+      await DemoSymptomUser.deleteMany({ user_id: user_2._id });
       await Symptom.findByIdAndDelete(symptom._id);
       await Symptom.findByIdAndDelete(symptom_2._id);
   });
@@ -605,8 +605,8 @@ describe("Stress Symptom Users API", () => {
   afterEach(async () => {
       await StressUser.findByIdAndDelete(user._id);
       await StressUser.findByIdAndDelete(user_2._id);
-      await StressSymptomUser.findByIdAndDelete(symptom_user._id);
-      await StressSymptomUser.findByIdAndDelete(symptom_user2._id);
+      await StressSymptomUser.deleteMany({ user_id: user._id });
+      await StressSymptomUser.deleteMany({ user_id: user_2._id });
       await Symptom.findByIdAndDelete(symptom._id);
       await Symptom.findByIdAndDelete(symptom_2._id);
   });
