@@ -99,6 +99,7 @@ describe("User API", () => {
 
   afterEach(async () => {
     await User.findByIdAndDelete(user._id);
+    await User.findByIdAndDelete(user2._id);
     await User.findByIdAndDelete(user3._id);
   });
 
