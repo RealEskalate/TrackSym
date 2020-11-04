@@ -9,7 +9,6 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 describe("Messages API", () => {
-  /* GET and DELETE routes are deprecated
   //Get All Alerts - Valid Route
   describe("GET /api/messages", () => {
     let message;
@@ -42,13 +41,13 @@ describe("Messages API", () => {
   describe("GET /api/message", () => {
     let message;
     beforeEach(async () => {
-        message = new Message({
-            _id: mongoose.Types.ObjectId(),
-            name: "Test Name",
-            email: "test@example.com",
-            message: "Test Message"
-        });
-        await message.save();
+      message = new Message({
+        _id: mongoose.Types.ObjectId(),
+        name: "Test Name",
+        email: "test@example.com",
+        message: "Test Message"
+      });
+      await message.save();
     });
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
@@ -69,13 +68,13 @@ describe("Messages API", () => {
   describe("GET /api/messages/:id", () => {
     let message;
     beforeEach(async () => {
-        message = new Message({
-            _id: mongoose.Types.ObjectId(),
-            name: "Test Name",
-            email: "test@example.com",
-            message: "Test Message"
-        });
-        await message.save();
+      message = new Message({
+        _id: mongoose.Types.ObjectId(),
+        name: "Test Name",
+        email: "test@example.com",
+        message: "Test Message"
+      });
+      await message.save();
     });
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
@@ -95,22 +94,22 @@ describe("Messages API", () => {
     });
   });
 
-  //Get Message By ID - Invalid Id
+  //Get Message By ID - Invalid/Non-existing id
   describe("GET /api/messages/:id", () => {
     let message;
     beforeEach(async () => {
-        message = new Message({
-            _id: mongoose.Types.ObjectId(),
-            name: "Test Name",
-            email: "test@example.com",
-            message: "Test Message"
-        });
-        await message.save();
+      message = new Message({
+        _id: mongoose.Types.ObjectId(),
+        name: "Test Name",
+        email: "test@example.com",
+        message: "Test Message"
+      });
+      await message.save();
     });
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
     });
-    it("It should not Get message by id", async () => {
+    it("It should not Get message by id - non-existing id", async () => {
       let response = await chai
         .request(server)
         .get("/api/messages/5e904cce7a1c6b627ae9f507")
@@ -120,19 +119,30 @@ describe("Messages API", () => {
         );
       expect(response).to.have.status(404);
     });
+
+    it("It should not Get message by id - invalid id", async () => {
+      let response = await chai
+        .request(server)
+        .get("/api/messages/5e904cce7a1c6b6")
+        .set(
+          "Authorization",
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImdlbmRlciI6Ik1BTEUiLCJhZ2VfZ3JvdXAiOiI-OTAiLCJfaWQiOiI1ZWI3ZjMwYzNlMmE4ODRhYzgzYWE3NjAiLCJ1c2VybmFtZSI6ImF1dGh0ZXN0IiwicGFzc3dvcmQiOiIkMmEkMTAkYjJmYTZHTTJMTDlLVlJ4UzhVVEkzdS5SQ2JjUWw0WXc5OExaWVVHUHRnUVdBdVFGOERqNXUiLCJfX3YiOjAsImN1cnJlbnRfY291bnRyeSI6IiJ9LCJpYXQiOjE1ODkxODc5Mjd9.ZJQHbK7cVmDOf87uuhUttlnyAFYe5KA0Afnq0iBptF0"
+        );
+      expect(response).to.have.status(500);
+    });
   });
 
   //Get Message By Email - Valid Email
   describe("GET /api/messages/email/:email", () => {
     let message;
     beforeEach(async () => {
-        message = new Message({
-            _id: mongoose.Types.ObjectId(),
-            name: "Test Name",
-            email: "test@example.com",
-            message: "Test Message"
-        });
-        await message.save();
+      message = new Message({
+        _id: mongoose.Types.ObjectId(),
+        name: "Test Name",
+        email: "test@example.com",
+        message: "Test Message"
+      });
+      await message.save();
     });
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
@@ -145,52 +155,51 @@ describe("Messages API", () => {
           "Authorization",
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImdlbmRlciI6Ik1BTEUiLCJhZ2VfZ3JvdXAiOiI-OTAiLCJfaWQiOiI1ZWI3ZjMwYzNlMmE4ODRhYzgzYWE3NjAiLCJ1c2VybmFtZSI6ImF1dGh0ZXN0IiwicGFzc3dvcmQiOiIkMmEkMTAkYjJmYTZHTTJMTDlLVlJ4UzhVVEkzdS5SQ2JjUWw0WXc5OExaWVVHUHRnUVdBdVFGOERqNXUiLCJfX3YiOjAsImN1cnJlbnRfY291bnRyeSI6IiJ9LCJpYXQiOjE1ODkxODc5Mjd9.ZJQHbK7cVmDOf87uuhUttlnyAFYe5KA0Afnq0iBptF0"
         );
-        expect(response).to.have.status(200);
-        expect(response.body).to.have.length.greaterThan(0);
+      expect(response).to.have.status(200);
+      expect(response.body).to.have.length.greaterThan(0);
     });
   });
 
-  //Get Message By Email - Invalid Email
+  //Get Message By Email - Invalid/Non-existing Email
   describe("GET /api/messages/email/:email", () => {
     let message;
     beforeEach(async () => {
-        message = new Message({
-            _id: mongoose.Types.ObjectId(),
-            name: "Test Name",
-            email: "test@example.com",
-            message: "Test Message"
-        });
-        await message.save();
+      message = new Message({
+        _id: mongoose.Types.ObjectId(),
+        name: "Test Name",
+        email: "test@example.com",
+        message: "Test Message"
+      });
+      await message.save();
     });
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
     });
-    it("It should not Get message by email", async () => {
+
+    it("It should not Get message by email - invalid(null) email", async () => {
       let response = await chai
         .request(server)
-        .get("/api/messages/email/test@test.com")
+        .get("/api/messages/email")
         .set(
           "Authorization",
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImdlbmRlciI6Ik1BTEUiLCJhZ2VfZ3JvdXAiOiI-OTAiLCJfaWQiOiI1ZWI3ZjMwYzNlMmE4ODRhYzgzYWE3NjAiLCJ1c2VybmFtZSI6ImF1dGh0ZXN0IiwicGFzc3dvcmQiOiIkMmEkMTAkYjJmYTZHTTJMTDlLVlJ4UzhVVEkzdS5SQ2JjUWw0WXc5OExaWVVHUHRnUVdBdVFGOERqNXUiLCJfX3YiOjAsImN1cnJlbnRfY291bnRyeSI6IiJ9LCJpYXQiOjE1ODkxODc5Mjd9.ZJQHbK7cVmDOf87uuhUttlnyAFYe5KA0Afnq0iBptF0"
         );
-      expect(response).to.have.status(200);
-      expect(response.body).to.have.lengthOf(0);
+      expect(response).to.have.status(500);
     });
   });
 
-  */
   //Post Message - Valid Message
   describe("POST /api/messages", () => {
     let message;
     let new_message;
     beforeEach(async () => {
-        message = new Message({
-            _id: mongoose.Types.ObjectId(),
-            name: "Test Name",
-            email: "test@example.com",
-            message: "Test Message"
-        });
-        await message.save();
+      message = new Message({
+        _id: mongoose.Types.ObjectId(),
+        name: "Test Name",
+        email: "test@example.com",
+        message: "Test Message"
+      });
+      await message.save();
     });
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
@@ -205,17 +214,17 @@ describe("Messages API", () => {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImdlbmRlciI6Ik1BTEUiLCJhZ2VfZ3JvdXAiOiI-OTAiLCJfaWQiOiI1ZWI3ZjMwYzNlMmE4ODRhYzgzYWE3NjAiLCJ1c2VybmFtZSI6ImF1dGh0ZXN0IiwicGFzc3dvcmQiOiIkMmEkMTAkYjJmYTZHTTJMTDlLVlJ4UzhVVEkzdS5SQ2JjUWw0WXc5OExaWVVHUHRnUVdBdVFGOERqNXUiLCJfX3YiOjAsImN1cnJlbnRfY291bnRyeSI6IiJ9LCJpYXQiOjE1ODkxODc5Mjd9.ZJQHbK7cVmDOf87uuhUttlnyAFYe5KA0Afnq0iBptF0"
         )
         .send({
-            name: "Test Name",
-            email: "test@example.com",
-            message: "Test Message"
+          name: "Test Name",
+          email: "test@example.com",
+          message: "Test Message"
         });
       expect(response).to.have.status(201);
       expect(response.body).to.be.a("object");
       expect(response.body).to.have.property("_id");
       expect(response.body).to.have.property("name", "Test Name");
       expect(response.body).to.have.property("email", "test@example.com");
-      expect(response.body).to.have.property("message", "Test Message");  
-      new_message = response.body;    
+      expect(response.body).to.have.property("message", "Test Message");
+      new_message = response.body;
     });
   });
 
@@ -223,13 +232,13 @@ describe("Messages API", () => {
   describe("POST /api/messages", () => {
     let message;
     beforeEach(async () => {
-        message = new Message({
-            _id: mongoose.Types.ObjectId(),
-            name: "Test Name",
-            email: "test@example.com",
-            message: "Test Message"
-        });
-        await message.save();
+      message = new Message({
+        _id: mongoose.Types.ObjectId(),
+        name: "Test Name",
+        email: "test@example.com",
+        message: "Test Message"
+      });
+      await message.save();
     });
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
@@ -244,11 +253,10 @@ describe("Messages API", () => {
         )
         .send({});
       expect(response).to.have.status(500);
-      expect(response.error.text).to.include("name: Path `name` is required., email: Path `email` is required., message: Path `message` is required.");
+      expect(response.error.text).to.include("message: Path `message` is required., email: Path `email` is required., name: Path `name` is required.");
     });
   });
-  
-  /*
+
   //Delete Message - Valid Message
   describe("DELETE /api/messages/", () => {
     let message;
@@ -293,19 +301,32 @@ describe("Messages API", () => {
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
     });
-    it("It should not delete message", async () => {
+    it("It should not delete message - non-existing id", async () => {
       let response = await chai
         .request(server)
-        .delete("/api/messages/5e904cce7a1c6b627ae9f507")
+        .delete("/api/messages/")
         .set(
           "Authorization",
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImdlbmRlciI6Ik1BTEUiLCJhZ2VfZ3JvdXAiOiI-OTAiLCJfaWQiOiI1ZWI3ZjMwYzNlMmE4ODRhYzgzYWE3NjAiLCJ1c2VybmFtZSI6ImF1dGh0ZXN0IiwicGFzc3dvcmQiOiIkMmEkMTAkYjJmYTZHTTJMTDlLVlJ4UzhVVEkzdS5SQ2JjUWw0WXc5OExaWVVHUHRnUVdBdVFGOERqNXUiLCJfX3YiOjAsImN1cnJlbnRfY291bnRyeSI6IiJ9LCJpYXQiOjE1ODkxODc5Mjd9.ZJQHbK7cVmDOf87uuhUttlnyAFYe5KA0Afnq0iBptF0"
         )
         .send({
-          _id: message._id
+          _id: "5e904cce7a1c6b627ae9f507"
         });
       expect(response).to.have.status(404);
     });
+
+    it("It should not delete message - invalid id", async () => {
+      let response = await chai
+        .request(server)
+        .delete("/api/messages/")
+        .set(
+          "Authorization",
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImdlbmRlciI6Ik1BTEUiLCJhZ2VfZ3JvdXAiOiI-OTAiLCJfaWQiOiI1ZWI3ZjMwYzNlMmE4ODRhYzgzYWE3NjAiLCJ1c2VybmFtZSI6ImF1dGh0ZXN0IiwicGFzc3dvcmQiOiIkMmEkMTAkYjJmYTZHTTJMTDlLVlJ4UzhVVEkzdS5SQ2JjUWw0WXc5OExaWVVHUHRnUVdBdVFGOERqNXUiLCJfX3YiOjAsImN1cnJlbnRfY291bnRyeSI6IiJ9LCJpYXQiOjE1ODkxODc5Mjd9.ZJQHbK7cVmDOf87uuhUttlnyAFYe5KA0Afnq0iBptF0"
+        )
+        .send({
+          _id: "1c6b627ae9f507"
+        });
+      expect(response).to.have.status(500);
+    });
   });
-  */
 });
