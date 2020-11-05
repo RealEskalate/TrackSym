@@ -16,7 +16,7 @@ exports.postMessage = async (req, res) => {
         await message.save();
         res.status(201).send(message);
     } catch (error) {
-        res.status(500).send("Invalid request " + error);
+        res.status(500).send("Invalid request " + error.toString());
     }
 };
 
@@ -28,7 +28,7 @@ exports.getMessageById = async (req, res) => {
         }
         res.status(200).send(message);
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send("Error " + error.toString());
     }
 };
 
@@ -37,7 +37,7 @@ exports.getMessageByEmail = async (req, res) => {
         let messages = await Message.find({ email: req.params.email });
         res.status(200).send(messages);
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send("Error " + error.toString());
     }
 };
 
@@ -50,6 +50,6 @@ exports.deleteMessages = async (req, res) => {
         }
         res.status(200).send(message);
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send("Error " + error.toString());
     }
 };

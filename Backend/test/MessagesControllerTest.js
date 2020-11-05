@@ -5,7 +5,9 @@ let chaiHttp = require("chai-http");
 let server = require("../index");
 let { Message } = require("../models/MessageModel");
 let mongoose = require("mongoose");
+const { User } = require("../models/UserModel");
 const { expect } = chai;
+const jwt = require("jsonwebtoken")
 chai.use(chaiHttp);
 
 describe("Messages API", () => {
@@ -260,6 +262,13 @@ describe("Messages API", () => {
   //Delete Message - Valid Message
   describe("DELETE /api/messages/", () => {
     let message;
+    let user = new User({
+      _id: mongoose.Types.ObjectId(),
+      username: "test_ephi_user",
+      password: "$2a$10$3MkGWEws0FyrbA3JOpidE.3EDooTIn.f3023LPk/qZ.AQo6rEekOO",
+      role: "ephi_user"
+    });
+    let token
     beforeEach(async () => {
       message = new Message({
         _id: mongoose.Types.ObjectId(),
@@ -268,9 +277,17 @@ describe("Messages API", () => {
         message: "Test Message"
       });
       await message.save();
+      try {
+        token = jwt.sign({ user }, process.env.APP_SECRET_KEY);
+      } catch (error) {
+        console.log('error ' + error.toString())
+      }
+      await user.save();
+
     });
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
+      await User.findByIdAndDelete(user._id);
     });
     it("It should delete message", async () => {
       let response = await chai
@@ -278,7 +295,7 @@ describe("Messages API", () => {
         .delete("/api/messages/")
         .set(
           "Authorization",
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImdlbmRlciI6Ik1BTEUiLCJhZ2VfZ3JvdXAiOiI-OTAiLCJfaWQiOiI1ZWI3ZjMwYzNlMmE4ODRhYzgzYWE3NjAiLCJ1c2VybmFtZSI6ImF1dGh0ZXN0IiwicGFzc3dvcmQiOiIkMmEkMTAkYjJmYTZHTTJMTDlLVlJ4UzhVVEkzdS5SQ2JjUWw0WXc5OExaWVVHUHRnUVdBdVFGOERqNXUiLCJfX3YiOjAsImN1cnJlbnRfY291bnRyeSI6IiJ9LCJpYXQiOjE1ODkxODc5Mjd9.ZJQHbK7cVmDOf87uuhUttlnyAFYe5KA0Afnq0iBptF0"
+          "Bearer " + token
         )
         .send({
           _id: message._id
@@ -289,6 +306,8 @@ describe("Messages API", () => {
   //Delete Message - Invalid Message
   describe("DELETE /api/messages/", () => {
     let message;
+    let user;
+    let token;
     beforeEach(async () => {
       message = new Message({
         _id: mongoose.Types.ObjectId(),
@@ -296,10 +315,23 @@ describe("Messages API", () => {
         email: "test@example.com",
         message: "Test Message"
       });
+      user = new User({
+        _id: mongoose.Types.ObjectId(),
+        username: "test_ephi_user2",
+        password: "$2a$10$3MkGWEws0FyrbA3JOpidE.3EDooTIn.f3023LPk/qZ.AQo6rEekOO",
+        role: "ephi_user"
+      })
       await message.save();
+      await user.save();
+      try {
+        token = jwt.sign({ user }, process.env.APP_SECRET_KEY)
+      } catch (err) {
+        console.log(err.toString());
+      }
     });
     afterEach(async () => {
       await Message.findByIdAndDelete(message._id);
+      await User.findByIdAndDelete(user._id);
     });
     it("It should not delete message - non-existing id", async () => {
       let response = await chai
@@ -307,7 +339,7 @@ describe("Messages API", () => {
         .delete("/api/messages/")
         .set(
           "Authorization",
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImdlbmRlciI6Ik1BTEUiLCJhZ2VfZ3JvdXAiOiI-OTAiLCJfaWQiOiI1ZWI3ZjMwYzNlMmE4ODRhYzgzYWE3NjAiLCJ1c2VybmFtZSI6ImF1dGh0ZXN0IiwicGFzc3dvcmQiOiIkMmEkMTAkYjJmYTZHTTJMTDlLVlJ4UzhVVEkzdS5SQ2JjUWw0WXc5OExaWVVHUHRnUVdBdVFGOERqNXUiLCJfX3YiOjAsImN1cnJlbnRfY291bnRyeSI6IiJ9LCJpYXQiOjE1ODkxODc5Mjd9.ZJQHbK7cVmDOf87uuhUttlnyAFYe5KA0Afnq0iBptF0"
+          "Bearer " + token
         )
         .send({
           _id: "5e904cce7a1c6b627ae9f507"
@@ -321,7 +353,7 @@ describe("Messages API", () => {
         .delete("/api/messages/")
         .set(
           "Authorization",
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImdlbmRlciI6Ik1BTEUiLCJhZ2VfZ3JvdXAiOiI-OTAiLCJfaWQiOiI1ZWI3ZjMwYzNlMmE4ODRhYzgzYWE3NjAiLCJ1c2VybmFtZSI6ImF1dGh0ZXN0IiwicGFzc3dvcmQiOiIkMmEkMTAkYjJmYTZHTTJMTDlLVlJ4UzhVVEkzdS5SQ2JjUWw0WXc5OExaWVVHUHRnUVdBdVFGOERqNXUiLCJfX3YiOjAsImN1cnJlbnRfY291bnRyeSI6IiJ9LCJpYXQiOjE1ODkxODc5Mjd9.ZJQHbK7cVmDOf87uuhUttlnyAFYe5KA0Afnq0iBptF0"
+          "Bearer " + token
         )
         .send({
           _id: "1c6b627ae9f507"
