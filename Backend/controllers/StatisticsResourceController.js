@@ -1,7 +1,6 @@
 const { StatisticsResource } = require("../models/StatisticsResourceModel.js");
 var mongoose = require("mongoose");
 
-// - [DEPRECATED: This endpoint is not in use (not necessary)]
 exports.postStatisticsResource = async(req, res) => {
     let statisticsResource = new StatisticsResource({
         _id: mongoose.Types.ObjectId(),
@@ -32,46 +31,36 @@ exports.getStatisticsResourceById = async(req, res) => {
 };
 
 exports.getStatisticsResourceByFields = async(req, res) => {
-    try {
-        if (req.query.language != null && req.query.title != null) {
-            let statisticsResource = await StatisticsResource.find({ language: req.query.language, title: req.query.title });
-            res.status(200).send(statisticsResource);
-        } else if (req.query.language != null) {
-            let statisticsResource = await StatisticsResource.find({ language: req.query.language });
-            res.status(200).send(statisticsResource);
-        } else if (req.query.title != null) {
-            let statisticsResource = await StatisticsResource.find({ title: req.query.title,language:"English" });
-            res.status(200).send(statisticsResource);
-        } else {
-            let statisticsResource = await StatisticsResource.find({language:"English"});
-            res.status(200).send(statisticsResource);
-        }
+    let filters = {language:"English"}
 
-    } catch (error) {
-        res.status(500).send(error);
+    if(req.query.language){
+        filters.language = req.query.language
     }
+
+    if(req.query.title){
+        filters.title = req.query.title
+    }
+
+    let statisticsResource = await StatisticsResource.find(filters);
+    return res.status(200).send(statisticsResource);
 };
 
-// - [DEPRECATED: This endpoint is not in use (not necessary)]
+
 exports.updateStatisticsResource = async(req, res) => {
     try {
-        let statisticsResource = await StatisticsResource.findOneAndUpdate(req.params._id, req.body);
-        if (statisticsResource) {
-            let updatedStatisticsResource = await StatisticsResource.findById(statisticsResource._id);
-            res.send(updatedStatisticsResource);
-        } else {
-            res.send("stat resource not found");
-        }
+        let updatedStatisticsResource = await StatisticsResource.findByIdAndUpdate(req.params.id, req.body,{new: true});
+        return res.send(updatedStatisticsResource);
+      
     } catch (error) {
         console.log("error is " + error);
-        res.status(500).send(error);
+        return res.status(500).send(error);
     }
 };
 
-// - [DEPRECATED: This endpoint is not in use (not necessary)]
+
 exports.deleteStatisticsResource = async(req, res) => {
     try {
-        let statisticsResource = await StatisticsResource.findByIdAndRemove(req.body._id);
+        let statisticsResource = await StatisticsResource.findByIdAndRemove(req.params.id);
         if (!statisticsResource) {
             res.status(404).send("stat resource not found");
         }
