@@ -23,6 +23,9 @@ module.exports = (function() {
       .grant("sysadmin")
         .readAny("comment")
         .deleteAny("message")
+        .create("statistics_description")
+        .updateAny('statistics_description')
+        .deleteAny('statistics_description')
         
     return ac;
 
