@@ -48,7 +48,7 @@ exports.getStatisticsResourceByFields = async(req, res) => {
 
 exports.updateStatisticsResource = async(req, res) => {
     try {
-        let updatedStatisticsResource = await StatisticsResource.findByIdAndUpdate(req.params.id, req.body);
+        let updatedStatisticsResource = await StatisticsResource.findByIdAndUpdate(req.params.id, req.body,{new: true});
         return res.send(updatedStatisticsResource);
       
     } catch (error) {
