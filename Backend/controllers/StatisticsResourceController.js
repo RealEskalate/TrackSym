@@ -31,29 +31,24 @@ exports.getStatisticsResourceById = async(req, res) => {
 };
 
 exports.getStatisticsResourceByFields = async(req, res) => {
+    let filters = {language:"English"}
 
-    if (req.query.language != null && req.query.title != null) {
-        let statisticsResource = await StatisticsResource.find({ language: req.query.language, title: req.query.title });
-        res.status(200).send(statisticsResource);
-    } else if (req.query.language != null) {
-        let statisticsResource = await StatisticsResource.find({ language: req.query.language });
-        res.status(200).send(statisticsResource);
-    } else if (req.query.title != null) {
-        let statisticsResource = await StatisticsResource.find({ title: req.query.title,language:"English" });
-        res.status(200).send(statisticsResource);
-    } else {
-        let statisticsResource = await StatisticsResource.find({language:"English"});
-        res.status(200).send(statisticsResource);
+    if(req.query.language){
+        filters.language = req.query.language
     }
 
+    if(req.query.title){
+        filters.title = req.query.title
+    }
+
+    let statisticsResource = await StatisticsResource.find(filters);
+    return res.status(200).send(statisticsResource);
 };
 
 
 exports.updateStatisticsResource = async(req, res) => {
     try {
-        await StatisticsResource.findOneAndUpdate(req.params.id, req.body);
-        
-        let updatedStatisticsResource = await StatisticsResource.findById(req.params.id);
+        let updatedStatisticsResource = await StatisticsResource.findByIdAndUpdate(req.params.id, req.body);
         return res.send(updatedStatisticsResource);
       
     } catch (error) {
