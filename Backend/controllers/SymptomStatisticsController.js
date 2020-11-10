@@ -67,7 +67,7 @@ exports.get_people_with_symptoms = async (req, res) => {
 };
 
 exports.get_symptom_logs_by_healthcare_worker = async (req, res) => {
-    let { CaseInvestigation, SymptomLog } = demo_or_real_db(req.query);
+    let { CaseInvestigation, SymptomLog, name_ } = demo_or_real_db(req.query);
     
     if (!req.params.assigned_to){
         return res.status(400).send("Healthcare worker ID not sent");
@@ -86,7 +86,10 @@ exports.get_symptom_logs_by_healthcare_worker = async (req, res) => {
         {},
         { skip: (page - 1) * size, limit: size * 1 }
     )
-        .populate("user_id")
+        .populate({
+            path: "user_id",
+            model: name_ + "users",
+        })
         .populate({
             path: "current_symptoms.symptoms",
             model: "Symptom",
@@ -114,7 +117,7 @@ exports.get_symptom_logs_by_healthcare_worker = async (req, res) => {
 }
 
 exports.get_symptom_logs = async (req, res) => {
-    let { SymptomLog } = demo_or_real_db(req.query);
+    let { SymptomLog, name_ } = demo_or_real_db(req.query);
     let filter = await build_detailed_filter(req.query);
     filter.status = { $ne: "SYMPTOMS_REMOVED" }
 
@@ -125,7 +128,10 @@ exports.get_symptom_logs = async (req, res) => {
         {},
         { skip: (page - 1) * size, limit: size * 1 }
     )
-        .populate("user_id")
+        .populate({
+            path: "user_id",
+            model: name_ + "User",
+        })
         .populate({
             path: "current_symptoms.symptoms",
             model: "Symptom",
@@ -176,7 +182,8 @@ function demo_or_real_db(query) {
             SymptomLog: SymptomLogModel.SymptomLogDemo,
             LocationUser: LocationUserModel.DemoLocationUser,
             CaseInvestigation: CaseInvestigationModel.CaseInvestigationDemo,
-            SymptomUser: SymptomUserModel.DemoSymptomUser
+            SymptomUser: SymptomUserModel.DemoSymptomUser,
+            name_: "Demo "
         }
     } else {
         return {
@@ -184,7 +191,8 @@ function demo_or_real_db(query) {
             SymptomLog: SymptomLogModel.SymptomLog,
             LocationUser: LocationUserModel.LocationUser,
             CaseInvestigation: CaseInvestigationModel.CaseInvestigation,
-            SymptomUser: SymptomUserModel.SymptomUser
+            SymptomUser: SymptomUserModel.SymptomUser,
+            name_: ""
         }
     }
 };
