@@ -59,7 +59,7 @@ describe("Patient API", () => {
 
     user = new User({
       _id: mongoose.Types.ObjectId(),
-      username: "IUseYourApp",
+      username: `IUseYourApp - ${Math.random()}`,
       password: "SameAsMyEmail",
       patient_info: patient._id
     });
