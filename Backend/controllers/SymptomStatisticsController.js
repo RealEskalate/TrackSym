@@ -88,7 +88,7 @@ exports.get_symptom_logs_by_healthcare_worker = async (req, res) => {
     )
         .populate({
             path: "user_id",
-            model: name_ + "users",
+            model: name_ + "User",
         })
         .populate({
             path: "current_symptoms.symptoms",
