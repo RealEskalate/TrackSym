@@ -5,59 +5,26 @@ const PatientModels = require("../models/Patient.js");
 const SymptomUserModels = require("../models/SymptomUser");
 const UserModels = require("../models/UserModel.js");
 
-// check if demo=true in request
-let demo_or_real_db = (query) => {
-    if (query.demo && query.demo == "true"){
-        return {
-            Patient: PatientModels.PatientDemo,
-            SymptomUser: SymptomUserModels.DemoSymptomUser,
-            User: UserModels.DemoUser,
-            CaseInvestigation: CaseInvestigationModels.CaseInvestigationDemo,
-            Name: "Demo", // for populate queries
-            Name_: "Demo " // with space 
-        }
-    } else {
-        return {
-            Patient: PatientModels.Patient,
-            SymptomUser: SymptomUserModels.SymptomUser,
-            User: UserModels.User,
-            CaseInvestigation: CaseInvestigationModels.CaseInvestigation,
-            Name: "",
-            Name_: ""
-        }
-    }
-}
 
 // Fetch all case investigations, with filters if any
 exports.getCaseInvestigations = async (req, res) => {
-    var { CaseInvestigation, Name_,Name } = demo_or_real_db(req.query);
-    const filter = {};
-    if (req.query.patient) {
-        filter.patient_id = req.query.patient;
-    }
-    if (req.query.assignee) {
-        filter.assigned_to = req.query.assignee;
-    }
-    if (req.query.assigned) {
-        filter.assigned_to = req.query.assigned ? { $ne: null } : { $eq: null }
-    }
+    var { CaseInvestigation, Name_, Name } = demo_or_real_db(req.query);
+    const filter = build_filter(req.query);
 
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 15;
     try {
-        const investigations = await CaseInvestigation.find(filter, {}, { skip: page - 1, limit: size * 1 });
-        const populated = await CaseInvestigation.populate(investigations, [
-            { model: Name_ + 'User', path: 'user_id', select: '_id username', 
-                populate: { model: 'Patient' + Name, path: "patient_info", select:"_id first_name last_name" } },
-            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
-            { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
-        ]);
-        
+        const cases = await CaseInvestigation
+            .find(filter, {}, { skip: page - 1, limit: size * 1 })
+            .populate({ model: Name_ + 'User', path: 'user_id', select: '_id username', 
+                populate: { model: 'Patient' + Name, path: "patient_info", select:"_id first_name last_name" } })
+            .populate({ model: Name_ + 'User', path: 'assigned_to', select: '_id username' })
+            .populate({ model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' })
         const result = {
-            data_count: await CaseInvestigation.countDocuments(filter),
+            data_count: cases.length,
             page_size: size,
             current_page: page,
-            data: populated
+            data: cases
         };
         return res.send(result);
     } catch (err) {
@@ -70,13 +37,12 @@ exports.getCaseInvestigationById = async (req, res) => {
     var { CaseInvestigation, Name_, Name } = demo_or_real_db(req.query);
     const { id } = req.params;
     try {
-        const investigations = await CaseInvestigation.find({ _id: id });
-        const result = await CaseInvestigation.populate(investigations, [
-            { model: Name_ + 'User', path: 'user_id', select: '_id username', 
-                populate: { model: 'Patient' + Name, path: "patient_info" } },
-            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
-            { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
-        ]);
+        const result = await CaseInvestigation
+            .find({ _id: id })
+            .populate({ model: Name_ + 'User', path: 'user_id', select: '_id username', 
+                populate: { model: 'Patient' + Name, path: "patient_info" } })
+            .populate({ model: Name_ + 'User', path: 'assigned_to', select: '_id username' })
+            .populate({ model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' })
         return res.send(result);
     } catch (err) {
         return res.status(500).send(err.toString());
@@ -149,27 +115,23 @@ exports.deleteCaseInvestigation = async (req, res) => {
 }
 
 exports.get_patients_by_status = async (req, res) => {
-    var { CaseInvestigation, User, Patient } = demo_or_real_db(req.query);
+    var { Patient } = demo_or_real_db(req.query);
 
+    const filter = {};
+    if (req.query.status){
+        filter.status = status;
+    }
     const { assignee } = req.query;
-    const { status } = req.query;
 
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 15;
     try {
-        const selectedUsers = await CaseInvestigation.find({ assigned_to: mongoose.Types.ObjectId(assignee) })
-        const userIds = []
-
-        for (var i = 0; i < selectedUsers.length; i++) {
-            userIds.push(selectedPatients[i].user_id);
-        }
-        const patientIds = (await User.find({_id: {$in: userIds}}))
-                                        .map(user => user.patient_id)
-        const filter = { status: status, _id: { $in: patientIds } };
+        const { patientIds } = await find_patients_and_users_from_case_investigations(assignee, req.query);
+        filter._id = { $in: patientIds };
         const patients = await Patient.find(filter, {}, { skip: page - 1, limit: size * 1 });
 
         const result = {
-            data_count: await Patient.countDocuments(filter),
+            data_count: patients.length,
             page_size: size,
             current_page: page,
             data: patients
@@ -182,68 +144,24 @@ exports.get_patients_by_status = async (req, res) => {
 
 
 exports.get_count_per_status = async (req, res) =>{
-    var { CaseInvestigation, User, Patient, SymptomUser } = demo_or_real_db(req.query);
-    if (!req.query.assigned_to){
+    var { Patient } = demo_or_real_db(req.query);
+
+    let assigned_to = req.query.assigned_to;
+    if (!assigned_to){
         return res.status(400).send("Health care worker not sent")
     }
-    let assigned_to = req.query.assigned_to;
 
-    const userIds = (await CaseInvestigation.find({ assigned_to: assigned_to }))
-                        .map(investigation => investigation.user_id)
-    const patientIds = (await User.find({_id: {$in: userIds}}))
-                        .map(user => user.patient_info)
-
+    const { patientIds, userIds } = await find_patients_and_users_from_case_investigations(assigned_to, req.query) 
     const patients = await Patient.find({_id: { $in: patientIds }});
 
     let result = {
-        total: {
-            count: 0,
-            change: 0
-        },
-        Unknown: {
-            change: 0,
-            count: 0
-        },
-        Recovered: {
-            count: 0,
-            change: 0
-        },
-        Confirmed: {
-            count: 0,
-            change: 0
-        },
-        Died: {
-            count: 0,
-            change: 0,
-        }
+        total: { count: 0, change: 0 },
+        Unknown: { count: 0, change: 0 },
+        Recovered: { count: 0, change: 0},
+        Confirmed: { count: 0, change: 0},
+        Died: { count: 0, change: 0 }
     };
-    for(var index in patients){
-
-        if(!(patients[index].status in result) ){
-            result[ patients[index].status ] = {
-                count: 0, 
-                change: 0
-            };
-        }
-
-        date = patients[index].updated_at;
-        //check if update happened in the last 24 hours
-        if ((new Date()) - date <= (1000 * 3600 * 24)){
-            result[ patients[index].status ].change += 1
-            result.total.change += 1;
-        }
-        result[ patients[index].status ].count += 1
-        result.total.count += 1;
-    }
-
-    result.active_symptoms = (await SymptomUser.aggregate([
-        {$match: {user_id: {$in: userIds}}},
-        {$group: {_id: '$user_id'}},
-        {$count: "count"}
-    ]))[0];
-    if (!result.active_symptoms){
-        result.active_symptoms = { count: 0 }
-    }
+    await count_patient_by_status(patients, userIds, result, req.query);
     res.send(result);
 }
 
@@ -257,19 +175,91 @@ exports.getAssigedHealthWorkersByPatientId = async (req, res) => {
         const investigations = await CaseInvestigation
             .find({ patient_id: req.params.id }, {}, { skip: page - 1, limit: size * 1 })
             .select("notes assigned_to -_id")
-            .sort({ "updated_at": -1 });
-        const populated = await CaseInvestigation.populate(investigations, [
-            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
-            { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
-        ]);
+            .sort({ "updated_at": -1 })
+            .populate({ model: Name_ + 'User', path: 'assigned_to', select: '_id username' })
+            .populate({ model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' });
+            
         const result = {
-            data_count: await CaseInvestigation.countDocuments({ patient_id: req.params.id }),
+            data_count: investigations.length,
             page_size: size,
             current_page: page,
-            data: populated
+            data: investigations
         };
         return res.send(result);
     } catch (err) {
         return res.status(500).send(err.toString());
+    }
+}
+
+// check if demo=true in request
+function demo_or_real_db (query){
+    if (query.demo && query.demo == "true"){
+        return {
+            Patient: PatientModels.PatientDemo,
+            SymptomUser: SymptomUserModels.DemoSymptomUser,
+            User: UserModels.DemoUser,
+            CaseInvestigation: CaseInvestigationModels.CaseInvestigationDemo,
+            Name: "Demo", // for populate queries
+            Name_: "Demo " // with space 
+        }
+    } else {
+        return {
+            Patient: PatientModels.Patient,
+            SymptomUser: SymptomUserModels.SymptomUser,
+            User: UserModels.User,
+            CaseInvestigation: CaseInvestigationModels.CaseInvestigation,
+            Name: "",
+            Name_: ""
+        }
+    }
+}
+function build_filter(query){
+    let filter = {};
+    if (query.patient) {
+        filter.patient_id = query.patient;
+    }
+    if (query.assignee) {
+        filter.assigned_to = query.assignee;
+    }
+    if (query.assigned) {
+        filter.assigned_to = query.assigned ? { $ne: null } : { $eq: null }
+    }
+    return filter
+}
+async function find_patients_and_users_from_case_investigations(assigned_to, demo_data_query) {
+    var { CaseInvestigation, User } = demo_or_real_db(demo_data_query);
+    const userIds = (await CaseInvestigation.find({ assigned_to: assigned_to }))
+                        .map(investigation => investigation.user_id)
+    const patientIds = (await User.find({_id: {$in: userIds}}))
+                        .map(user => user.patient_info)
+    return {patientIds, userIds};
+}
+async function count_patient_by_status(patients, userIds, output, demo_data_query){
+    var { SymptomUser } = demo_or_real_db(demo_data_query);
+    patients.forEach(patient => { 
+        if(!(patient.status in output) ){
+            output[ patient.status ] = {
+                count: 0, 
+                change: 0
+            };
+        }
+
+        // check if update happened in the last 24 hours
+        if ((new Date()) - patient.updated_at <= (1000 * 3600 * 24)){
+            output[ patient.status ].change += 1
+            output.total.change += 1;
+        }
+        output[ patient.status ].count += 1
+        output.total.count += 1;
+    });
+    
+    // count number of unique users with symptoms
+    output.active_symptoms = (await SymptomUser.aggregate([
+        {$match: {user_id: {$in: userIds}}},
+        {$group: {_id: '$user_id'}},
+        {$count: "count"}
+    ]))[0];
+    if (!output.active_symptoms){
+        output.active_symptoms = { count: 0 };
     }
 }
