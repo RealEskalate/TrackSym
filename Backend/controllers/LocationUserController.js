@@ -10,31 +10,47 @@ const { StatisticsResource } = require("../models/StatisticsResourceModel.js");
 const { DistrictModel } = require("../models/DistrictModel");
 const SymptomLogRegistration = require("../services/SymptomLogRegistration.js");
 
+// check if demo=true or stress=true in request
+function demo_or_stress_or_real_db(query) {
+    if (query.demo && query.demo == "true"){
+        return {
+            User: UserModels.DemoUser,
+            SymptomUser: SymptomUserModels.DemoSymptomUser,
+            LocationUser: LocationUserModels.DemoLocationUser,
+            LocationGrid: LocationGridModels.DemoLocationGrid,
+            name_: "Demo ",
+        };
+    }
+    else if (query.stress && query.stress == "true"){
+        return {
+            User: UserModels.StressUser,
+            SymptomUser: SymptomUserModels.StressSymptomUser,
+            LocationUser: LocationUserModels.StressLocationUser,
+            LocationGrid: LocationGridModels.StressLocationGrid,
+            name_: "Stress ",
+        };
+    }
+    else {
+        return {
+            User: UserModels.User,
+            SymptomUser: SymptomUserModels.SymptomUser,
+            LocationUser: LocationUserModels.LocationUser,
+            LocationGrid: LocationGridModels.LocationGrid,
+            name_: "",
+        };
+    }
+};
+
 //Post a user location
 exports.post_location_user = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var User = UserModels.DemoUser;
-    var LocationUser = LocationUserModels.DemoLocationUser;
-    var SymptomUser = SymptomUserModels.DemoSymptomUser;
-  } else if (req.query.stress && req.query.stress == "true") {
-    var User = UserModels.StressUser;
-    var LocationUser = LocationUserModels.StressLocationUser;
-    var SymptomUser = SymptomUserModels.StressSymptomUser;
-  } else {
-    var User = UserModels.User;
-    var LocationUser = LocationUserModels.LocationUser;
-    var SymptomUser = SymptomUserModels.SymptomUser;
-  }
-
-  if (!req.body.longitude || !req.body.latitude) {
+  const { User, LocationUser, SymptomUser } = demo_or_stress_or_real_db(req.query);
+  let { latitude, longitude, user_id } = req.body;
+  if (!longitude || !latitude) {
     return res.status(400).send("Coordinates not given");
   }
-  if (!req.body.user_id) {
+  if (!user_id) {
     return res.status(400).send("User ID not given");
   }
-  let latitude = req.body.latitude;
-  let longitude = req.body.longitude;
-  let user_id = req.body.user_id;
   let TTL = 1000 * 60 * 60 * 24 * 21;
 
   // Check if user exists
@@ -44,7 +60,7 @@ exports.post_location_user = async (req, res) => {
   }
 
   let check = await LocationUser.findOne({
-    user_id: req.body.user_id,
+    user_id: user_id,
   });
   if (!check) {
     check = new LocationUser({
@@ -125,13 +141,7 @@ exports.post_location_user = async (req, res) => {
 
 //Get specific location_user by id
 exports.get_location_user_by_id = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var LocationUser = LocationUserModels.DemoLocationUser;
-  } else if (req.query.stress && req.query.stress == "true") {
-    var LocationUser = LocationUserModels.StressLocationUser;
-  } else {
-    var LocationUser = LocationUserModels.LocationUser;
-  }
+  const { LocationUser } = demo_or_stress_or_real_db(req.query);
   if (!req.params.id) {
     return res.status(400).send("User Location ID not provided");
   }
@@ -148,13 +158,7 @@ exports.get_location_user_by_id = async (req, res) => {
 
 //Get all location_users
 exports.get_all_location_users = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var LocationUser = LocationUserModels.DemoLocationUser;
-  } else if (req.query.stress && req.query.stress == "true") {
-    var LocationUser = LocationUserModels.StressLocationUser;
-  } else {
-    var LocationUser = LocationUserModels.LocationUser;
-  }
+  const { LocationUser } = demo_or_stress_or_real_db(req.query);
   const results = await LocationUser.find({});
   try {
     res.send(results);
@@ -165,13 +169,7 @@ exports.get_all_location_users = async (req, res) => {
 
 //Get location_user by user_id
 exports.get_by_user_id = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var LocationUser = LocationUserModels.DemoLocationUser;
-  } else if (req.query.stress && req.query.stress == "true") {
-    var LocationUser = LocationUserModels.StressLocationUser;
-  } else {
-    var LocationUser = LocationUserModels.LocationUser;
-  }
+  const { LocationUser } = demo_or_stress_or_real_db(req.query);
   if (!req.params.user_id) {
     return res.status(400).send("User ID not provided");
   }
@@ -187,13 +185,7 @@ exports.get_by_user_id = async (req, res) => {
 
 //Delete location_user with id
 exports.delete_location_user = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var LocationUser = LocationUserModels.DemoLocationUser;
-  } else if (req.query.stress && req.query.stress == "true") {
-    var LocationUser = LocationUserModels.StressLocationUser;
-  } else {
-    var LocationUser = LocationUserModels.LocationUser;
-  }
+  const { LocationUser } = demo_or_stress_or_real_db(req.query);
   if (!req.body._id) {
     return res.status(400).send("User Location ID not given");
   }
@@ -210,24 +202,19 @@ exports.delete_location_user = async (req, res) => {
 
 //Update location_user with id
 exports.update_location_user = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var LocationUser = LocationUserModels.DemoLocationUser;
-  } else if (req.query.stress && req.query.stress == "true") {
-    var LocationUser = LocationUserModels.StressLocationUser;
-  } else {
-    var LocationUser = LocationUserModels.LocationUser;
-  }
-  if (!req.body._id) {
+  const { LocationUser } = demo_or_stress_or_real_db(req.query);
+  const { _id, user_id, latitude, longitude } = req.body;
+  if (!_id) {
     return res.status(400).send("ID not given");
   }
-  if (!req.body.user_id) {
+  if (!user_id) {
     return res.status(400).send("User ID not given");
   }
-  if (!req.body.longitude || !req.body.latitude) {
+  if (!longitude || !latitude) {
     return res.status(400).send("Coordinates not given");
   }
   try {
-    let locationUser = await LocationUser.findById(req.body._id);
+    let locationUser = await LocationUser.findById(_id);
     if (!locationUser) {
       return res.status(404).send("User Location Not Found");
     }
@@ -240,92 +227,49 @@ exports.update_location_user = async (req, res) => {
   }
 };
 
+const generateLocation = (coordinate) => {
+  return {
+    latitude: coordinate[1],
+    longitude: coordinate[0]
+  }
+}
 // Fetch list of all locations alongside their symptoms
 exports.get_all_locations_with_symptoms = async (req, res) => {
   let limit = req.query.zoom_bound || 10000;
-  if (!req.body.longitude || !req.body.latitude) {
-    console.log("User coordinates not supplied");
+  let { latitude, longitude, top_left_bound, top_right_bound, bottom_left_bound, bottom_right_bound } = req.body;
+  if (!longitude || !latitude) {
     return res.status(400).send("Coordinates are not given");
   }
-  if (
-    !req.body.top_left_bound ||
-    !req.body.top_right_bound ||
-    !req.body.bottom_left_bound ||
-    !req.body.bottom_right_bound
-  ) {
-    console.log("Boundary coordinates not supplied");
+  if ( !top_left_bound || !top_right_bound || !bottom_left_bound || !bottom_right_bound ) {
     return res.status(400).send("Corner Coordinates are not given");
   }
-  let lat = req.body.latitude;
-  let long = req.body.longitude;
-  let top_left_end = req.body.top_left_bound;
-  let top_right_end = req.body.top_right_bound;
-  let bottom_left_end = req.body.bottom_left_bound;
-  let bottom_right_end = req.body.bottom_right_bound;
   let distance_check = geolib.getDistance(
-    {
-      latitude: top_left_end[1],
-      longitude: top_left_end[0],
-    },
-    {
-      latitude: top_right_end[1],
-      longitude: top_right_end[0],
-    }
+    generateLocation(top_left_bound),
+    generateLocation(top_right_bound)
   );
+  let location = { latitude, longitude };
+  let boundaries = [
+      top_left_bound,
+      top_right_bound,
+      bottom_right_bound,
+      bottom_left_bound,
+  ];
   //Check radius between the corner coords and main user location
-  let top_left_distance_check = geolib.getDistance(
-    {
-      latitude: lat,
-      longitude: long,
-    },
-    {
-      latitude: top_left_end[1],
-      longitude: top_left_end[0],
+  let min_coord_distance = undefined;
+  boundaries.forEach((bound) => {
+    let check = geolib.getDistance(location, generateLocation(bound));
+    if (min_coord_distance == undefined) {
+      min_coord_distance = check;
     }
-  );
-  let top_right_distance_check = geolib.getDistance(
-    {
-      latitude: lat,
-      longitude: long,
-    },
-    {
-      latitude: top_right_end[1],
-      longitude: top_right_end[0],
-    }
-  );
-  let bottom_left_distance_check = geolib.getDistance(
-    {
-      latitude: lat,
-      longitude: long,
-    },
-    {
-      latitude: bottom_left_end[1],
-      longitude: bottom_left_end[0],
-    }
-  );
-  let bottom_right_distance_check = geolib.getDistance(
-    {
-      latitude: lat,
-      longitude: long,
-    },
-    {
-      latitude: bottom_right_end[1],
-      longitude: bottom_right_end[0],
-    }
-  );
-  let min_coord_distance = Math.min(
-    top_left_distance_check,
-    top_right_distance_check,
-    bottom_left_distance_check,
-    bottom_right_distance_check
-  );
+    min_coord_distance = Math.min(min_coord_distance, check);
+
+  })
   let inPolygonCheck = min_coord_distance < 10000;
   let zoom = 0;
   let isDemo = false;
   if (req.body.demo && req.body.demo == true) {
     isDemo = true;
   }
-  console.log("H");
   if (isDemo) {
     if (distance_check >= limit) {
       zoom = 10;
@@ -335,34 +279,19 @@ exports.get_all_locations_with_symptoms = async (req, res) => {
       zoom = 10;
     }
   }
-  console.log("I");
   try {
     let result = [];
     if (zoom != 0) {
-      let boundaries = [
-        top_left_end,
-        top_right_end,
-        bottom_right_end,
-        bottom_left_end,
-      ];
+
       result = await findGridNearbySymptomaticUsers(
         boundaries,
-        req.query.demo,
-        req.query.stress,
+        req.query,
         req.query.language
       );
       console.log(`Fetched ${result.length} Grids according to filter`);
     } else {
-      let boundaries = [
-        top_left_end,
-        top_right_end,
-        bottom_right_end,
-        bottom_left_end,
-      ];
       result = await findAllNearbySymptomaticUsers(
-        boundaries,
-        req.query.demo,
-        req.query.stress
+        boundaries, req.query
       );
       console.log(
         `Fetched ${result.length} Locations and Users according to filter`
@@ -378,14 +307,10 @@ exports.get_all_locations_with_symptoms = async (req, res) => {
     res.status(500).send("No locations with users and symptoms found.");
   }
 };
-const findAllNearbySymptomaticUsers = async (boundaries, demo, stress) => {
-  if (demo && demo == "true") {
-    var LocationUser = LocationUserModels.DemoLocationUser;
-  } else if (stress && stress == "true") {
-    var LocationUser = LocationUserModels.StressLocationUser;
-  } else {
-    var LocationUser = LocationUserModels.LocationUser;
-  }
+
+// Find All nearby symptomatic users according to their current boundaries
+const findAllNearbySymptomaticUsers = async (boundaries, query) => {
+  const { LocationUser } = demo_or_stress_or_real_db(query);
   const location_users = await LocationUser.find({
     location: {
       $geoWithin: {
@@ -412,15 +337,10 @@ const findAllNearbySymptomaticUsers = async (boundaries, demo, stress) => {
   return location_users;
 };
 
-const findGridNearbySymptomaticUsers = async (boundaries, demo, stress, language=null) => {
+// Find all grids in the specifid bounds 
+const findGridNearbySymptomaticUsers = async (boundaries, query, language=null) => {
   // await updateDb(demo, stress);
-  if (demo && demo == "true") {
-    var LocationGrid = LocationGridModels.DemoLocationGrid;
-  } else if (stress && stress == "true") {
-    var LocationGrid = LocationGridModels.StressLocationGrid;
-  } else {
-    var LocationGrid = LocationGridModels.LocationGrid;
-  }
+  const { LocationGrid } = demo_or_stress_or_real_db(query);
 
   //... translation data .....
   let diseaseNames = null;
