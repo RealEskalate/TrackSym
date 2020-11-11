@@ -14,19 +14,17 @@ exports.getCaseInvestigations = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 15;
     try {
-        const investigations = await CaseInvestigation.find(filter, {}, { skip: page - 1, limit: size * 1 });
-        const populated = await CaseInvestigation.populate(investigations, [
-            { model: Name_ + 'User', path: 'user_id', select: '_id username', 
-                populate: { model: 'Patient' + Name, path: "patient_info", select:"_id first_name last_name" } },
-            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
-            { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
-        ]);
-        
+        const cases = await CaseInvestigation
+            .find(filter, {}, { skip: page - 1, limit: size * 1 })
+            .populate({ model: Name_ + 'User', path: 'user_id', select: '_id username', 
+                populate: { model: 'Patient' + Name, path: "patient_info", select:"_id first_name last_name" } })
+            .populate({ model: Name_ + 'User', path: 'assigned_to', select: '_id username' })
+            .populate({ model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' })
         const result = {
-            data_count: await CaseInvestigation.countDocuments(filter),
+            data_count: cases.length,
             page_size: size,
             current_page: page,
-            data: populated
+            data: cases
         };
         return res.send(result);
     } catch (err) {
@@ -39,13 +37,12 @@ exports.getCaseInvestigationById = async (req, res) => {
     var { CaseInvestigation, Name_, Name } = demo_or_real_db(req.query);
     const { id } = req.params;
     try {
-        const investigations = await CaseInvestigation.find({ _id: id });
-        const result = await CaseInvestigation.populate(investigations, [
-            { model: Name_ + 'User', path: 'user_id', select: '_id username', 
-                populate: { model: 'Patient' + Name, path: "patient_info" } },
-            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
-            { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
-        ]);
+        const result = await CaseInvestigation
+            .find({ _id: id })
+            .populate({ model: Name_ + 'User', path: 'user_id', select: '_id username', 
+                populate: { model: 'Patient' + Name, path: "patient_info" } })
+            .populate({ model: Name_ + 'User', path: 'assigned_to', select: '_id username' })
+            .populate({ model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' })
         return res.send(result);
     } catch (err) {
         return res.status(500).send(err.toString());
@@ -134,7 +131,7 @@ exports.get_patients_by_status = async (req, res) => {
         const patients = await Patient.find(filter, {}, { skip: page - 1, limit: size * 1 });
 
         const result = {
-            data_count: await Patient.countDocuments(filter),
+            data_count: patients.length,
             page_size: size,
             current_page: page,
             data: patients
@@ -147,7 +144,7 @@ exports.get_patients_by_status = async (req, res) => {
 
 
 exports.get_count_per_status = async (req, res) =>{
-    var { Patient, SymptomUser } = demo_or_real_db(req.query);
+    var { Patient } = demo_or_real_db(req.query);
 
     let assigned_to = req.query.assigned_to;
     if (!assigned_to){
@@ -178,16 +175,15 @@ exports.getAssigedHealthWorkersByPatientId = async (req, res) => {
         const investigations = await CaseInvestigation
             .find({ patient_id: req.params.id }, {}, { skip: page - 1, limit: size * 1 })
             .select("notes assigned_to -_id")
-            .sort({ "updated_at": -1 });
-        const populated = await CaseInvestigation.populate(investigations, [
-            { model: Name_ + 'User', path: 'assigned_to', select: '_id username' },
-            { model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' },
-        ]);
+            .sort({ "updated_at": -1 })
+            .populate({ model: Name_ + 'User', path: 'assigned_to', select: '_id username' })
+            .populate({ model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' });
+            
         const result = {
-            data_count: await CaseInvestigation.countDocuments({ patient_id: req.params.id }),
+            data_count: investigations.length,
             page_size: size,
             current_page: page,
-            data: populated
+            data: investigations
         };
         return res.send(result);
     } catch (err) {
