@@ -126,7 +126,7 @@ exports.get_patients_by_status = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 15;
     try {
-        const patientIds = await find_patients_from_case_investigations(assignee, req.query);
+        const { patientIds } = await find_patients_and_users_from_case_investigations(assignee, req.query);
         filter._id = { $in: patientIds };
         const patients = await Patient.find(filter, {}, { skip: page - 1, limit: size * 1 });
 
@@ -151,7 +151,7 @@ exports.get_count_per_status = async (req, res) =>{
         return res.status(400).send("Health care worker not sent")
     }
 
-    const patientIds = await find_patients_from_case_investigations(assigned_to, req.query) 
+    const { patientIds, userIds } = await find_patients_and_users_from_case_investigations(assigned_to, req.query) 
     const patients = await Patient.find({_id: { $in: patientIds }});
 
     let result = {
@@ -161,7 +161,7 @@ exports.get_count_per_status = async (req, res) =>{
         Confirmed: { count: 0, change: 0},
         Died: { count: 0, change: 0 }
     };
-    await count_patient_by_status(patients, result, req.query);
+    await count_patient_by_status(patients, userIds, result, req.query);
     res.send(result);
 }
 
@@ -226,15 +226,15 @@ function build_filter(query){
     }
     return filter
 }
-async function find_patients_from_case_investigations(assigned_to, demo_data_query) {
+async function find_patients_and_users_from_case_investigations(assigned_to, demo_data_query) {
     var { CaseInvestigation, User } = demo_or_real_db(demo_data_query);
     const userIds = (await CaseInvestigation.find({ assigned_to: assigned_to }))
                         .map(investigation => investigation.user_id)
     const patientIds = (await User.find({_id: {$in: userIds}}))
                         .map(user => user.patient_info)
-    return patientIds;
+    return {patientIds, userIds};
 }
-async function count_patient_by_status(patients, output, demo_data_query){
+async function count_patient_by_status(patients, userIds, output, demo_data_query){
     var { SymptomUser } = demo_or_real_db(demo_data_query);
     patients.forEach(patient => { 
         if(!(patient.status in output) ){
