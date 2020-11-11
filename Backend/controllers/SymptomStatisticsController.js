@@ -67,7 +67,7 @@ exports.get_people_with_symptoms = async (req, res) => {
 };
 
 exports.get_symptom_logs_by_healthcare_worker = async (req, res) => {
-    let { CaseInvestigation, SymptomLog, name_ } = demo_or_real_db(req.query);
+    let { CaseInvestigation, SymptomLog, name_, name_2} = demo_or_real_db(req.query);
     
     if (!req.params.assigned_to){
         return res.status(400).send("Healthcare worker ID not sent");
@@ -89,6 +89,12 @@ exports.get_symptom_logs_by_healthcare_worker = async (req, res) => {
         .populate({
             path: "user_id",
             model: name_ + "User",
+            select: '_id username',
+            populate: ({
+                path: "patient_info",
+                model: "Patient" + name_2,
+                select: "_id first_name last_name"
+            })
         })
         .populate({
             path: "current_symptoms.symptoms",
@@ -183,7 +189,8 @@ function demo_or_real_db(query) {
             LocationUser: LocationUserModel.DemoLocationUser,
             CaseInvestigation: CaseInvestigationModel.CaseInvestigationDemo,
             SymptomUser: SymptomUserModel.DemoSymptomUser,
-            name_: "Demo "
+            name_: "Demo ",
+            name_2: "Demo"
         }
     } else {
         return {
@@ -192,7 +199,8 @@ function demo_or_real_db(query) {
             LocationUser: LocationUserModel.LocationUser,
             CaseInvestigation: CaseInvestigationModel.CaseInvestigation,
             SymptomUser: SymptomUserModel.SymptomUser,
-            name_: ""
+            name_: "",
+            name_2: ""
         }
     }
 };

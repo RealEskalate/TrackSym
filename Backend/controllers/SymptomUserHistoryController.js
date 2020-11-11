@@ -5,7 +5,7 @@ const { Symptom } = require("../models/Symptom");
 
 exports.get_symptomuser_history_by_user_id = async (req, res) => {
   if (req.query.demo && req.query.demo == "true") {
-    var SymptomUser = SymtomUserModel.DemoSymptomUser;
+    var SymptomUser = SymptomUserModel.DemoSymptomUser;
     var SymptomUserHistory = SymptomUserHistoryModel.DemoSymptomUserHistory;
   } else if (req.query.stress && req.query.stress == "true") {
     var SymptomUser = SymptomUserModel.StressSymptomUser;
