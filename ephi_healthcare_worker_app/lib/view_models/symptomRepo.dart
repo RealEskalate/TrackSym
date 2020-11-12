@@ -1,4 +1,5 @@
 //sample file of our case view provider
+import '../models/patientSymptomActivity.dart';
 import '../models/patientSymptom.dart';
 import 'package:flutter/cupertino.dart';
 import '../util/api_end_points.dart' as API;
@@ -11,7 +12,7 @@ import 'dart:async';
 
 class SymptomRepo {
   //get the details of a list of symptoms from backend
-  getListOfSymptoms(String healthCareWorkerId) async {
+  getSymptomActivities(String healthCareWorkerId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('Token') != null) {
       var headers = {
@@ -22,21 +23,21 @@ class SymptomRepo {
 
       var response = await retry(
         () => http
-            .get(API.SymptomEndPoints.getSymptoms(healthCareWorkerId),
+            .get(API.SymptomEndPoints.getSymptomActivity(healthCareWorkerId),
                 headers: headers)
             .timeout(Duration(seconds: 10)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       ////print(response.body);
-      List<PatientSymptom> symptomList = [];
+      List<PatientSymptomActivity> symptomList = [];
       var symptomListResponse = json.decode(response.body);
       if (response.statusCode == 200) {
         for (int index = 0;
             index < symptomListResponse['data'].length;
             index++) {
           //print(articlesListResponse['data'][index]['title']);
-          symptomList
-              .add(PatientSymptom.fromJson(symptomListResponse['data'][index]));
+          symptomList.add(PatientSymptomActivity.fromJson(
+              symptomListResponse['data'][index]));
         }
       } else {
         print("Status code fail " + response.statusCode.toString());
