@@ -61,12 +61,12 @@ class CardWidget extends StatelessWidget {
                         width: size.width * 0.1, height: size.height * 0.05)
                     : SizedBox(height: size.height * 0.005),
                 SizedBox(height: size.height * 0.005),
-                Text(change,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 15.0,
-                    )),
+                // Text(change,
+                //     textAlign: TextAlign.center,
+                //     style: TextStyle(
+                //       color: color,
+                //       fontSize: 15.0,
+                //     )),
                 SizedBox(height: size.height * 0.005),
                 Text(value,
                     textAlign: TextAlign.center,
