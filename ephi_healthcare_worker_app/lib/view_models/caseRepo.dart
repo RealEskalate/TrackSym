@@ -27,12 +27,13 @@ class CaseRepo {
             .timeout(Duration(seconds: 10)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      ////print(response.body);
+      print(response.body);
       List<PatientCase> caseList = [];
       if (response.statusCode == 200) {
         var caseListResponse = json.decode(response.body);
         for (int index = 0; index < caseListResponse['data'].length; index++) {
-          //print(articlesListResponse['data'][index]['title']);
+          print(caseListResponse['data'][index]['user_id']['patient_info']
+              ['first_name']);
           caseList.add(PatientCase.fromJson(caseListResponse['data'][index]));
         }
       } else {
