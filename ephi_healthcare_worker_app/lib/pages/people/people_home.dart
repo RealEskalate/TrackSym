@@ -4,10 +4,11 @@ import 'package:ephi_healthcare_worker_app/widgets/hexColorGenerator.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/patientCardWidget.dart';
 import '../../models/case.dart';
-import '../../view_models/patientBloc.dart';
-import '../../view_models/patientRepo.dart';
+import '../../view_models/caseBloc.dart';
+import '../../view_models/caseRepo.dart';
 import 'package:flutter/scheduler.dart';
 import '../../widgets/blurredDrawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientsHome extends StatefulWidget {
   PatientsHome({this.scrollController});
@@ -23,15 +24,19 @@ class PatientsHomeState extends State<PatientsHome> {
 
   //User user;
   final ScrollController scrollController;
-  PatientBloc patientBloc = PatientBloc(repo: PatientRepo());
-
+  CaseBloc caseBloc = CaseBloc(repo: CaseRepo());
   @override
   void initState() {
     super.initState();
-    patientBloc.actionSink.add(FetchPatients("5ee9eb84103d470003d558d0"));
+    populateData();
     // SchedulerBinding.instance.addPostFrameCallback((_) {
     //   BlocProvider.of<PatientBloc>(context).add(FetchPatients(""));
     // });
+  }
+
+  populateData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    caseBloc.actionSink.add(FetchCases(prefs.getString('UserId')));
   }
 
   List<Case> patientsDemoList = [
@@ -118,7 +123,14 @@ class PatientsHomeState extends State<PatientsHome> {
                             Icons.refresh,
                             color: Colors.lightBlueAccent[900],
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            caseBloc.actionSink
+                                .add(ReloadCases(prefs.getString('UserId')));
+                            caseBloc.actionSink
+                                .add(FetchCases(prefs.getString('UserId')));
+                          },
                         )
                       ]),
                 ),
@@ -132,7 +144,11 @@ class PatientsHomeState extends State<PatientsHome> {
                     )))));
   }
 
-  Future<void> refresh() async {}
+  Future<void> refresh() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    caseBloc.actionSink.add(ReloadCases(prefs.getString('UserId')));
+    caseBloc.actionSink.add(FetchCases(prefs.getString('UserId')));
+  }
 
   mainList(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -140,7 +156,7 @@ class PatientsHomeState extends State<PatientsHome> {
         child: RefreshIndicator(
             onRefresh: refresh,
             child: StreamBuilder(
-              stream: patientBloc.patientStream,
+              stream: caseBloc.caseStream,
               builder: (context, snapshot) {
                 if (snapshot.data == null) {
                   return Center(child: CircularProgressIndicator());
@@ -178,20 +194,20 @@ class PatientsHomeState extends State<PatientsHome> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     CardWidget(
-                                        sizeHeight: 0.10,
+                                        sizeHeight: 0.08,
                                         sizeWidth: 0.41,
                                         color: Colors.purple[700],
-                                        value: "1,453",
-                                        change: "+25",
+                                        value: snapshot.data.length.toString(),
+                                        // change: "+25",
                                         text: "Total Patients",
                                         title: "this.title",
                                         press: null),
                                     CardWidget(
-                                        sizeHeight: 0.10,
+                                        sizeHeight: 0.08,
                                         sizeWidth: 0.41,
                                         color: Colors.orange[700],
-                                        value: "1,071",
-                                        change: "+12",
+                                        value: snapshot.data.length.toString(),
+                                        //change: "+12",
                                         text: "Active Patients",
                                         title: "this.title",
                                         press: null),

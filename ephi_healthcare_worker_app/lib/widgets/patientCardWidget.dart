@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/patient.dart';
+import '../models/patientCase.dart';
 import '../pages/details/detail_view.dart';
 import '../pages/people/person_detail.dart';
 
 class PatientCard extends StatefulWidget {
-  Patient patient;
+  PatientCase patient;
 
   PatientCard({@required this.patient});
   @override
@@ -13,7 +13,7 @@ class PatientCard extends StatefulWidget {
 
 class _PatientCardState extends State<PatientCard> {
   _PatientCardState({this.patient});
-  Patient patient;
+  PatientCase patient;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _PatientCardState extends State<PatientCard> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => PatientDetailView(),
+                  builder: (_) => PatientDetailView(patient: this.patient),
                 ),
               ),
               // leading: CircleAvatar(
@@ -52,14 +52,15 @@ class _PatientCardState extends State<PatientCard> {
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("Test Result",
-                      style: TextStyle(fontSize: 16, color: Colors.grey
-                          // color: patient.currentTestResult == "Positive"
-                          //     ? Colors.red
-                          //     : Colors.green,
-                          )),
+                  // Text("Test Result",
+                  //     style: TextStyle(fontSize: 16, color: Colors.grey
+                  //         // color: patient.currentTestResult == "Positive"
+                  //         //     ? Colors.red
+                  //         //     : Colors.green,
+                  //         )),
                   SizedBox(height: 5),
-                  Text(patient.firstName + " " + patient.lastName),
+                  Text(
+                      patient.patientFirstName + " " + patient.patientLastName),
                   SizedBox(height: 5),
                 ],
               ),
@@ -68,7 +69,8 @@ class _PatientCardState extends State<PatientCard> {
                   onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => PatientDetailView(),
+                          builder: (_) =>
+                              PatientDetailView(patient: this.patient),
                         ),
                       ),
                   child: Icon(Icons.arrow_forward_ios)),
