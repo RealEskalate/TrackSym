@@ -21,10 +21,10 @@ exports.getCaseInvestigations = async (req, res) => {
             .populate({ model: Name_ + 'User', path: 'assigned_to', select: '_id username' })
             .populate({ model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' })
         const result = {
-            data_count: cases.length,
+            data_count: await CaseInvestigation.countDocuments(filter),
             page_size: size,
             current_page: page,
-            data: cases
+            data: cases,
         };
         return res.send(result);
     } catch (err) {
@@ -131,10 +131,10 @@ exports.get_patients_by_status = async (req, res) => {
         const patients = await Patient.find(filter, {}, { skip: page - 1, limit: size * 1 });
 
         const result = {
-            data_count: patients.length,
+            data_count: await Patient.countDocuments(filter),
             page_size: size,
             current_page: page,
-            data: patients
+            data: patients,
         };
         return res.status(200).send(result);
     } catch (error) {
@@ -180,10 +180,12 @@ exports.getAssigedHealthWorkersByPatientId = async (req, res) => {
             .populate({ model: Name_ + 'User', path: 'notes.health_worker_id', select: '_id username' });
             
         const result = {
-            data_count: investigations.length,
+            data_count: await CaseInvestigation.countDocuments({
+                patient_id: req.params.id,
+            }),
             page_size: size,
             current_page: page,
-            data: investigations
+            data: investigations,
         };
         return res.send(result);
     } catch (err) {

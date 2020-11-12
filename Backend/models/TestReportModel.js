@@ -36,12 +36,12 @@ const testReportSchemaDemo = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'Demo User'
     },
     healthcare_worker_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'Demo User'
     },
     test_status:{
         type: String,
