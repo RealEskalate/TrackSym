@@ -5,25 +5,39 @@ import 'package:ephi_healthcare_worker_app/widgets/hexColorGenerator.dart';
 import 'package:flutter/material.dart';
 import '../symptoms/symptom_history.dart';
 import '../symptoms/current_symptoms.dart';
+import '../../view_models/patientBloc.dart';
+import '../../view_models/patientRepo.dart';
+import '../../models/patientCase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart' as intl;
 
 class DetailView extends StatefulWidget {
-  DetailView({this.scrollController});
+  PatientCase patient;
+  DetailView({this.scrollController, this.patient});
 
   final ScrollController scrollController;
 
   @override
-  DetailViewState createState() => DetailViewState(this.scrollController);
+  DetailViewState createState() =>
+      DetailViewState(this.scrollController, this.patient);
 }
 
 class DetailViewState extends State<DetailView> {
-  DetailViewState(this.scrollController);
-
+  DetailViewState(this.scrollController, this.patient);
+  PatientCase patient;
   //User user;
   final ScrollController scrollController;
+  PatientBloc patientBloc = new PatientBloc(repo: PatientRepo());
 
   @override
   void initState() {
     super.initState();
+
+    populateData();
+  }
+
+  populateData() {
+    patientBloc.actionSink.add(FetchPatientDetail(patient.patientInfoId));
   }
 
   @override
@@ -39,7 +53,7 @@ class DetailViewState extends State<DetailView> {
                   backgroundColor: Colors.white,
                   title: Center(
                     child: Text(
-                      "Detail View",
+                      patient.patientFirstName + "'s Case",
                       style: TextStyle(
                         color: Colors.grey,
                       ),
@@ -74,100 +88,122 @@ class DetailViewState extends State<DetailView> {
   content(BuildContext context) {
     return Expanded(
         child: RefreshIndicator(
-            onRefresh: refresh,
-            child: ListView(
-              children: <Widget>[
-                Container(
-                  height: 155,
-                  padding: EdgeInsets.only(top: 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(width: 10),
-                        CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/images/user1.jpg'),
-                          maxRadius: 50,
-                        ),
-                        SizedBox(width: 15),
-                        Container(
-                          margin: EdgeInsets.only(left: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(height: 10),
-                              Text("Daniel Mulatu",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  )),
-                              SizedBox(height: 13),
-                              Text("31-40",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  )),
-                              SizedBox(height: 13),
-                              Text("Male",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  )),
-                              SizedBox(height: 10),
-                              Text("Test Result :  Positive",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  )),
-                              SizedBox(height: 10),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                      ]),
-                ),
-                Container(
-                    height: 60,
+      onRefresh: refresh,
+      child: StreamBuilder(
+          stream: patientBloc.patientDetailStream,
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasData) {
+              return ListView(
+                children: <Widget>[
+                  Container(
+                    height: 160,
+                    padding: EdgeInsets.only(top: 15),
                     decoration: BoxDecoration(
                       color: Colors.white,
                     ),
                     child: Row(
-                      children: <Widget>[
-                        Expanded(
-                            child: FlatButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                color: Theme.of(context).primaryColor,
-                                textColor: Colors.white,
-                                onPressed: () {},
-                                child: Text("Message"))),
-                        SizedBox(width: 10),
-                        Expanded(
-                            child: FlatButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                color: Theme.of(context).primaryColor,
-                                textColor: Colors.white,
-                                onPressed: () {},
-                                child: Text("Contact")))
-                      ],
-                    )),
-                SizedBox(height: 10),
-                Container(
-                    child: Column(
-                  children: <Widget>[
-                    cardWidgetBuilder(context, "Current Symptoms"),
-                    // SizedBox(height: 10),
-                    // cardWidgetBuilder(context, "Symptom History")
-                  ],
-                )),
-                SizedBox(height: 20.2),
-              ],
-            )));
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(width: 10),
+                          CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/user1.jpg'),
+                            maxRadius: 50,
+                          ),
+                          SizedBox(width: 15),
+                          Expanded(
+                              child: Container(
+                            margin: EdgeInsets.only(left: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(height: 10),
+                                Text(
+                                    snapshot.data.firstName +
+                                        " " +
+                                        snapshot.data.lastName,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    )),
+                                SizedBox(height: 13),
+                                Text(
+                                    (DateTime.now()
+                                                    .difference(DateTime.parse(
+                                                        snapshot
+                                                            .data.dateOfBirth))
+                                                    .inDays /
+                                                365)
+                                            .floor()
+                                            .toString() +
+                                        " years old",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    )),
+                                SizedBox(height: 13),
+                                Text(snapshot.data.gender,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    )),
+                                SizedBox(height: 10),
+                                Text(this.patient.currentNote,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    )),
+                                SizedBox(height: 10),
+                              ],
+                            ),
+                          )),
+                          SizedBox(width: 20),
+                        ]),
+                  ),
+                  Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                              child: FlatButton(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  color: Theme.of(context).primaryColor,
+                                  textColor: Colors.white,
+                                  onPressed: () {},
+                                  child: Text("Message"))),
+                          SizedBox(width: 10),
+                          Expanded(
+                              child: FlatButton(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  color: Theme.of(context).primaryColor,
+                                  textColor: Colors.white,
+                                  onPressed: () {},
+                                  child: Text("Contact")))
+                        ],
+                      )),
+                  SizedBox(height: 10),
+                  Container(
+                      child: Column(
+                    children: <Widget>[
+                      cardWidgetBuilder(context, "Current Symptoms"),
+                      // SizedBox(height: 10),
+                      // cardWidgetBuilder(context, "Symptom History")
+                    ],
+                  )),
+                  SizedBox(height: 20.2),
+                ],
+              );
+            }
+          }),
+    ));
   }
 
   cardWidgetBuilder(BuildContext context, String title) {
@@ -185,7 +221,8 @@ class DetailViewState extends State<DetailView> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CurrentSymptoms(),
+                          builder: (_) =>
+                              CurrentSymptoms(patientId: patient.userId),
                         ));
                     break;
                   // case "Symptom History":

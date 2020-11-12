@@ -1,20 +1,28 @@
 // test result history of a person page
 import 'package:flutter/material.dart';
 import '../../widgets/hexColorGenerator.dart';
+import '../../view_models/patientBloc.dart';
+import '../../view_models/patientRepo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart' as intl;
 
 class TestResultHistoryAppBar extends StatefulWidget {
+  String patientId;
+  TestResultHistoryAppBar({this.patientId});
   @override
   _TestResultHistoryAppBarState createState() =>
-      _TestResultHistoryAppBarState();
+      _TestResultHistoryAppBarState(patientId: patientId);
 }
 
 class _TestResultHistoryAppBarState extends State<TestResultHistoryAppBar> {
+  String patientId;
+  _TestResultHistoryAppBarState({this.patientId});
   @override
   Widget build(BuildContext context) {
     //SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.green));
     return Scaffold(
       appBar: AppBar(
-        title: Text("Current Symptoms"),
+        title: Text("Test Result History"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {},
@@ -26,29 +34,28 @@ class _TestResultHistoryAppBarState extends State<TestResultHistoryAppBar> {
 }
 
 class TestResultHistory extends StatefulWidget {
+  String patientId;
+  TestResultHistory({this.patientId});
   @override
-  _TestResultHistoryState createState() => _TestResultHistoryState();
+  _TestResultHistoryState createState() =>
+      _TestResultHistoryState(patientId: patientId);
 }
 
 class _TestResultHistoryState extends State<TestResultHistory> {
   //
+  String patientId;
+  _TestResultHistoryState({this.patientId});
 
-  List dates_of_result_list = [
-    "06/08/2020",
-    "07/08/2020",
-    "08/08/2020",
-    "09/08/2020",
-    "10/08/2020",
-    "11/08/2020",
-  ];
-  List results_list = [
-    "Positive",
-    "Positive",
-    "Positive",
-    "Positive",
-    "Positive",
-    "Positive"
-  ];
+  PatientBloc patientBloc = new PatientBloc(repo: PatientRepo());
+  @override
+  void initState() {
+    super.initState();
+    populateData();
+  }
+
+  populateData() {
+    patientBloc.actionSink.add(FetchTestResultHistory(patientId));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +66,7 @@ class _TestResultHistoryState extends State<TestResultHistory> {
         backgroundColor: Colors.white,
         title: Center(
           child: Text(
-            "Test Result History",
+            "Test Report History",
             style: TextStyle(
               color: Colors.black,
             ),
@@ -79,93 +86,108 @@ class _TestResultHistoryState extends State<TestResultHistory> {
           decoration: BoxDecoration(
             color: HexColor("#F5F9FF"),
           ),
-          child: ListView(children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 10.0),
-                        child:
-                            Text("Date", style: TextStyle(color: Colors.black)),
+          child: StreamBuilder(
+              stream: patientBloc.testResultHistoryStream,
+              builder: (context, snapshot) {
+                if (snapshot.data == null) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasData) {
+                  return ListView(children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
                       ),
-                      SizedBox(
-                        width: 5.0,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 15.0, vertical: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 10.0),
+                                child: Text("Report Date",
+                                    style: TextStyle(color: Colors.black)),
+                              ),
+                              SizedBox(
+                                width: 5.0,
+                              ),
+                            ],
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 10.0),
+                            child: Text("Result",
+                                style: TextStyle(color: Colors.black)),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                    child: Text("Test Result",
-                        style: TextStyle(color: Colors.black)),
-                  ),
-                ],
-              ),
-            ),
-            ListView.builder(
-              itemCount: 6,
-              scrollDirection: Axis.vertical,
-              primary: false,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                child: Card(
-                  elevation: 2.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10.0, vertical: 10.0),
-                              child: Text(dates_of_result_list[index],
-                                  style: TextStyle(color: Colors.black)),
-                            ),
-                            SizedBox(
-                              width: 5.0,
-                            ),
-                          ],
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 10.0),
-                          child: Text(results_list[index],
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                      ],
                     ),
-                  ),
-                ),
-              ),
-            ),
-          ])),
+                    ListView.builder(
+                      itemCount: snapshot.data.length,
+                      scrollDirection: Axis.vertical,
+                      primary: false,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) =>
+                          Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 5.0, vertical: 5.0),
+                        child: Card(
+                          elevation: 2.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      alignment: Alignment.center,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10.0, vertical: 10.0),
+                                      child: Text(
+                                          new intl.DateFormat("MMM d, yyyy")
+                                              .format(DateTime.parse(snapshot
+                                                  .data[index].updatedAt)),
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                    ),
+                                    SizedBox(
+                                      width: 5.0,
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.0, vertical: 10.0),
+                                  child: Text(snapshot.data[index].testStatus,
+                                      style: TextStyle(color: Colors.black)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]);
+                }
+              })),
     );
   }
 }

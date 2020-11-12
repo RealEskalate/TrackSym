@@ -30,6 +30,7 @@ class UserRepo {
       var responseDecoded = json.decode(response.body);
       user = User.fromJson(responseDecoded['user']);
       await prefs.setString("Token", responseDecoded['token']);
+      await prefs.setString("UserId", responseDecoded['user']['_id']);
     }
     return user;
   }

@@ -8,6 +8,7 @@ import '../../view_models/caseBloc.dart';
 import '../../view_models/caseRepo.dart';
 import 'package:flutter/scheduler.dart';
 import '../../widgets/blurredDrawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CasesList extends StatefulWidget {
   CasesList({this.scrollController});
@@ -27,10 +28,16 @@ class CasesListState extends State<CasesList> {
   @override
   void initState() {
     super.initState();
-    caseBloc.actionSink.add(FetchCases("5ee9eb84103d470003d558d0"));
+    populateData();
+
     // SchedulerBinding.instance.addPostFrameCallback((_) {
     //   BlocProvider.of<CaseBloc>(context).add(FetchCases(""));
     // });
+  }
+
+  populateData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    caseBloc.actionSink.add(FetchCases(prefs.getString('UserId')));
   }
 
   @override
@@ -72,11 +79,13 @@ class CasesListState extends State<CasesList> {
                             Icons.refresh,
                             color: Colors.lightBlueAccent[900],
                           ),
-                          onPressed: () {
+                          onPressed: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
                             caseBloc.actionSink
-                                .add(ReloadCases("5ee9eb84103d470003d558d0"));
+                                .add(ReloadCases(prefs.getString('UserId')));
                             caseBloc.actionSink
-                                .add(FetchCases("5ee9eb84103d470003d558d0"));
+                                .add(FetchCases(prefs.getString('UserId')));
                           },
                         )
                       ]),
@@ -92,8 +101,9 @@ class CasesListState extends State<CasesList> {
   }
 
   Future<void> refresh() async {
-    caseBloc.actionSink.add(ReloadCases("5ee9eb84103d470003d558d0"));
-    caseBloc.actionSink.add(FetchCases("5ee9eb84103d470003d558d0"));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    caseBloc.actionSink.add(ReloadCases(prefs.getString('UserId')));
+    caseBloc.actionSink.add(FetchCases(prefs.getString('UserId')));
   }
 
   mainList(BuildContext context) {
@@ -140,20 +150,20 @@ class CasesListState extends State<CasesList> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     CardWidget(
-                                        sizeHeight: 0.10,
+                                        sizeHeight: 0.08,
                                         sizeWidth: 0.35,
                                         color: Colors.lightBlueAccent[700],
-                                        value: "1,453",
-                                        change: "+25",
+                                        value: snapshot.data.length.toString(),
+                                        //change: "+",
                                         text: "Total Cases",
                                         title: "this.title",
                                         press: null),
                                     CardWidget(
-                                        sizeHeight: 0.10,
+                                        sizeHeight: 0.08,
                                         sizeWidth: 0.35,
                                         color: Colors.greenAccent[700],
-                                        value: "1,071",
-                                        change: "+12",
+                                        value: snapshot.data.length.toString(),
+                                        //change: "+12",
                                         text: "Active Cases",
                                         title: "this.title",
                                         press: null),

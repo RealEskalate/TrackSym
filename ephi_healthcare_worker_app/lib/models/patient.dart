@@ -5,14 +5,14 @@ class Patient {
   String phoneNumber;
   String createdAt;
   String updatedAt;
-  bool smsStatus;
+  String dateOfBirth;
   String status;
   List<dynamic> history;
-  String emergencyContactFirstName;
-  String emergencyContactLastName;
-  String emergencyContactRelationship;
-  String emergencyContactCity;
-  String emergencyContactPhoneNumber;
+  String email;
+  String woreda;
+  String userId;
+  String language;
+  String gender;
   Patient(
       {this.id,
       this.firstName,
@@ -21,33 +21,29 @@ class Patient {
       this.createdAt,
       this.updatedAt,
       this.history,
-      this.emergencyContactCity,
-      this.emergencyContactFirstName,
-      this.emergencyContactLastName,
-      this.emergencyContactRelationship,
-      this.emergencyContactPhoneNumber,
-      this.smsStatus,
-      this.status});
+      this.email,
+      this.woreda,
+      this.userId,
+      this.dateOfBirth,
+      this.status,
+      this.language,
+      this.gender});
   factory Patient.fromJson(Map<String, dynamic> json) {
     return Patient(
       id: json['_id'] as String,
       firstName: json['first_name'] as String,
+      gender: json['gender'] as String,
       lastName: json['last_name'] as String,
       phoneNumber: json['phone_number'] as String,
       createdAt: json['created_at'] as String,
       updatedAt: json['updated_at'] as String,
       status: json['status'] as String,
-      smsStatus: json['sms_status'] as bool,
+      language: json['language'] as String,
+      dateOfBirth: json['dob'] as String,
       //history: List.from(json['history']),
-      emergencyContactFirstName:
-          json['emergency_contact']['first_name'] as String,
-      emergencyContactLastName:
-          json['emergency_contact']['last_name'] as String,
-      emergencyContactRelationship:
-          json['emergency_contact']['relationship'] as String,
-      emergencyContactCity: json['emergency_contact']['city'] as String,
-      emergencyContactPhoneNumber:
-          json['emergency_contact']['phone_number'] as String,
+      email: json['email'] as String,
+      woreda: json['woreda'] as String,
+      userId: json['user_id'] as String,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/patientCase.dart';
 import '../pages/details/detail_view.dart';
+import 'package:intl/intl.dart' as intl;
 
 class CaseWidget extends StatefulWidget {
   PatientCase patient_case;
@@ -45,7 +46,7 @@ class _CaseWidgetState extends State<CaseWidget> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => DetailView(),
+                  builder: (_) => DetailView(patient: this.patient_case),
                 ),
               ),
               // Mike's Address
@@ -56,12 +57,6 @@ class _CaseWidgetState extends State<CaseWidget> {
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("Test Result",
-                      style: TextStyle(fontSize: 16, color: Colors.grey
-                          // color: patient_case.currentTestResult == "Positive"
-                          //     ? Colors.red
-                          //     : Colors.green,
-                          )),
                   SizedBox(height: 5),
                   Text(patient_case.patientFirstName +
                       " " +
@@ -70,12 +65,18 @@ class _CaseWidgetState extends State<CaseWidget> {
                 ],
               ),
               dense: false,
-              //subtitle: Text(patient_case.activeSymptoms),
-              isThreeLine: true,
+              subtitle: Text(patient_case.currentNote,
+                  style: TextStyle(fontSize: 16, color: Colors.grey
+                      // color: patient_case.currentTestResult == "Positive"
+                      //     ? Colors.red
+                      //     : Colors.green,
+                      )),
+              //isThreeLine: true,
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(patient_case.createdAt),
+                  Text(new intl.DateFormat("MMM d, yyyy")
+                      .format(DateTime.parse(patient_case.createdAt))),
                   SizedBox(height: 5),
                   //Text(patient_case.creationTime)
                 ],
