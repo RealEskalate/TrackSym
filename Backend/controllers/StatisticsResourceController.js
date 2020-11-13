@@ -62,11 +62,11 @@ exports.deleteStatisticsResource = async(req, res) => {
     try {
         let statisticsResource = await StatisticsResource.findByIdAndRemove(req.params.id);
         if (!statisticsResource) {
-            res.status(404).send("stat resource not found");
+            return res.status(404).send("stat resource not found");
         }
-        res.status(200).send(statisticsResource);
+        return res.status(200).send(statisticsResource);
     } catch (error) {
         console.log("Encountered an error " + error);
-        res.status(500).send(error);
+        return res.status(500).send(error);
     }
 };

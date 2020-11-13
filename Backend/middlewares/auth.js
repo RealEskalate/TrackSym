@@ -19,6 +19,10 @@ exports.verifyToken = async (req, res, next) => {
         id = authData.user._id;
       }
     });
+    // return if jwt sends error response
+    if (res.headersSent){
+      return
+    }
     let User;
     if (req.query.demo && req.query.demo == 'true') {
       User = UserModel.DemoUser;
