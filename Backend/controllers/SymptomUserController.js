@@ -207,7 +207,7 @@ exports.get_symptomuser_by_symptom_id = async (req, res) => {
 
 //Get a symptomuser by user_id
 exports.get_symptomuser_by_user_id = async (req, res) => {
-  let { SymptomUser, User } = demo_or_real_db(query);
+  let { SymptomUser, User } = demo_or_real_db(req.query);
 
   try {
     const symptomuser = await SymptomUser.find({
@@ -273,7 +273,7 @@ exports.get_symptomuser_by_user_id = async (req, res) => {
 
 //Update a symptomuser by id
 exports.update_symptomuser = async (req, res) => {
-  let { SymptomUser } = demo_or_real_db(query);
+  let { SymptomUser } = demo_or_real_db(req.query);
 
   try {
     const symptomuserCheck = await SymptomUser.findById(req.body._id);
@@ -309,7 +309,7 @@ exports.update_symptomuser = async (req, res) => {
 
 // Deleting a symptomuser
 exports.delete_symptomuser = async (req, res) => {
-  let { SymptomUser } = demo_or_real_db(query);
+  let { SymptomUser } = demo_or_real_db(req.query);
   
   try {
     const symptomuserCheck = await SymptomUser.findById(req.body._id);
