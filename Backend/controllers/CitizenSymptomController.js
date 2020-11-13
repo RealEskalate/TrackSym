@@ -13,7 +13,6 @@ function setStartDate(req) {
 function setEndDate(req) {
     let end_date = new Date(req.query.end_date);
     let date = new Date();
-    date.setHours(date.getHours() - 7 + date.getTimezoneOffset() / 60);
 
     if (req.query.end_date != null && end_date < date) {
         return "" + end_date.toISOString().slice(0, 10);

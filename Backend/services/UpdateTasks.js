@@ -44,7 +44,7 @@ function getDates(startDate, endDate) {
         return date;
     };
     while (currentDate <= endDate) {
-        dates.push(currentDate);
+        dates.push(parse_date(currentDate));
         currentDate = addDays.call(currentDate, 1);
     }
     return dates;
