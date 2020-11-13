@@ -58,6 +58,13 @@ class _TestResultHistoryState extends State<TestResultHistory> {
   }
 
   @override
+  void dispose() {
+    // TODO: impleme nt dispose
+    super.dispose();
+    patientBloc.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(

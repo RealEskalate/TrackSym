@@ -5,6 +5,14 @@ class UserEndPoints {
   }
 }
 
+class StatisticsEndPoints {
+  static String getTotalStats(String healthCareWorkerId) {
+    return "https://a2sv-api-wtupbmwpnq-uc.a.run.app/api/case_investigations/status_count/?assigned_to=" +
+        healthCareWorkerId +
+        "&demo=true";
+  }
+}
+
 class CaseEndPoints {
   static String getCases(String healthCareWorkerId) {
     return "https://a2sv-api-wtupbmwpnq-uc.a.run.app/api/case_investigations?demo=true&assignee=" +

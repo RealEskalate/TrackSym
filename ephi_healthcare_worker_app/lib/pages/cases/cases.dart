@@ -2,7 +2,6 @@
 import 'package:ephi_healthcare_worker_app/widgets/cardWidget.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/caseWidget.dart';
-import '../../models/case.dart';
 import '../../widgets/hexColorGenerator.dart';
 import '../../view_models/caseBloc.dart';
 import '../../view_models/caseRepo.dart';
@@ -42,7 +41,7 @@ class CasesListState extends State<CasesList> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    // TODO: impleme nt dispose
     super.dispose();
     caseBloc.dispose();
   }
