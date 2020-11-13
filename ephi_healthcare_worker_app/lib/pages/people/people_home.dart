@@ -3,7 +3,6 @@ import 'package:ephi_healthcare_worker_app/widgets/cardWidget.dart';
 import 'package:ephi_healthcare_worker_app/widgets/hexColorGenerator.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/patientCardWidget.dart';
-import '../../models/case.dart';
 import '../../view_models/caseBloc.dart';
 import '../../view_models/caseRepo.dart';
 import 'package:flutter/scheduler.dart';
@@ -39,57 +38,12 @@ class PatientsHomeState extends State<PatientsHome> {
     caseBloc.actionSink.add(FetchCases(prefs.getString('UserId')));
   }
 
-  List<Case> patientsDemoList = [
-    Case(
-        patientName: "Michael Mulatu",
-        patientPhone: "+251987674521",
-        activeSymptoms: "Dry Cough, Ansomia, Fever",
-        createdAt: "Jan 19,2020",
-        creationTime: "5:30 pm",
-        currentTestResult: "Positive"),
-    Case(
-        patientName: "Daniel Debebe",
-        patientPhone: "+251987674521",
-        activeSymptoms: "Low Fever, Sneezing,  Dry Cough",
-        createdAt: "Jan 20,2020",
-        creationTime: "3:30 pm",
-        currentTestResult: "Negative"),
-    Case(
-        patientName: "Sentayehu Natnael",
-        patientPhone: "+251987674521",
-        activeSymptoms: "High Fever, Ansomia, Sneezing",
-        createdAt: "Jan 21,2020",
-        creationTime: "4:30 pm",
-        currentTestResult: "Positive"),
-    Case(
-        patientName: "Natnael Hailu",
-        patientPhone: "+251987674521",
-        activeSymptoms: "Dry Cough, Shivering, Fever",
-        createdAt: "Jan 22,2020",
-        creationTime: "8:30 pm",
-        currentTestResult: "Negative"),
-    Case(
-        patientName: "Hailu  Merga",
-        patientPhone: "+251987674521",
-        activeSymptoms: "High Fever, Sneezing, Dry Cough",
-        createdAt: "Jan 25,2020",
-        creationTime: "7:30 pm",
-        currentTestResult: "Positive"),
-    Case(
-        patientName: "Hailu  Merga",
-        patientPhone: "+251987674521",
-        activeSymptoms: "High Fever, Sneezing, Dry Cough",
-        createdAt: "Jan 25,2020",
-        creationTime: "7:30 pm",
-        currentTestResult: "Positive"),
-    Case(
-        patientName: "Natnael  Sisay",
-        patientPhone: "+251987674521",
-        activeSymptoms: "High Fever, Sneezing, Dry Cough",
-        createdAt: "Jan 25,2020",
-        creationTime: "7:30 pm",
-        currentTestResult: "Positive")
-  ];
+  @override
+  void dispose() {
+    // TODO: impleme nt dispose
+    super.dispose();
+    caseBloc.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

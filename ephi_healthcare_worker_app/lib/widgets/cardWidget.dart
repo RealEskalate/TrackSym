@@ -60,14 +60,19 @@ class CardWidget extends StatelessWidget {
                     ? Image.asset(iconPath,
                         width: size.width * 0.1, height: size.height * 0.05)
                     : SizedBox(height: size.height * 0.005),
-                SizedBox(height: size.height * 0.005),
-                // Text(change,
-                //     textAlign: TextAlign.center,
-                //     style: TextStyle(
-                //       color: color,
-                //       fontSize: 15.0,
-                //     )),
-                SizedBox(height: size.height * 0.005),
+
+                change != null
+                    ? Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: size.height * 0.005),
+                        child: Text(change,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: color,
+                              fontSize: 15.0,
+                            )))
+                    : Text(""),
+
                 Text(value,
                     textAlign: TextAlign.center,
                     style: TextStyle(

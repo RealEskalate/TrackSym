@@ -3,7 +3,6 @@
 import 'package:ephi_healthcare_worker_app/widgets/cardWidget.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/caseWidget.dart';
-import '../../models/case.dart';
 import '../../widgets/hexColorGenerator.dart';
 import '../../view_models/symptomActivityBloc.dart';
 import '../../view_models/symptomRepo.dart';
