@@ -67,7 +67,7 @@ describe("Symptom Users API", () => {
         name: "Cold",
         description: "Similar to common cold or flu",
     });
-    await symptom.save();
+    await symptom_2.save();
     symptom_user = new SymptomUser({
       _id: mongoose.Types.ObjectId(),
       user_id: user._id,
@@ -138,7 +138,7 @@ describe("Symptom Users API", () => {
       expect(response).to.have.status(201);
       expect(response.body).to.be.a("object");
   });
-  it("It should not add multiple symptom user pairs", async () => {
+  it("It should add no multiple symptom user pairs", async () => {
       let response = await chai
           .request(server)
           .post("/api/symptomuser/multiple/")
@@ -146,7 +146,7 @@ describe("Symptom Users API", () => {
           .send({
               symptoms: [],
           });
-      expect(response).to.have.status(422);
+      expect(response).to.have.status(201);
   });
   it("It should get a new symptom user pair by symptom", async () => {
     let response = await chai
@@ -393,7 +393,7 @@ describe("Demo Symptom Users API", () => {
       expect(response).to.have.status(201);
       expect(response.body).to.be.a("object");
   });
-  it("It should not add multiple symptom user pairs", async () => {
+  it("It should add no symptom user pairs", async () => {
       let response = await chai
           .request(server)
           .post("/api/symptomuser/multiple/")
@@ -402,7 +402,7 @@ describe("Demo Symptom Users API", () => {
           .send({
               symptoms: [],
           });
-      expect(response).to.have.status(422);
+      expect(response).to.have.status(201);
   });
   it("It should get a new symptom user pair", async () => {
       let response = await chai
@@ -660,7 +660,7 @@ describe("Stress Symptom Users API", () => {
       expect(response).to.have.status(201);
       expect(response.body).to.be.a("object");
   });
-  it("It should not add multiple symptom user pairs", async () => {
+  it("It should add no multiple symptom user pairs", async () => {
       let response = await chai
           .request(server)
           .post("/api/symptomuser/multiple/")
@@ -669,7 +669,7 @@ describe("Stress Symptom Users API", () => {
           .send({
               symptoms: [],
           });
-      expect(response).to.have.status(422);
+      expect(response).to.have.status(201);
   });
   it("It should get a new symptom user pair", async () => {
       let response = await chai
