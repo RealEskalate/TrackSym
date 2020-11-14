@@ -3,62 +3,17 @@ var mongoose = require("mongoose");
 const Bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
-const User = UserModels.User;
 const emailSender = require("../services/EmailSender");
-const { LocationUser } = require("../models/LocationUserModel.js");
 const { DistrictModel } = require("../models/DistrictModel.js");
 const { SymptomLog } = require("../models/SymptomLogModel");
 const { TestReport } = require("../models/TestReportModel.js");
+const LocationUserModel = require("../models/LocationUserModel.js");
 
 // get all users
 exports.get_all_users = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var User = UserModels.DemoUser;
-  } else if (req.query.stress && req.query.stress === "true") {
-    var User = UserModels.StressUser;
-  } else {
-    var User = UserModels.User;
-  }
+  const { User } = demo_or_real_db(req.query);
 
-  let filter = {};
-
-  if(req.query.username){
-      filter.username = {$regex: req.query.username, $options: 'i'};
-  }
-
-  if(req.query.country){
-      filter.current_country = req.query.country;
-  }
-
-  if(req.query.role_type){
-    filter.role = req.query.role_type;
-  }
-
-  if(req.query.start_date){
-    filter.created_at = {$gte : new Date(req.query.start_date)}
-  }
-  if(req.query.end_date){
-    let date = new Date(req.query.end_date)
-    date.setHours(23)
-
-    if(filter.created_at!=undefined){
-      Object.assign(filter.created_at, {$lte : date});
-    }else{
-      filter.created_at =  {$lte : date}
-    }
-  }
-
-  if(req.query.district){
-    let district = await DistrictModel.findOne({name: req.query.district});
-    let locationUsers = await LocationUser.find({'location.district': district._id}).distinct("user_id");
-    filter._id = {$in : locationUsers};
-  }
-
-  if(req.query.region){
-    let districts = await DistrictModel.find({state : req.query.region}).distinct("_id");
-    let locationUsers = await LocationUser.find({'location.district' : {$in : districts}}).distinct("user_id");
-    filter._id = {$in : locationUsers};
-  }
+  const filter = await build_filter(req.query);
 
   let page = parseInt(req.query.page) || 1;
   let size = parseInt(req.query.size) || 15;
@@ -83,10 +38,56 @@ exports.get_all_users = async (req, res) => {
   }
 };
 
+async function build_filter(query){
+  let { LocationUser } = demo_or_real_db(query);
+  let filter = {};
+
+  if(query.username){
+      filter.username = {$regex: query.username, $options: 'i'};
+  }
+
+  if(query.country){
+      filter.current_country = query.country;
+  }
+
+  if(query.role_type){
+    filter.role = query.role_type;
+  }
+
+  if(query.start_date){
+    filter.created_at = {$gte : new Date(query.start_date)}
+  }
+  if(query.end_date){
+    let date = new Date(query.end_date)
+    date.setHours(23)
+
+    if(filter.created_at!=undefined){
+      Object.assign(filter.created_at, {$lte : date});
+    }else{
+      filter.created_at =  {$lte : date}
+    }
+  }
+
+  if(query.district){
+    let district = await DistrictModel.findOne({name: query.district});
+    let locationUsers = await LocationUser.find({'location.district': district._id}).distinct("user_id");
+    filter._id = {$in : locationUsers};
+  }
+
+  if(query.region){
+    let districts = await DistrictModel.find({state : query.region}).distinct("_id");
+    let locationUsers = await LocationUser.find({'location.district' : {$in : districts}}).distinct("user_id");
+    filter._id = {$in : locationUsers};
+  }
+  return filter;
+}
+
 // get user detail info
 exports.get_detail_info= async(req,res)=>{
+  const { User } = demo_or_real_db(req.query);
+
   let userDetails ={}
-  userDetails.basicInfo = await  User.findById(req.params.id)
+  userDetails.basicInfo = await User.findById(req.params.id)
     .populate("latest_location_user");
 
   userDetails.symptomHistory = await SymptomLog.findOne({user_id : req.params.id})
@@ -111,6 +112,7 @@ exports.get_detail_info= async(req,res)=>{
 
 // Get high level stat
 exports.get_role_stat= async (req,res) =>{
+  const { User } = demo_or_real_db(req.query);
   let result= {}
 
   result.allUsers= await User.countDocuments({});
@@ -132,16 +134,9 @@ exports.get_role_stat= async (req,res) =>{
 
 }
 
-
 // Get User by ID.
 exports.get_user_by_id = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var User = UserModels.DemoUser;
-  } else if (req.query.stress && req.query.stress === "true") {
-    var User = UserModels.StressUser;
-  } else {
-    var User = UserModels.User;
-  }
+  const { User } = demo_or_real_db(req.query);
   if (req.params.id !== req.body.loggedInUser) {
     return res
       .status(403)
@@ -156,66 +151,54 @@ exports.get_user_by_id = async (req, res) => {
     res.status(500).send(err.toString());
   }
 };
+
 // Get User by Username and Password.
 exports.get_user_by_credentials = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var User = UserModels.DemoUser;
-  } else if (req.query.stress && req.query.stress === "true") {
-    var User = UserModels.StressUser;
-  } else {
-    var User = UserModels.User;
-  }
+  const { User } = demo_or_real_db(req.query);
   let user = await User.findOne({
     username: { $eq: req.body.username },
   });
   try {
-    // console.log(user.password + " " + req.body.password + " bool " + Bcrypt.compareSync(req.body.password, user.password))
     if (!user || !Bcrypt.compareSync(req.body.password, user.password)) {
-      res.status(404).send("Username and Password combination doesn't exist");
-    } else {
-      let country = "";
-      try {
-        const result = await axios
-          .get(
-            "http://www.geoplugin.net/json.gp?ip=" +
-              req.connection.remoteAddress.substring(2)
-          )
-          .then((response) => {
-            if (response.data) {
-              country = response.data.geoplugin_countryName;
-            }
-          })
-          .catch((error) => {
-            console.log(error.toString());
-          });
-        user.set({
-          current_country: country,
-        });
-        await user.save();
-      } catch (err) {
-        console.log(err.toString());
-      }
-      // jwt authentication(signing in) is  done here ...
-      jwt.sign({ user }, process.env.APP_SECRET_KEY, (err, token) => {
-        res.json({
-          user: user,
-          token: token,
-        });
-      });
+      return res.status(404).send("Username and Password combination doesn't exist");
     }
+    let country = await find_country_name(req)
+    user.set({
+      current_country: country,
+    });
+    await user.save();
+
+    let token = jwt.sign({ user }, process.env.APP_SECRET_KEY)
+    return res.json({
+      user: user,
+      token: token,
+    });
   } catch (err) {
     res.status(500).send(err.toString());
   }
 };
-// Post a Use
+
+async function find_country_name(req){
+  let country = "";
+  await axios
+    .get(
+      "http://www.geoplugin.net/json.gp?ip=" +
+        req.connection.remoteAddress.substring(2)
+    )
+    .then((response) => {
+      if (response.data) {
+        country = response.data.geoplugin_countryName;
+      }
+    })
+    .catch((error) => {
+      console.error(error.toString());
+    });
+  return country;
+}
+
+// Post a User
 exports.post_user = async (req, res) => {
-  if (req.query.demo && req.query.demo == "true") {
-    var User = UserModels.DemoUser;
-  } else if (req.query.stress && req.query.stress === "true") {
-    var User = UserModels.StressUser;
-  } else {
-    var User = UserModels.User;
-  }
+  const { User } = demo_or_real_db(req.query);
   const user = new User({
     _id: mongoose.Types.ObjectId(),
     username: req.body.username,
@@ -241,41 +224,60 @@ exports.post_user = async (req, res) => {
     res.status(500).send(err.toString());
   }
 };
+
 // Update User by ID.
 exports.update_user = async (req, res) => {
+  const { User } = demo_or_real_db(req.query);
   try {
-    let exists = await User.findOne({ username: req.body.username });
     // Change user info by _id
-    let change = await User.findOne({ _id: req.body._id });
-    if (exists && exists._id != req.body._id) {
-      return res.status(400).send("Username already exists ");
-    } else if (req.body._id !== req.body.loggedInUser) {
-      return res
-        .status(403)
-        .send(
-          "User not authorized to access this endpoint with id: " + req.body._id
-        );
+    let to_be_changed = await User.findOne({ _id: req.body._id });
+
+    let validation_status = await validate_user_update(req.query, req.body);
+    if (validation_status.status != 200){
+      return res.status(validation_status.status).send(validation_status.message)
     }
-    if (req.body.password) {
-      if (req.body.password.length < 5) {
-        return res.status(500).send("Password Length Too Short");
-      }
-      req.body.password = Bcrypt.hashSync(req.body.password, 10);
-    }
-    change.username = req.body.username || change.username;
-    change.password = req.body.password || change.password;
-    change.gender = req.body.gender || change.gender;
-    change.age_group = req.body.age_group || change.age_group;
-    change.email = req.body.email || change.email;
-    await change.save();
-    res.send(change);
+
+    assign_document_fields(to_be_changed, req.body);
+    await to_be_changed.save();
+    res.send(to_be_changed);
   } catch (err) {
-    // console.log("error is " + err);
     res.status(500).send(err.toString());
   }
 };
+
+async function validate_user_update(query, update_doc){
+  const { User } = demo_or_real_db(query);
+  let exists = await User.findOne({ username: update_doc.username });
+
+  if (exists && exists._id != update_doc._id) {
+    return {status: 400, message: "Username already exists"};
+  } else if (update_doc._id !== update_doc.loggedInUser) {
+    return {
+      status: 403,
+      message: "User not authorized to access this endpoint with id: " + update_doc._id
+    }
+  }
+
+  if (update_doc.password) {
+    if (update_doc.password.length < 5) {
+      return {status: 500, message: "Password Length Too Short"};
+    }
+    update_doc.password = Bcrypt.hashSync(update_doc.password, 10);
+  }
+  return {status: 200, message: "Successful"}
+}
+
+function assign_document_fields(document, update_doc){
+  document.username = update_doc.username || document.username;
+  document.password = update_doc.password || document.password;
+  document.gender = update_doc.gender || document.gender;
+  document.age_group = update_doc.age_group || document.age_group;
+  document.email = update_doc.email || document.email;
+}
+
 // Delete User by ID.
 exports.delete_user = async (req, res) => {
+  const { User } = demo_or_real_db(req.query);
   try {
     if (req.body._id !== req.body.loggedInUser) {
       return res
@@ -288,33 +290,23 @@ exports.delete_user = async (req, res) => {
     if (!user) {
       return res.status(404).send("No item found");
     }
-    res.status(201).send(user);
+    return res.status(201).send(user);
   } catch (err) {
-    res.status(500).send(err.toString());
+    return res.status(500).send(err.toString());
   }
 };
 
-// invite users ...
-
 // send invitation link to user
-
 exports.send_invitation_link = async (req, res) => {
-  let email = req.body.email;
   try {
-    if (email == undefined){
-      return res
-        .status(422)
-        .send("The email is required.");
+    let validation_status = await validate_invite_request(req.query, req.body);
+    if (validation_status.status != 200){
+      return res.status(validation_status.status).send(validation_status.message)
     }
-    const check = await User.findOne({ email: email });
-    if (check) {
-      return res
-        .status(422)
-        .send("The email already exists.");
-    }
-    let creator_id=req.body.loggedInUser
 
-    let signed_email = jwt.sign({email:email,creator_id:creator_id},process.env.APP_SECRET_KEY,{expiresIn:'6h'})
+    let { email, loggedInUser } = req.body;
+
+    let signed_email = jwt.sign({ email:email,creator_id:loggedInUser }, process.env.APP_SECRET_KEY, {expiresIn:'6h'})
     let invitationLink = `${process.env.APP_WEB_CREATE_ACC_LINK}${signed_email}`;
 
     const usersData=[{ email : email, activationLink: invitationLink }]
@@ -330,44 +322,35 @@ exports.send_invitation_link = async (req, res) => {
   }
 };
 
+async function validate_invite_request(query, body){
+  const { User } = demo_or_real_db(query);
+  if (body.email == undefined){
+    return {
+      status: 422,
+      message: "The email is required."
+    };
+  }
+  const check = await User.findOne({ email: body.email });
+  if (check) {
+    return {
+      status: 422,
+      message: "The email already exists."
+    };
+  }
+  return { status:200, message: "Successful" };
+}
 
 // send  invitation links for multiple users
-
 exports.send_multiple_invitation_link = async (req, res) => {
-  let emails = req.body.emails;
   try {
-    if (emails==undefined){
-      return res
-        .status(422)
-        .send("The email list is required.");
+    let validation_status = await validate_multiple_invites(req.query, req.body); 
+    if (validation_status.status != 200){
+      return res.status(validation_status.status).send(validation_status.message)
     }
 
-    let existingEmails= await User.find({ email: { $in: emails }});
-    existingEmails = existingEmails.map(user => user.email);
-    if (existingEmails.length > 0) {
-      return res
-        .status(422)
-        .send( { "error": "These emails already exist.", "emails" :existingEmails });
-    }
-    
-
-    let usersData = [];
-    let creator_id=req.body.loggedInUser
-
-    for(var index in emails){
-      let email = emails[index]
-      
-      let signed_email = jwt.sign({email:email,creator_id:creator_id},process.env.APP_SECRET_KEY,{expiresIn:'6h'})
-      let invitationLink = `${process.env.APP_WEB_CREATE_ACC_LINK}${signed_email}`;
-
-      usersData.push({
-         email : email,
-         activationLink: invitationLink
-      })
-
-    
-    }
-    
+    let emails = req.body.emails;
+    let creator_id = req.body.loggedInUser;
+    let usersData = sign_emails(creator_id, emails) 
     try {
       await emailSender.sendActivationLink(req, usersData);
       return res.status(200).send('Invitation message sent to all users successfully.');
@@ -380,15 +363,45 @@ exports.send_multiple_invitation_link = async (req, res) => {
   }
 };
 
+async function validate_multiple_invites(query, body){
+  let { User } = demo_or_real_db(query);
+  let { emails } = body;
+  if ( emails == undefined ){
+    return {
+      status: 422,
+      message: "The email is required."
+    };
+  }
+
+  let existingEmails= (await User.find({ email: { $in: emails }}))
+                                  .map(user => user.email);
+  if (existingEmails.length > 0) {
+    return {
+      status: 422,
+      message: { "error": "These emails already exist.", "emails": existingEmails }
+    };
+  }
+  return { status:200, message: "Successful" }
+}
+
+function sign_emails(creator_id, emails){
+  return emails.map(email => {
+    let signed_email = jwt.sign({email:email,creator_id:creator_id}, process.env.APP_SECRET_KEY, {expiresIn:'6h'})
+    let invitationLink = `${process.env.APP_WEB_CREATE_ACC_LINK}${signed_email}`;
+    return {
+      email : email,
+      activationLink: invitationLink
+    }
+  });
+}
 
 // verify and create account.
-
 exports.create_invited_user = async (req, res) => {
+  const { User } = demo_or_real_db(req.query);
   let signature = req.body.signature
-  let email =null;
-  let creator_id =null;
+  let email = null;
+  let creator_id = null;
  
-
   jwt.verify(signature, process.env.APP_SECRET_KEY, (err, decodedEmail) => {
       if (err) {
         res.status(401).send("Incorrect signature");
@@ -397,7 +410,10 @@ exports.create_invited_user = async (req, res) => {
         creator_id = decodedEmail.creator_id
       }
   });
-
+  // return if jwt sends error response
+  if (res.headersSent){
+    return
+  }
   const user = new User({
     _id: mongoose.Types.ObjectId(),
     username: req.body.username,
@@ -429,11 +445,9 @@ exports.create_invited_user = async (req, res) => {
   
 };
 
-
-
 // reset password.
-
 exports.send_reset_link = async (req, res) => {
+  const { User } = demo_or_real_db(req.query);
   let email = req.body.email;
   try {
     if (email == undefined){
@@ -467,11 +481,9 @@ exports.send_reset_link = async (req, res) => {
   }
 };
 
-
-
 // verify and reset password.
-
 exports.save_new_password= async (req, res) => {
+  const { User } = demo_or_real_db(req.query);
   let signature = req.body.signature
   let email = null;
 
@@ -486,6 +498,10 @@ exports.save_new_password= async (req, res) => {
         email = decodedEmail.email
       }
   });
+  // return if jwt sends error response
+  if (res.headersSent){
+    return
+  }
 
   const user = await User.findOne({ email: email });
   if (!user) {
@@ -495,8 +511,7 @@ exports.save_new_password= async (req, res) => {
   }
 
   try {
-    let password = Bcrypt.hashSync(req.body.password, 10);
-    user.password=password
+    user.password = Bcrypt.hashSync(req.body.password, 10);
     await user.save()
     
     res.send(user)
@@ -505,3 +520,23 @@ exports.save_new_password= async (req, res) => {
   }
   
 };
+
+function demo_or_real_db(query){
+  if (query.demo && query.demo == "true"){
+    return {
+      User: UserModels.DemoUser,
+      LocationUser: LocationUserModel.DemoLocationUser
+    }
+  } else if (query.stress && query.stress == "true"){
+    return {
+      User: UserModels.StressUser,
+      LocationUser: LocationUserModel.StressLocationUser
+    }
+  } 
+  else {
+    return {
+      User: UserModels.User,
+      LocationUser: LocationUserModel.LocationUser
+    }
+  }
+}
