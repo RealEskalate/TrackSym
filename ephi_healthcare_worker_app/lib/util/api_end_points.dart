@@ -72,4 +72,8 @@ class PatientsEndPoints {
         patientId +
         "?demo=true";
   }
+
+  static String registerNewPatient() {
+    return "https://a2sv-api-wtupbmwpnq-uc.a.run.app/api/patients/?demo=true";
+  }
 }

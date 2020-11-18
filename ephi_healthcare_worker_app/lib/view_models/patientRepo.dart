@@ -108,4 +108,25 @@ class PatientRepo {
       return testReportList;
     }
   }
+
+  static registerPatient(Patient newPatient) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('Token') != null) {
+      var headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + prefs.getString('Token')
+      };
+
+      String url = API.PatientsEndPoints.registerNewPatient();
+      var response = await retry(
+        () => http
+            .post(url, body: jsonEncode(newPatient.toJson()), headers: headers)
+            .timeout(Duration(seconds: 10)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+
+      print("response => " + response.body);
+    }
+  }
 }
