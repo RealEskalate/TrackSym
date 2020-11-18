@@ -25,7 +25,7 @@ class StatisticsRepo {
             .timeout(Duration(seconds: 10)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      print(" >>>>>>>>>>> " + response.body.toString());
+      //print(" >>>>>>>>>>> " + response.body.toString());
       Statistics stat;
       if (response.statusCode == 200) {
         stat = Statistics.fromJson(json.decode(response.body));

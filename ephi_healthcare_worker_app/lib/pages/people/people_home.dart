@@ -148,7 +148,7 @@ class PatientsHomeState extends State<PatientsHome> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     CardWidget(
-                                        sizeHeight: 0.08,
+                                        sizeHeight: 0.10,
                                         sizeWidth: 0.41,
                                         color: Colors.purple[700],
                                         value: snapshot.data.length.toString(),
@@ -157,7 +157,7 @@ class PatientsHomeState extends State<PatientsHome> {
                                         title: "this.title",
                                         press: null),
                                     CardWidget(
-                                        sizeHeight: 0.08,
+                                        sizeHeight: 0.10,
                                         sizeWidth: 0.41,
                                         color: Colors.orange[700],
                                         value: snapshot.data.length.toString(),

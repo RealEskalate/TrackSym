@@ -149,7 +149,7 @@ class CasesListState extends State<CasesList> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     CardWidget(
-                                        sizeHeight: 0.08,
+                                        sizeHeight: 0.10,
                                         sizeWidth: 0.35,
                                         color: Colors.lightBlueAccent[700],
                                         value: snapshot.data.length.toString(),
@@ -158,7 +158,7 @@ class CasesListState extends State<CasesList> {
                                         title: "this.title",
                                         press: null),
                                     CardWidget(
-                                        sizeHeight: 0.08,
+                                        sizeHeight: 0.10,
                                         sizeWidth: 0.35,
                                         color: Colors.greenAccent[700],
                                         value: snapshot.data.length.toString(),
