@@ -5,9 +5,17 @@ class FormInputField extends StatelessWidget {
   final double height;
   final Color backgroundColor;
   final String text;
+  final String errorText;
+  final onChanged;
 
   const FormInputField(
-      {Key key, this.width, this.height, this.backgroundColor, this.text})
+      {Key key,
+      this.width,
+      this.height,
+      this.backgroundColor,
+      this.text,
+      this.errorText,
+      this.onChanged})
       : super(key: key);
 
   @override
@@ -20,7 +28,9 @@ class FormInputField extends StatelessWidget {
       decoration: BoxDecoration(
           color: backgroundColor, borderRadius: BorderRadius.circular(15)),
       child: TextField(
-        decoration: InputDecoration(hintText: text, border: InputBorder.none),
+        onChanged: onChanged,
+        decoration: InputDecoration(
+            hintText: text, border: InputBorder.none, errorText: errorText),
       ),
     );
   }

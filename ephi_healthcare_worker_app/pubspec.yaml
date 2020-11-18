@@ -44,6 +44,7 @@ dev_dependencies:
   retry: ^3.0.1
   shared_preferences: ^0.5.12+2
   equatable: ^1.2.5
+  rxdart: ^0.24.1
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

@@ -46,4 +46,10 @@ class Patient {
       userId: json['user_id'] as String,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'first_name': firstName,
+        'last_name': lastName,
+        'gender': gender,
+      };
 }
