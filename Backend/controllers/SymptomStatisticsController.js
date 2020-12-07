@@ -42,9 +42,14 @@ exports.get_most_common = async (req, res) => {
     ]);
 
     localized_result = await translate_symptom_users(aggregated, req.query.language);
+    let total = 0;
+    for (let i = 0; i < localized_result.length; i++){
+        let localized_result_item = localized_result[i];
+        total += localized_result_item.count;
+    }
     try { 
         res.send({
-            total: localized_result.length,
+            total,
             data: localized_result,
         });
     } catch (err) {
