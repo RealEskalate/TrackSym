@@ -1,5 +1,5 @@
 steps:
-  - name: node
+  - name: node:14.10.0
     entrypoint: npm
     args: ["install"]
   - name: "gcr.io/cloud-builders/docker"
