@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.4.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "chart.js": "^2.9.3",
     "compression": "^1.7.4",
