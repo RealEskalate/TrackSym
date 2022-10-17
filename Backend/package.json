@@ -42,7 +42,7 @@
     "rss-parser": "^3.7.6",
     "winston": "^3.2.1",
     "winston-mongodb": "^5.0.1",
-    "xlsx": "^0.15.6"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
